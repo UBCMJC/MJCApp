@@ -1,0 +1,15 @@
+/* CSS declarations go here */
+
+.container {
+	max-width: 900px;
+	margin: 0 auto;
+	min-height: 100%;
+	background: white;
+}
+
+.player-entry {
+	float: left;
+	width: 25%;
+	text-align: center;
+	background: white;
+}

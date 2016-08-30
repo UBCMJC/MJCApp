@@ -1,0 +1,160 @@
+<template name="hongkong_new_game">
+	<h2>Hong Kong Mahjong Game Sheet</h2>
+
+	<form class="game_input_form">
+		<div class="player-entry">
+			<p>East</p>
+			<select name="east_player">
+				<option disabled selected value> -- Select East Player (東) -- </option>
+				{{#each players}}
+					{{> jpn_player_select_east}}
+				{{/each}}
+			</select>
+		</div>
+		<div class="player-entry">
+			<p>South</p>
+			<select name="south_player">
+				<option disabled selected value> -- Select South Player (南) -- </option>
+				{{#each players}}
+						{{> jpn_player_select_south}}
+				{{/each}}
+			</select>
+		</div>
+		<div class="player-entry">
+			<p>West</p>
+			<select name="west_player">
+				<option disabled selected value> -- Select West Player (北) -- </option>
+				{{#each players}}
+					{{> jpn_player_select_west}}
+				{{/each}}
+			</select>
+		</div>
+		<div class="player-entry">
+			<p>North</p>
+			<select name="north_player">
+				<option disabled selected value> -- Select North Player (西) -- </option> 
+				{{#each players}}
+					{{> jpn_player_select_north}}
+				{{/each}}
+			</select>
+		</div>
+
+		<u1 class="nav nav-pills">
+			<li data-template="dealin" role="presentation" class="active">
+				<a data-toggle="pill" href="#">Ron (Deal in)</a>
+			</li>
+			<li data-template="selfdraw" role="presentation">
+				<a data-toggle="pill" href="#">Tsumo (Self draw)</a>
+			</li>
+			<li data-template="nowin" role="presentation">
+				<a data-toggle="pill" href="#">Tenpai (Deck out)</a>
+			</li>
+			<li data-template="restart" role="presentation">
+				<a data-toggle="pill" href="#">Reshuffle</a>
+			</li>
+			<li data-template="fuckup" role="presentation">
+				<a data-toggle="pill" href="#">Chombo (Fuckup)</a>
+			</li>
+		</u1>
+
+		{{> Template.dynamic template=hand_type }}
+
+		<input type="button" value="Submit Hand" class="btn btn-primary btn-block submit_hand_button">
+
+		<u1>
+		{{#each hands}}
+			{{> render_hand}}
+		{{/each}}
+		</u1>
+
+		<input type="button" value="Delete last Hand" class="btn btn-primary btn-block delete_hand_button">
+	</form>
+</template>
+
+<template name="render_hand">
+	{{#if is_dealin hand_type}}
+		<li>dealin</li>
+	{{/if}}
+	{{#if is_selfdraw hand_type}}
+		<li>selfdraw</li>
+	{{/if}}
+</template>
+
+<template name="jpn_player_select_east">
+	<option value={{name}} class="east player_select">{{name}}</option>
+</template>
+
+<template name="jpn_player_select_south">
+	<option value={{name}} class="south player_select">{{name}}</option>
+</template>
+
+<template name="jpn_player_select_west">
+	<option value={{name}} class="west player_select">{{name}}</option>
+</template>
+
+<template name="jpn_player_select_north">
+	<option value={{name}} class="north player_select">{{name}}</option>
+</template>
+
+<template name="dealin">
+	{{> winner_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> loser_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> points}}
+</template>
+
+<template name="selfdraw">
+	<p>selfdraw</p>
+	{{> winner_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> points}}
+</template>
+
+<template name="nowin">
+	<p>tenpai</p>
+</template>
+
+<template name="restart">
+	<p>reshuffle</p>
+</template>
+
+<template name="fuckup">
+	<p>chombo</p>
+	{{> loser_s}}
+</template>
+
+<template name="winner_s">
+	<h4>Winner: </h4>
+	<div class="btn-group btn-group-justified winner_buttons">
+		<button type="button" class="btn btn-primary winner">{{east}}</button>
+		<button type="button" class="btn btn-primary winner">{{south}}</button>
+		<button type="button" class="btn btn-primary winner">{{west}}</button>
+		<button type="button" class="btn btn-primary winner">{{north}}</button>
+	</div>
+	<br>
+	<br>
+</template>
+
+<template name="loser_s">
+	<h4>Loser: </h4>
+	<div class="btn-group btn-group-justified loser_buttons">
+		<button type="button" class="btn btn-primary loser">{{east}}</button>
+		<button type="button" class="btn btn-primary loser">{{south}}</button>
+		<button type="button" class="btn btn-primary loser">{{west}}</button>
+		<button type="button" class="btn btn-primary loser">{{north}}</button>
+	</div>
+	<br>
+	<br>
+</template>
+
+<template name="points">
+	<select name="points">
+		<option disabled selected value> -- Select points (番) -- </option> 
+		{{#each possible_points}}
+			{{> point_select}}
+		{{/each}}
+				
+	</select>
+</template>
+
+<template name="point_select">
+	<option value={{point}} class="point_value">{{point}}</option>
+</template>
