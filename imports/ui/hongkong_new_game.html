@@ -7,7 +7,7 @@
 			<select name="east_player">
 				<option disabled selected value> -- Select East Player (東) -- </option>
 				{{#each players}}
-					{{> jpn_player_select_east}}
+					{{> hk_player_select_east}}
 				{{/each}}
 			</select>
 		</div>
@@ -16,25 +16,25 @@
 			<select name="south_player">
 				<option disabled selected value> -- Select South Player (南) -- </option>
 				{{#each players}}
-						{{> jpn_player_select_south}}
+						{{> hk_player_select_south}}
 				{{/each}}
 			</select>
 		</div>
 		<div class="player-entry">
 			<p>West</p>
 			<select name="west_player">
-				<option disabled selected value> -- Select West Player (北) -- </option>
+				<option disabled selected value> -- Select West Player (西) -- </option>
 				{{#each players}}
-					{{> jpn_player_select_west}}
+					{{> hk_player_select_west}}
 				{{/each}}
 			</select>
 		</div>
 		<div class="player-entry">
 			<p>North</p>
 			<select name="north_player">
-				<option disabled selected value> -- Select North Player (西) -- </option> 
+				<option disabled selected value> -- Select North Player (北) -- </option> 
 				{{#each players}}
-					{{> jpn_player_select_north}}
+					{{> hk_player_select_north}}
 				{{/each}}
 			</select>
 		</div>
@@ -61,64 +61,150 @@
 
 		<input type="button" value="Submit Hand" class="btn btn-primary btn-block submit_hand_button">
 
-		<u1>
+		<table style="width:100%">
+		<tr>
+			<th colspan="3"></th>
+			<th>{{get_east}}</th>
+			<th>{{get_south}}</th>
+			<th>{{get_west}}</th>
+			<th>{{get_north}}</th>
+		</tr>
+		<tr>
+			<th>Round</th>
+			<th>Bonus</th>
+			<th>Points</th>
+			<th>500</th>
+			<th>500</th>
+			<th>500</th>
+			<th>500</th>
+		</tr>
 		{{#each hands}}
 			{{> render_hand}}
 		{{/each}}
-		</u1>
+		<tr>
+			<td>
+				{{#if is_east_round get_round}}東{{/if}}
+				{{#if is_south_round get_round}}南{{/if}}
+				{{#if is_west_round get_round}}西{{/if}}
+				{{#if is_north_round get_round}}北{{/if}}
+				{{round_mod4 get_round}}
+			</td>
+			<td>B{{get_bonus}}</td>
+		</tr>
+		<tr>
+			<th colspan="3">Transaction total:</th>
+			<td>{{get_player_delta "east_score"}}</td>
+			<td>{{get_player_delta "south_score"}}</td>
+			<td>{{get_player_delta "west_score"}}</td>
+			<td>{{get_player_delta "north_score"}}</td>
+		</tr>
+		<tr>
+			<th colspan="3">Current score:</th>
+			<td>{{get_player_score "east_score"}}</td>
+			<td>{{get_player_score "south_score"}}</td>
+			<td>{{get_player_score "west_score"}}</td>
+			<td>{{get_player_score "north_score"}}</td>
+		</tr>
+		<tr>
+			<th colspan="3">End score:</th>
+			<td>{{get_player_score_final "east_score"}}</td>
+			<td>{{get_player_score_final "south_score"}}</td>
+			<td>{{get_player_score_final "west_score"}}</td>
+			<td>{{get_player_score_final "north_score"}}</td>
+		</tr>
+		</table>
 
 		<input type="button" value="Delete last Hand" class="btn btn-primary btn-block delete_hand_button">
+
+		<input type="button" value="Submit game!" class="btn btn-primary btn-block disabled submit_game_button">
 	</form>
 </template>
 
 <template name="render_hand">
-	{{#if is_dealin hand_type}}
-		<li>dealin</li>
-	{{/if}}
-	{{#if is_selfdraw hand_type}}
-		<li>selfdraw</li>
-	{{/if}}
+	<tr>
+		<td>
+			{{#if is_east_round round}}東{{/if}}
+			{{#if is_south_round round}}南{{/if}}
+			{{#if is_west_round round}}西{{/if}}
+			{{#if is_north_round round}}北{{/if}}
+			{{round_mod4 round}}
+		</td>
+		<td>B{{bonus}}</td>
+
+		{{#if is_dealin hand_type}}
+		<td>{{points}}</td>
+		<td>{{east_delta}}</td>
+		<td>{{south_delta}}</td>
+		<td>{{west_delta}}</td>
+		<td>{{north_delta}}</td>
+		{{/if}}
+
+		{{#if is_selfdraw hand_type}}
+		<td>{{points}}</td>
+		<td>{{east_delta}}</td>
+		<td>{{south_delta}}</td>
+		<td>{{west_delta}}</td>
+		<td>{{north_delta}}</td>
+		{{/if}}
+
+		{{#if is_nowin hand_type}}
+		<td>No win!</td>
+		{{/if}}
+
+		{{#if is_restart hand_type}}
+		<td>Reshuffle!</td>
+		{{/if}}
+
+		{{#if is_fuckup hand_type}}
+		<td>Fucked up!</td>
+		<td>({{east_delta}})</td>
+		<td>({{south_delta}})</td>
+		<td>({{west_delta}})</td>
+		<td>({{north_delta}})</td>
+		{{/if}}
+	</tr>
 </template>
 
-<template name="jpn_player_select_east">
+<template name="hk_player_select_east">
 	<option value={{name}} class="east player_select">{{name}}</option>
 </template>
 
-<template name="jpn_player_select_south">
+<template name="hk_player_select_south">
 	<option value={{name}} class="south player_select">{{name}}</option>
 </template>
 
-<template name="jpn_player_select_west">
+<template name="hk_player_select_west">
 	<option value={{name}} class="west player_select">{{name}}</option>
 </template>
 
-<template name="jpn_player_select_north">
+<template name="hk_player_select_north">
 	<option value={{name}} class="north player_select">{{name}}</option>
 </template>
 
 <template name="dealin">
+	<p>Someone dealt in the winning tile!</p>
 	{{> winner_s east=get_east south=get_south west=get_west north=get_north}}
 	{{> loser_s east=get_east south=get_south west=get_west north=get_north}}
 	{{> points}}
 </template>
 
 <template name="selfdraw">
-	<p>selfdraw</p>
+	<p>Someone drew their winning tile on their own!</p>
 	{{> winner_s east=get_east south=get_south west=get_west north=get_north}}
 	{{> points}}
 </template>
 
 <template name="nowin">
-	<p>tenpai</p>
+	<p>Wall ran out of tiles!</p>
 </template>
 
 <template name="restart">
-	<p>reshuffle</p>
+	<p>Game was restarted!</p>
 </template>
 
 <template name="fuckup">
-	<p>chombo</p>
-	{{> loser_s}}
+	<p>Game ruining mistake!</p>
+	{{> loser_s east=get_east south=get_south west=get_west north=get_north}}
 </template>
 
 <template name="winner_s">
