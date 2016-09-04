@@ -1,13 +1,13 @@
 import { Players } from '../api/players.js';
 import { Hongkong_Hands } from '../api/hongkong_hands.js';
 
+const START_POINTS = 250;
+const NO_PERSON = "no one";
+
 Template.hongkong_new_game.onCreated( function() {
 	this.hand_type = new ReactiveVar( "dealin" );
 
 	this.hands = new ReactiveArray();
-
-	var START_POINTS = 500;
-	var NO_PERSON = "no one";
 
 	Session.set("current_east", "Select East!");
 	Session.set("current_south", "Select South!");
@@ -76,7 +76,7 @@ Template.hongkong_new_game.helpers({
 		return Template.instance().hands.get();
 	},
 	get_player_delta(direction_score) {
-		return (Number(Session.get(direction_score)) - 500);
+		return (Number(Session.get(direction_score)) - START_POINTS);
 	},
 	get_player_score(direction_score) {
 		return Session.get(direction_score);
@@ -91,7 +91,11 @@ Template.hongkong_new_game.helpers({
 	},
 	get_bonus() {
 		return Session.get("current_bonus");
-	}
+	},
+	get_hk_elo(player) {
+		return Players.findOne({name: player}).hongkong_elo;
+	},
+
 });
 
 
@@ -157,7 +161,7 @@ Template.hongkong_new_game.events({
 			if ( $( event.target ).hasClass( "active" )) {
 				$( event.target ).removeClass( "active" );
 				$( ".winner_buttons button" ).not( event.target ).removeClass( "disabled" );
-				Session.set("round_winner", "no one");
+				Session.set("round_winner", NO_PERSON);
 			} else {
 				$( event.target ).addClass( "active" );
 				$( ".winner_buttons button" ).not( event.target ).addClass( "disabled" );
@@ -247,6 +251,13 @@ Template.hongkong_new_game.events({
 			$( ".submit_game_button" ).addClass( "disabled" );
 		}
 	},
+	//Submit a game to the database
+	'click .submit_game_button'(event, template) {
+		var r = confirm("Are you sure?");
+		if (r == true) {
+			save_game_to_database(template.hands.get());
+		}
+	},
 	//Toggle between different round types
 	'click .nav-pills li'( event, template ) {
 		var hand_type = $( event.target ).closest( "li" );
@@ -257,6 +268,24 @@ Template.hongkong_new_game.events({
 		template.hand_type.set( hand_type.data( "template" ) );
 	},
 });
+
+function save_game_to_database(hands_array) {
+
+	Hongkong_Hands.insert(
+		{
+			timestamp: Date.now(),
+			east_player: Session.get("current_east"),
+			south_player: Session.get("current_south"),
+			west_player: Session.get("current_west"),
+			north_player: Session.get("current_north"),
+			east_score: (Number(Session.get("east_score")) + Number(Session.get("east_score_fuckup"))),
+			south_score: (Number(Session.get("south_score")) + Number(Session.get("south_score_fuckup"))),
+			west_score: (Number(Session.get("west_score")) + Number(Session.get("west_score_fuckup"))),
+			north_score: (Number(Session.get("north_score")) + Number(Session.get("north_score_fuckup"))),
+			all_hands: hands_array,
+
+		});
+}
 
 function push_dealin_hand(template) {
 	var pnt = Number(Session.get("current_points"));

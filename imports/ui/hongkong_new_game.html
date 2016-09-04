@@ -57,6 +57,10 @@
 			</li>
 		</u1>
 
+		<!-- Dynamically use different HTML templates for different hand types
+			 By changing the hand_type variable you can select between the different
+			 template names.
+		  -->
 		{{> Template.dynamic template=hand_type }}
 
 		<input type="button" value="Submit Hand" class="btn btn-primary btn-block submit_hand_button">
@@ -64,10 +68,10 @@
 		<table style="width:100%">
 		<tr>
 			<th colspan="3"></th>
-			<th>{{get_east}}</th>
-			<th>{{get_south}}</th>
-			<th>{{get_west}}</th>
-			<th>{{get_north}}</th>
+			<th>{{get_east}} ({{get_hk_elo get_east}})</th>
+			<th>{{get_south}} ({{get_hk_elo get_south}})</th>
+			<th>{{get_west}} ({{get_hk_elo get_west}})</th>
+			<th>{{get_north}} ({{get_hk_elo get_north}})</th>
 		</tr>
 		<tr>
 			<th>Round</th>
