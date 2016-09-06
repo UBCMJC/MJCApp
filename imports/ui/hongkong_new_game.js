@@ -173,9 +173,6 @@ Template.hongkong_new_game.events({
 	},
 	//Selecting who the winner is for a dealin or tsumo
 	'click .winner'(event) {
-
-		console.log($(event.target).hasClass( "disabled" ));
-
 		if ( !$( event.target ).hasClass( "disabled" )) {
 			if ( $( event.target ).hasClass( "active" )) {
 				$( event.target ).removeClass( "active" );
@@ -322,11 +319,22 @@ function save_game_to_database(hands_array) {
 	};
 
 	var hk_elo_calculator = new EloCalculator(3000, 5, [100, 50, -50, -100], game);
-	//var elo_calculator = new EloCalculator();
 	var east_elo_delta = hk_elo_calculator.eloChange(east_player);
 	var south_elo_delta = hk_elo_calculator.eloChange(south_player);
 	var west_elo_delta = hk_elo_calculator.eloChange(west_player);
 	var north_elo_delta = hk_elo_calculator.eloChange(north_player);
+
+	var east_id = Players.findOne({name: east_player}, {})._id;
+	var south_id = Players.findOne({name: south_player}, {})._id;
+	var west_id = Players.findOne({name: west_player}, {})._id;
+	var north_id = Players.findOne({name: north_player}, {})._id;
+
+	console.log("ID: " + east_id);
+
+	Players.update({_id: east_id}, {$inc: {hongkong_elo: east_elo_delta}});
+	Players.update({_id: south_id}, {$inc: {hongkong_elo: south_elo_delta}});
+	Players.update({_id: west_id}, {$inc: {hongkong_elo: west_elo_delta}});
+	Players.update({_id: north_id}, {$inc: {hongkong_elo: north_elo_delta}});
 
 	//Save game to database
 	Hongkong_Hands.insert(game);

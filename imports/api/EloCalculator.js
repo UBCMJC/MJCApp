@@ -9,7 +9,7 @@ export class EloCalculator {
 	}
 
 	eloChange (player) {
-		var index;
+		var index, k;
 		if (player == this.game.east_player)
 			index = 0;
 		else if (player == this.game.south_player)
@@ -22,9 +22,25 @@ export class EloCalculator {
 		var expectedScores = this.expectedScores();
 		var adjustedScores = this.adjustedScores();
 
-		console.log(100 * (adjustedScores[index] - expectedScores[index]));
+		var playerElo = this.getPlayerElo(player);
 
-		return this.rawExpectedScore(player);
+		if (playerElo < 1300)
+			k = 140;
+		else if (playerElo < 1500)
+			k = 120;
+		else if (playerElo < 1600)
+			k = 100;
+		else if (playerElo < 1700)
+			k = 80;
+		else
+			k = 60;
+
+		console.log("Expected Score: " + expectedScores[index]);
+		console.log("Adjusted Score: " + adjustedScores[index]);
+		console.log("ELO delta: " + (this.fieldElo(player) - this.getPlayerElo(player)));
+		console.log(k * (adjustedScores[index] - expectedScores[index]));
+
+		return (k * (adjustedScores[index] - expectedScores[index]));
 	}
 
 	expectedScores() {
