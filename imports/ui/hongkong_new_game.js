@@ -1,18 +1,24 @@
 import { Players } from '../api/players.js';
 import { Hongkong_Hands } from '../api/hongkong_hands.js';
 
+import { EloCalculator } from '../api/EloCalculator.js';
+
 const START_POINTS = 250;
 const NO_PERSON = "no one";
+const DEFAULT_EAST = "Select East!";
+const DEFAULT_SOUTH = "Select South!";
+const DEFAULT_WEST = "Select West!";
+const DEFAULT_NORTH = "Select North!";
 
 Template.hongkong_new_game.onCreated( function() {
 	this.hand_type = new ReactiveVar( "dealin" );
 
 	this.hands = new ReactiveArray();
 
-	Session.set("current_east", "Select East!");
-	Session.set("current_south", "Select South!");
-	Session.set("current_west", "Select West!");
-	Session.set("current_north", "Select North!");
+	Session.set("current_east", DEFAULT_EAST);
+	Session.set("current_south", DEFAULT_SOUTH);
+	Session.set("current_west", DEFAULT_WEST);
+	Session.set("current_north", DEFAULT_NORTH);
 
 	Session.set("round_winner", NO_PERSON);
 	Session.set("round_loser", NO_PERSON);
@@ -32,6 +38,9 @@ Template.hongkong_new_game.onCreated( function() {
 	Session.set("north_score_fuckup", 0);
 });
 
+Template.registerHelper("get_start_points", function () {
+	return START_POINTS;
+});
 Template.registerHelper("get_east", function () {
 	return Session.get("current_east");
 });
@@ -93,7 +102,17 @@ Template.hongkong_new_game.helpers({
 		return Session.get("current_bonus");
 	},
 	get_hk_elo(player) {
-		return Players.findOne({name: player}).hongkong_elo;
+		switch (player) {
+		case DEFAULT_EAST:
+		case DEFAULT_SOUTH:
+		case DEFAULT_WEST:
+		case DEFAULT_NORTH:
+			return "?";
+			break;
+		default:
+			return Players.findOne({name: player}).hongkong_elo;
+			break;
+		};
 	},
 
 });
@@ -190,11 +209,7 @@ Template.hongkong_new_game.events({
 			switch(template.hand_type.get()) {
 			case "dealin":
 				//Do nothing if we don't have players yet
-				if (Session.get("current_east") != "Select East!" && 
-					Session.get("current_south") != "Select South!" && 
-					Session.get("current_west") != "Select West!" && 
-					Session.get("current_north") != "Select North!") {
-
+				if (all_players_selected()) {
 					push_dealin_hand(template);
 				}
 				else {
@@ -256,6 +271,23 @@ Template.hongkong_new_game.events({
 		var r = confirm("Are you sure?");
 		if (r == true) {
 			save_game_to_database(template.hands.get());
+
+			//Deletes all hands
+			while (template.hands.pop()) {}
+			Session.set("east_score", START_POINTS);
+			Session.set("south_score", START_POINTS);
+			Session.set("west_score", START_POINTS);
+			Session.set("north_score", START_POINTS);
+			Session.set("east_score_fuckup", 0);
+			Session.set("south_score_fuckup", 0);
+			Session.set("west_score_fuckup", 0);
+			Session.set("north_score_fuckup", 0);
+
+			Session.set("current_round", 1);
+			Session.set("current_bonus", 0);
+
+			$( ".submit_hand_button" ).removeClass( "disabled" );
+			$( ".submit_game_button" ).addClass( "disabled" );
 		}
 	},
 	//Toggle between different round types
@@ -271,20 +303,33 @@ Template.hongkong_new_game.events({
 
 function save_game_to_database(hands_array) {
 
-	Hongkong_Hands.insert(
-		{
-			timestamp: Date.now(),
-			east_player: Session.get("current_east"),
-			south_player: Session.get("current_south"),
-			west_player: Session.get("current_west"),
-			north_player: Session.get("current_north"),
-			east_score: (Number(Session.get("east_score")) + Number(Session.get("east_score_fuckup"))),
-			south_score: (Number(Session.get("south_score")) + Number(Session.get("south_score_fuckup"))),
-			west_score: (Number(Session.get("west_score")) + Number(Session.get("west_score_fuckup"))),
-			north_score: (Number(Session.get("north_score")) + Number(Session.get("north_score_fuckup"))),
-			all_hands: hands_array,
+	var east_player = Session.get("current_east");
+	var south_player= Session.get("current_south");
+	var west_player = Session.get("current_west");
+	var north_player= Session.get("current_north");
 
-		});
+	var game = {
+		timestamp: Date.now(),
+		east_player: east_player,
+		south_player: south_player,
+		west_player: west_player,
+		north_player: north_player,
+		east_score: (Number(Session.get("east_score")) + Number(Session.get("east_score_fuckup"))),
+		south_score: (Number(Session.get("south_score")) + Number(Session.get("south_score_fuckup"))),
+		west_score: (Number(Session.get("west_score")) + Number(Session.get("west_score_fuckup"))),
+		north_score: (Number(Session.get("north_score")) + Number(Session.get("north_score_fuckup"))),
+		all_hands: hands_array,
+	};
+
+	var hk_elo_calculator = new EloCalculator(3000, 5, [100, 50, -50, -100], game);
+	//var elo_calculator = new EloCalculator();
+	var east_elo_delta = hk_elo_calculator.eloChange(east_player);
+	var south_elo_delta = hk_elo_calculator.eloChange(south_player);
+	var west_elo_delta = hk_elo_calculator.eloChange(west_player);
+	var north_elo_delta = hk_elo_calculator.eloChange(north_player);
+
+	//Save game to database
+	Hongkong_Hands.insert(game);
 }
 
 function push_dealin_hand(template) {
@@ -460,6 +505,13 @@ function fuckup_delta(player, loser) {
 		return -36;
 	else
 		return 12;
+}
+
+function all_players_selected() {
+	return (Session.get("current_east") != "Select East!" && 
+	 		Session.get("current_south") != "Select South!" && 
+	 		Session.get("current_west") != "Select West!" && 
+	 		Session.get("current_north") != "Select North!")
 }
 
 Template.points.events({
