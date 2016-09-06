@@ -523,7 +523,8 @@ function all_players_selected() {
 }
 
 Template.points.events({
-	'click .point_value'(event) {
+	//'click .point_value'(event) {
+	'change select[name="points"]'(event) {
 		Session.set("current_points", event.target.value);
 	}
 })
