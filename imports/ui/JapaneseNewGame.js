@@ -387,7 +387,7 @@ function save_game_to_database(hands_array) {
 		Players.update({_id: west_id}, {$inc: {japaneseElo: west_elo_delta}});
 		Players.update({_id: north_id}, {$inc: {japaneseElo: north_elo_delta}});
 	}
-	
+
 	//Save game to database
 	JapaneseHands.insert(game);
 };
@@ -706,6 +706,11 @@ function push_fuckup_hand(template) {
 			north_delta: fuckup_delta("north", lose_direc),
 		}
 	);
+
+	Session.set("east_score", Number(Session.get("east_score")) + fuckup_delta("east", lose_direc));
+	Session.set("south_score", Number(Session.get("south_score")) + fuckup_delta("south", lose_direc));
+	Session.set("west_score", Number(Session.get("west_score")) + fuckup_delta("west", lose_direc));
+	Session.set("north_score", Number(Session.get("north_score")) + fuckup_delta("north", lose_direc));
 
 	template.riichi_round_history.push({east: false,
 										south: false,
