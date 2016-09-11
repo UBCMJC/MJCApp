@@ -67,7 +67,7 @@
 
 		<table style="width:100%">
 		<tr>
-			<th colspan="5"></th>
+			<th colspan="4"></th>
 			<th>{{get_east}} ({{get_jpn_elo get_east}})</th>
 			<th>{{get_south}} ({{get_jpn_elo get_south}})</th>
 			<th>{{get_west}} ({{get_jpn_elo get_west}})</th>
@@ -75,10 +75,9 @@
 		</tr>
 		<tr>
 			<th>Round</th>
-			<th>Bonus</th>
-			<th>Points</th>
-			<th>Fu</th>
-			<th>Dora</th>
+			<th>P</th>
+			<th>F</th>
+			<th>D</th>
 			<th>{{get_jpn_start_points}}</th>
 			<th>{{get_jpn_start_points}}</th>
 			<th>{{get_jpn_start_points}}</th>
@@ -89,26 +88,25 @@
 		{{/each}}
 		<tr>
 			<td>
-				{{displayRoundWind get_round}} {{jpn_round_mod4 get_round}}
+				{{displayRoundWind get_round}} {{jpn_round_mod4 get_round}} B{{get_bonus}}
 			</td>
-			<td>B{{get_bonus}}</td>
 		</tr>
 		<tr>
-			<th colspan="5">Transaction total:</th>
+			<th colspan="4">Transaction total:</th>
 			<td>{{get_player_delta "east_score"}}</td>
 			<td>{{get_player_delta "south_score"}}</td>
 			<td>{{get_player_delta "west_score"}}</td>
 			<td>{{get_player_delta "north_score"}}</td>
 		</tr>
 		<tr>
-			<th colspan="5">Current score:</th>
+			<th colspan="4">Current score:</th>
 			<td>{{get_player_score "east_score"}}</td>
 			<td>{{get_player_score "south_score"}}</td>
 			<td>{{get_player_score "west_score"}}</td>
 			<td>{{get_player_score "north_score"}}</td>
 		</tr>
 		<tr>
-			<th colspan="5">End score:</th>
+			<th colspan="4">End score:</th>
 			<td>{{get_player_score_final "east_score"}}</td>
 			<td>{{get_player_score_final "south_score"}}</td>
 			<td>{{get_player_score_final "west_score"}}</td>
@@ -125,9 +123,8 @@
 <template name="jpn_render_hand">
 	<tr>
 		<td>
-			{{displayRoundWind round}} {{jpn_round_mod4 round}}
+			{{displayRoundWind round}} {{jpn_round_mod4 round}} B{{bonus}}
 		</td>
-		<td>B{{bonus}}</td>
 
 		{{#if is_dealin hand_type}}
 		<td>{{points}}</td>

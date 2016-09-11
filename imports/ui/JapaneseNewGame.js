@@ -115,9 +115,6 @@ Template.jpn_points.helpers({
 });
 
 Template.jpn_fu.helpers({
-	get_current_fu() {
-		return Session.get("current_fu");
-	},
 	possible_fu: [
 		{ fu: 20 },
 		{ fu: 25 },
