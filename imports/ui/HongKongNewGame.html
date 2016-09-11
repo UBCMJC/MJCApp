@@ -204,7 +204,7 @@
 </template>
 
 <template name="winner_s">
-	<h4>Winner: </h4>
+	<span class="player-select-header"><b>Winner: </b></span>
 	<div class="btn-group btn-group-justified winner_buttons">
 		<button type="button" class="btn btn-primary winner">{{east}}</button>
 		<button type="button" class="btn btn-primary winner">{{south}}</button>
@@ -216,7 +216,7 @@
 </template>
 
 <template name="loser_s">
-	<h4>Loser: </h4>
+	<span class="player-select-header"><b>Loser: </b></span>
 	<div class="btn-group btn-group-justified loser_buttons">
 		<button type="button" class="btn btn-primary loser">{{east}}</button>
 		<button type="button" class="btn btn-primary loser">{{south}}</button>
@@ -228,6 +228,7 @@
 </template>
 
 <template name="points">
+	<span class="player-select-header"><b>Points: </b></span>
 	<select name="points">
 		<option disabled selected value> -- Select points (番) -- </option> 
 		{{#each possible_points}}

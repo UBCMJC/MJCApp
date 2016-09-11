@@ -40,19 +40,19 @@
 		</div>
 
 		<u1 class="nav nav-pills">
-			<li data-template="dealin" role="presentation" class="active">
+			<li data-template="jpn_dealin" role="presentation" class="active">
 				<a data-toggle="pill" href="#">Deal in (Ron ロン)</a>
 			</li>
-			<li data-template="selfdraw" role="presentation">
+			<li data-template="jpn_selfdraw" role="presentation">
 				<a data-toggle="pill" href="#">Self draw (Tsumo ツモ)</a>
 			</li>
-			<li data-template="nowin" role="presentation">
+			<li data-template="jpn_nowin" role="presentation">
 				<a data-toggle="pill" href="#">Deck out (Tenpai 聴牌)</a>
 			</li>
-			<li data-template="restart" role="presentation">
+			<li data-template="jpn_restart" role="presentation">
 				<a data-toggle="pill" href="#">Reshuffle</a>
 			</li>
-			<li data-template="fuckup" role="presentation">
+			<li data-template="jpn_fuckup" role="presentation">
 				<a data-toggle="pill" href="#">Fuckup (Chombo チョンボ)</a>
 			</li>
 		</u1>
@@ -187,21 +187,25 @@
 	<p>Someone dealt in the winning tile!</p>
 	{{> jpn_winner_s east=get_east south=get_south west=get_west north=get_north}}
 	{{> jpn_loser_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> jpn_riichi_s east=get_east south=get_south west=get_west north=get_north}}
 	{{> jpn_points}}
 </template>
 
 <template name="jpn_selfdraw">
 	<p>Someone drew their winning tile on their own!</p>
 	{{> jpn_winner_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> jpn_riichi_s east=get_east south=get_south west=get_west north=get_north}}
 	{{> jpn_points}}
 </template>
 
 <template name="jpn_nowin">
 	<p>Wall ran out of tiles!</p>
+	{{> jpn_riichi_s east=get_east south=get_south west=get_west north=get_north}}
 </template>
 
 <template name="jpn_restart">
 	<p>Game was restarted!</p>
+	{{> jpn_riichi_s east=get_east south=get_south west=get_west north=get_north}}
 </template>
 
 <template name="jpn_fuckup">
@@ -210,7 +214,7 @@
 </template>
 
 <template name="jpn_winner_s">
-	<h4>Winner: </h4>
+	<span class="player-select-header"><b>Winner: </b></span>
 	<div class="btn-group btn-group-justified winner_buttons">
 		<button type="button" class="btn btn-primary winner">{{east}}</button>
 		<button type="button" class="btn btn-primary winner">{{south}}</button>
@@ -222,7 +226,7 @@
 </template>
 
 <template name="jpn_loser_s">
-	<h4>Loser: </h4>
+	<span class="player-select-header"><b>Loser: </b></span>
 	<div class="btn-group btn-group-justified loser_buttons">
 		<button type="button" class="btn btn-primary loser">{{east}}</button>
 		<button type="button" class="btn btn-primary loser">{{south}}</button>
@@ -233,7 +237,20 @@
 	<br>
 </template>
 
+<template name="jpn_riichi_s">
+	<span class="player-select-header"><b>Riichis: </b></span>
+	<div class="btn-group btn-group-justified riichi_buttons">
+		<button type="button" class="btn btn-primary riichi">{{east}}</button>
+		<button type="button" class="btn btn-primary riichi">{{south}}</button>
+		<button type="button" class="btn btn-primary riichi">{{west}}</button>
+		<button type="button" class="btn btn-primary riichi">{{north}}</button>
+	</div>
+	<br>
+	<br>
+</template>
+
 <template name="jpn_points">
+	<span class="player-select-header"><b>Points: </b></span>
 	<select name="points">
 		<option disabled selected value> -- Select points (役) -- </option> 
 		{{#each possible_points}}

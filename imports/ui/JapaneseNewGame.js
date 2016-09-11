@@ -7,7 +7,7 @@ import { EloCalculator } from '../api/EloCalculator.js';
 import { NewGameUtils } from '../api/NewGameUtils.js';
 
 Template.JapaneseNewGame.onCreated( function() {
-	this.hand_type = new ReactiveVar( "dealin" );
+	this.hand_type = new ReactiveVar( "jpn_dealin" );
 	this.hands = new ReactiveArray();
 
 	NewGameUtils.resetGameValues(Constants.JPN_START_POINTS);
