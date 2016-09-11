@@ -114,6 +114,25 @@ Template.jpn_points.helpers({
 	],
 });
 
+Template.jpn_fu.helpers({
+	get_current_fu() {
+		return Session.get("current_fu");
+	},
+	possible_fu: [
+		{ fu: 20 },
+		{ fu: 25 },
+		{ fu: 30 },
+		{ fu: 40 },
+		{ fu: 50 },
+		{ fu: 60 },
+		{ fu: 70 },
+		{ fu: 80 },
+		{ fu: 90 },
+		{ fu: 100 },
+		{ fu: 110 },
+	],
+});
+
 Template.JapaneseNewGame.events({
 	//Selecting who the east player is
 	'change select[name="east_player"]'(event) {
@@ -298,7 +317,7 @@ function save_game_to_database(hands_array) {
 
 	//Save game to database
 	Japanese_Hands.insert(game);
-}
+};
 
 function push_dealin_hand(template) {
 	var pnt = Number(Session.get("current_points"));
@@ -329,7 +348,7 @@ function push_dealin_hand(template) {
 		Session.set("current_bonus", 0);
 		Session.set("current_round", Number(Session.get("current_round")) + 1)
 	}
-}
+};
 
 function push_selfdraw_hand(template) {
 	var pnt = Number(Session.get("current_points"));
@@ -359,7 +378,7 @@ function push_selfdraw_hand(template) {
 		Session.set("current_bonus", 0);
 		Session.set("current_round", Number(Session.get("current_round")) + 1);
 	}
-}
+};
 
 function push_nowin_hand(template) {
 	template.hands.push(
@@ -375,7 +394,7 @@ function push_nowin_hand(template) {
 		}
 	);
 	Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
-}
+};
 
 function push_restart_hand(template) {
 	template.hands.push( 
@@ -391,7 +410,7 @@ function push_restart_hand(template) {
 		}
 	);
 	Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
-}
+};
 
 function push_fuckup_hand(template) {
 	var lose_direc = player_to_direction(Session.get("round_loser"));
@@ -408,21 +427,21 @@ function push_fuckup_hand(template) {
 			north_delta: fuckup_delta("north", lose_direc),
 		}
 	);
-}
+};
 
 function player_to_direction(player) {
 	if (player == Session.get("current_east")) return "east";
 	if (player == Session.get("current_south")) return "south";
 	if (player == Session.get("current_west")) return "west";
 	if (player == Session.get("current_north")) return "north";
-}
+};
 
 function round_to_direction(round) {
 	if (round % 4 == 1) return "east";
 	if (round % 4 == 2) return "south";
 	if (round % 4 == 3) return "west";
 	if (round % 4 == 0) return "north";
-}
+};
 
 function dealin_delta(points, player, winner, loser) {
 	var exponent = points - 1;
@@ -445,7 +464,7 @@ function dealin_delta(points, player, winner, loser) {
 	}
 	var retval = direction * Math.pow(2, exponent);
 	return retval;
-}
+};
 
 function selfdraw_delta(points, player, winner) {
 	var exponent = points;
@@ -466,25 +485,30 @@ function selfdraw_delta(points, player, winner) {
 
 	var retval = direction * Math.pow(2, exponent);
 	return retval;
-}
+};
 
 function fuckup_delta(player, loser) {
 	if (player == loser)
 		return -12000;
 	else
 		return 4000;
-}
+};
 
 function all_players_selected() {
 	return (Session.get("current_east") != "Select East!" && 
 	 		Session.get("current_south") != "Select South!" && 
 	 		Session.get("current_west") != "Select West!" && 
 	 		Session.get("current_north") != "Select North!")
-}
+};
 
-Template.points.events({
-	//'click .point_value'(event) {
+Template.jpn_points.events({
 	'change select[name="points"]'(event) {
 		Session.set("current_points", event.target.value);
+	}
+});
+
+Template.jpn_fu.events({
+	'change select[name="points"]'(event) {
+		Session.set("current_fu", event.target.value);
 	}
 })
