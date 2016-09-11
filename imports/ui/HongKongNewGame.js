@@ -409,22 +409,22 @@ function dealin_delta(points, playerWind, winnerWind, loserWind) {
 		retval = -16;
 		break;
 	case 5:
-		retval = -32;
+		retval = -24;
 		break;
 	case 6:
-		retval = -64;
+		retval = -32;
 		break;
 	case 7:
-		retval = -96;
+		retval = -48;
 		break;
 	case 8:
-		retval = -128;
+		retval = -64;
 		break;
 	case 9:
-		retval = -192;
+		retval = -128;
 		break;
 	case 10:
-		retval = -256;
+		retval = -128;
 		break;
 	}
 
