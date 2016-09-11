@@ -631,7 +631,7 @@ function push_nowin_hand(template) {
 	if (Session.get(NewGameUtils.roundToDealerDirection(Session.get("current_round")) + "_tenpai") == true)
 		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 	else {
-		Session.set("current_bonus", 0);
+		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 		Session.set("current_round", Number(Session.get("current_round")) + 1);
 	}
 
