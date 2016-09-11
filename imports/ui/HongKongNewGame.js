@@ -186,10 +186,7 @@ Template.HongKongNewGame.events({
 				window.alert("You need to fill out the above information!");
 			}
 
-			if (Session.get("east_score") < 0 || 
-				Session.get("south_score") < 0 ||
-				Session.get("west_score") < 0 ||
-				Session.get("north_score") < 0 ||
+			if (NewGameUtils.someoneBankrupt() ||
 				Session.get("current_round") > 16)
 			{
 				$( event.target ).addClass( "disabled");
@@ -313,7 +310,7 @@ function push_dealin_hand(template) {
 	Session.set("west_score", Number(Session.get("west_score")) + dealin_delta(points, "west", winnerWind, loserWind));
 	Session.set("north_score", Number(Session.get("north_score")) + dealin_delta(points, "north", winnerWind, loserWind));
 
-	if (winnerWind == hkRoundToDirection(Session.get("current_round")))
+	if (winnerWind == NewGameUtils.roundToDealerDirection(Session.get("current_round")))
 		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 	else {
 		Session.set("current_bonus", 0);
@@ -342,7 +339,7 @@ function push_selfdraw_hand(template) {
 	Session.set("west_score", Number(Session.get("west_score")) + selfdraw_delta(points, "west", winnerWind));
 	Session.set("north_score", Number(Session.get("north_score")) + selfdraw_delta(points, "north", winnerWind));
 
-	if (winnerWind == hkRoundToDirection(Session.get("current_round")))
+	if (winnerWind == NewGameUtils.roundToDealerDirection(Session.get("current_round")))
 		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 	else {
 		Session.set("current_bonus", 0);
@@ -401,14 +398,7 @@ function push_fuckup_hand(template) {
 	Session.set("north_score", Number(Session.get("north_score")) + fuckup_delta("north", loserWind));
 };
 
-function hkRoundToDirection(round) {
-	if (round % 4 == 1) return "east";
-	if (round % 4 == 2) return "south";
-	if (round % 4 == 3) return "west";
-	if (round % 4 == 0) return "north";
-};
-
-function dealin_delta(points, player, winner, loser) {
+function dealin_delta(points, playerWind, winnerWind, loserWind) {
 	var retval;
 
 	switch (points) {
@@ -438,15 +428,15 @@ function dealin_delta(points, player, winner, loser) {
 		break;
 	}
 
-	if ( player == winner )
+	if ( playerWind == winnerWind )
 		retval = -4 * retval;
-	else if ( player == loser )
+	else if ( playerWind == loserWind )
 		retval = 2 * retval;
 
 	return retval;
 }
 
-function selfdraw_delta(points, player, winner) {
+function selfdraw_delta(points, playerWind, winnerWind) {
 	var retval;
 
 	switch (points) {
@@ -476,14 +466,14 @@ function selfdraw_delta(points, player, winner) {
 		break;
 	}
 
-	if ( player == winner )
+	if ( player == winnerWind )
 		retval = -3 * retval;
 
 	return retval;
 }
 
-function fuckup_delta(player, loser) {
-	if (player == loser)
+function fuckup_delta(playerWind, loserWind) {
+	if (playerWind == loserWind)
 		return -192;
 	else
 		return 64;

@@ -20,6 +20,7 @@ export var NewGameUtils = {
 		Session.set("current_bonus", 0);
 		Session.set("current_points", 0);
 		Session.set("current_fu", 0);
+		Session.set("current_dora", 0);
 		Session.set("east_score_fuckup", 0);
 		Session.set("south_score_fuckup", 0);
 		Session.set("west_score_fuckup", 0);
@@ -60,6 +61,13 @@ export var NewGameUtils = {
 	 			Session.get("current_north") != Constants.DEFAULT_NORTH);
 	},
 
+	someoneBankrupt() {
+		return (Session.get("east_score") < 0 || 
+				Session.get("south_score") < 0 ||
+				Session.get("west_score") < 0 ||
+				Session.get("north_score") < 0)
+	},
+
 	playerToDirection(player) {
 		if (player == Session.get("current_east")) return "east";
 		if (player == Session.get("current_south")) return "south";
@@ -67,7 +75,7 @@ export var NewGameUtils = {
 		if (player == Session.get("current_north")) return "north";
 	},
 
-	RoundToDealerDirection(round) {
+	roundToDealerDirection(round) {
 		if (round % 4 == 1) return "east";
 		if (round % 4 == 2) return "south";
 		if (round % 4 == 3) return "west";

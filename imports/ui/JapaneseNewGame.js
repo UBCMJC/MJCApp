@@ -88,9 +88,6 @@ Template.jpn_render_hand.helpers({
 	is_fuckup(hand_type) {
 		return hand_type == "fuckup";
 	},
-	next_round(round) {
-		return (round + 1);
-	},
 	displayRoundWind(round) {
 		return NewGameUtils.displayRoundWind(round, Constants.GAME_TYPE.JAPANESE);
 	},
@@ -111,6 +108,9 @@ Template.jpn_points.helpers({
 		{ point: 11 },
 		{ point: 12 },
 		{ point: 13 },
+		{ point: 26 },
+		{ point: 39 },
+		{ point: 52 },
 	],
 });
 
@@ -180,9 +180,9 @@ Template.JapaneseNewGame.events({
 		if ( !$( event.target ).hasClass( "disabled")) {
 			var pnt = Number(Session.get("current_points"));
 			switch(template.hand_type.get()) {
-			case "dealin":
+			case "jpn_dealin":
 				//Do nothing if we don't have players yet
-				if (all_players_selected()) {
+				if (NewGameUtils.allPlayersSelected()) {
 					push_dealin_hand(template);
 				}
 				else {
@@ -190,19 +190,19 @@ Template.JapaneseNewGame.events({
 				}
 				break;
 
-			case "selfdraw":
+			case "jpn_selfdraw":
 				push_selfdraw_hand(template);
 				break;
 
-			case "nowin":
+			case "jpn_nowin":
 				push_nowin_hand(template);
 				break;	
 
-			case "restart":
+			case "jpn_restart":
 				push_restart_hand(template);
 				break;	
 
-			case "fuckup":
+			case "jpn_fuckup":
 				push_fuckup_hand(template);
 				break;
 			
@@ -211,10 +211,7 @@ Template.JapaneseNewGame.events({
 				break;
 			};
 
-			if (Session.get("east_score") < 0 || 
-				Session.get("south_score") < 0 ||
-				Session.get("west_score") < 0 ||
-				Session.get("north_score") < 0)
+			if (NewGameUtils.someoneBankrupt())
 			{
 				$( event.target ).addClass( "disabled");
 				$( ".submit_game_button" ).removeClass( "disabled" );
@@ -247,10 +244,11 @@ Template.JapaneseNewGame.events({
 
 			//Deletes all hands
 			while (template.hands.pop()) {}
-			Session.set("east_score", JPN_START_POINTS);
-			Session.set("south_score", JPN_START_POINTS);
-			Session.set("west_score", JPN_START_POINTS);
-			Session.set("north_score", JPN_START_POINTS);
+
+			Session.set("east_score", Constants.JPN_START_POINTS);
+			Session.set("south_score", Constants.JPN_START_POINTS);
+			Session.set("west_score", Constants.JPN_START_POINTS);
+			Session.set("north_score", Constants.JPN_START_POINTS);
 			Session.set("east_score_fuckup", 0);
 			Session.set("south_score_fuckup", 0);
 			Session.set("west_score_fuckup", 0);
@@ -294,7 +292,7 @@ function save_game_to_database(hands_array) {
 		all_hands: hands_array,
 	};
 
-	var jpn_elo_calculator = new EloCalculator(3000, 5, [15000, 0, -5000, -10000], game);
+	var jpn_elo_calculator = new EloCalculator(3000, 5, [15000, 0, -5000, -10000], game, Constants.GAME_TYPE.JAPANESE);
 	var east_elo_delta = jpn_elo_calculator.eloChange(east_player);
 	var south_elo_delta = jpn_elo_calculator.eloChange(south_player);
 	var west_elo_delta = jpn_elo_calculator.eloChange(west_player);
@@ -313,13 +311,14 @@ function save_game_to_database(hands_array) {
 	Players.update({_id: north_id}, {$inc: {japaneseElo: north_elo_delta}});
 
 	//Save game to database
-	Japanese_Hands.insert(game);
+	JapaneseHands.insert(game);
 };
 
 function push_dealin_hand(template) {
 	var pnt = Number(Session.get("current_points"));
-	var win_direc = player_to_direction(Session.get("round_winner"));
-	var lose_direc = player_to_direction(Session.get("round_loser"));
+	var fu = Number(Session.get("current_fu"));
+	var win_direc = NewGameUtils.playerToDirection(Session.get("round_winner"));
+	var lose_direc = NewGameUtils.playerToDirection(Session.get("round_loser"));
 		
 	template.hands.push( 
 		{
@@ -327,19 +326,21 @@ function push_dealin_hand(template) {
 		  	round: Session.get("current_round"),
 		  	bonus: Session.get("current_bonus"),
 			points: Session.get("current_points"),
-	  		east_delta: dealin_delta(pnt, "east", win_direc, lose_direc),
-	  		south_delta: dealin_delta(pnt, "south", win_direc, lose_direc),
-	  		west_delta: dealin_delta(pnt, "west", win_direc, lose_direc),
-	  		north_delta: dealin_delta(pnt, "north", win_direc, lose_direc),
+			fu: Session.get("current_fu"),
+			dora: Session.get("current_dora"),
+	  		east_delta: dealin_delta(pnt, fu, "east", win_direc, lose_direc),
+	  		south_delta: dealin_delta(pnt, fu, "south", win_direc, lose_direc),
+	  		west_delta: dealin_delta(pnt, fu, "west", win_direc, lose_direc),
+	  		north_delta: dealin_delta(pnt, fu, "north", win_direc, lose_direc),
 		}
 	);
 
-	Session.set("east_score", Number(Session.get("east_score")) + dealin_delta(pnt, "east", win_direc, lose_direc));
-	Session.set("south_score", Number(Session.get("south_score")) + dealin_delta(pnt, "south", win_direc, lose_direc));
-	Session.set("west_score", Number(Session.get("west_score")) + dealin_delta(pnt, "west", win_direc, lose_direc));
-	Session.set("north_score", Number(Session.get("north_score")) + dealin_delta(pnt, "north", win_direc, lose_direc));
+	Session.set("east_score", Number(Session.get("east_score")) + dealin_delta(pnt, fu, "east", win_direc, lose_direc));
+	Session.set("south_score", Number(Session.get("south_score")) + dealin_delta(pnt, fu, "south", win_direc, lose_direc));
+	Session.set("west_score", Number(Session.get("west_score")) + dealin_delta(pnt, fu, "west", win_direc, lose_direc));
+	Session.set("north_score", Number(Session.get("north_score")) + dealin_delta(pnt, fu, "north", win_direc, lose_direc));
 
-	if (win_direc == round_to_direction(Session.get("current_round")))
+	if (win_direc == NewGameUtils.roundToDealerDirection(Session.get("current_round")))
 		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 	else {
 		Session.set("current_bonus", 0);
@@ -349,7 +350,8 @@ function push_dealin_hand(template) {
 
 function push_selfdraw_hand(template) {
 	var pnt = Number(Session.get("current_points"));
-	var win_direc = player_to_direction(Session.get("round_winner"));
+	var fu = Number(Session.get("current_fu"));
+	var win_direc = NewGameUtils.playerToDirection(Session.get("round_winner"));
 
 	template.hands.push( 
 		{
@@ -357,19 +359,24 @@ function push_selfdraw_hand(template) {
 			round: Session.get("current_round"),
 			bonus: Session.get("current_bonus"),
 			points: Session.get("current_points"),
-			east_delta: selfdraw_delta(pnt, "east", win_direc),
-			south_delta: selfdraw_delta(pnt, "south", win_direc),
-			west_delta: selfdraw_delta(pnt, "west", win_direc),
-			north_delta: selfdraw_delta(pnt, "north", win_direc),
+			fu: Session.get("current_fu"),
+			dora: Session.get("current_dora"),
+			east_delta: selfdraw_delta(pnt, fu, "east", win_direc),
+			south_delta: selfdraw_delta(pnt, fu, "south", win_direc),
+			west_delta: selfdraw_delta(pnt, fu, "west", win_direc),
+			north_delta: selfdraw_delta(pnt, fu, "north", win_direc),
 		}
 	);
 
-	Session.set("east_score", Number(Session.get("east_score")) + selfdraw_delta(pnt, "east", win_direc));
-	Session.set("south_score", Number(Session.get("south_score")) + selfdraw_delta(pnt, "south", win_direc));
-	Session.set("west_score", Number(Session.get("west_score")) + selfdraw_delta(pnt, "west", win_direc));
-	Session.set("north_score", Number(Session.get("north_score")) + selfdraw_delta(pnt, "north", win_direc));
+	Session.set("east_score", Number(Session.get("east_score")) + selfdraw_delta(pnt, fu, "east", win_direc));
+	Session.set("south_score", Number(Session.get("south_score")) + selfdraw_delta(pnt, fu, "south", win_direc));
+	Session.set("west_score", Number(Session.get("west_score")) + selfdraw_delta(pnt, fu, "west", win_direc));
+	Session.set("north_score", Number(Session.get("north_score")) + selfdraw_delta(pnt, fu, "north", win_direc));
 
-	if (win_direc == round_to_direction(Session.get("current_round")))
+	console.log(win_direc)
+	console.log(NewGameUtils.roundToDealerDirection(Session.get("current_round")))
+
+	if (win_direc == NewGameUtils.roundToDealerDirection(Session.get("current_round")))
 		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 	else {
 		Session.set("current_bonus", 0);
@@ -410,7 +417,7 @@ function push_restart_hand(template) {
 };
 
 function push_fuckup_hand(template) {
-	var lose_direc = player_to_direction(Session.get("round_loser"));
+	var lose_direc = NewGameUtils.playerToDirection(Session.get("round_loser"));
 
 	template.hands.push(
 		{
@@ -426,62 +433,672 @@ function push_fuckup_hand(template) {
 	);
 };
 
-function player_to_direction(player) {
-	if (player == Session.get("current_east")) return "east";
-	if (player == Session.get("current_south")) return "south";
-	if (player == Session.get("current_west")) return "west";
-	if (player == Session.get("current_north")) return "north";
-};
-
-function round_to_direction(round) {
+function jpRoundToDirection(round) {
 	if (round % 4 == 1) return "east";
 	if (round % 4 == 2) return "south";
 	if (round % 4 == 3) return "west";
 	if (round % 4 == 0) return "north";
 };
 
-function dealin_delta(points, player, winner, loser) {
-	var exponent = points - 1;
-	
-	if (exponent == 5 || exponent == 6)
-		exponent = 4;
-	else if (exponent == 7 || exponent == 8 || exponent == 9)
-		exponent = 5;
-	if (exponent >= 10)
-		exponent = 6;
+function dealin_delta(points, fu, playerWind, winnerWind, loserWind) {
+	var retval;
 
-	var direction = -1;
+	if (playerWind != winnerWind && playerWind != loserWind)
+		return 0;
 
-	if ( player == winner ) {
-		direction = 1;
-		exponent += 2;
-	} 
-	else if ( player == loser ) {
-		exponent++;
+	if (winnerWind != NewGameUtils.roundToDealerDirection(Number(Session.get("current_round")))) {
+		switch (points) {
+		case 1:
+			switch (fu) {
+			case 30:
+				retval = -1000;
+				break;
+			case 40:
+				retval = -1300;
+				break;
+			case 50:
+				retval = -1600;
+				break;
+			case 60:
+				retval = -2000;
+				break;
+			case 70:
+				retval = -2300;
+				break;
+			case 80:
+				retval = -2600;
+				break;
+			case 90:
+				retval = -2900;
+				break;
+			case 100:
+				retval = -3200;
+				break;
+			case 110:
+				retval = -3600;
+				break;
+			}
+			break;
+		case 2:
+			switch (fu) {
+			case 20:
+				retval = -1300;
+				break;
+			case 25:
+				retval = -1600;
+				break;
+			case 30:
+				retval = -2000;
+				break;
+			case 40:
+				retval = -2600;
+				break;
+			case 50:
+				retval = -3200;
+				break;
+			case 60:
+				retval = -3900;
+				break;
+			case 70:
+				retval = -4500;
+				break;
+			case 80:
+				retval = -5200;
+				break;
+			case 90:
+				retval = -5800;
+				break;
+			case 100:
+				retval = -6400;
+				break;
+			case 110:
+				retval = -7100;
+				break;
+			}
+			break;
+		case 3:
+			switch (fu) {
+			case 20:
+				retval = -2600;
+				break;
+			case 25:
+				retval = -3200;
+				break;
+			case 30:
+				retval = -3900;
+				break;
+			case 40:
+				retval = -5200;
+				break;
+			case 50:
+				retval = -6400;
+				break;
+			case 60:
+				retval = -7700;
+				break;
+			default:
+				retval = -8000;
+				break;
+			}
+			break;
+		case 4:
+			switch (fu) {
+			case 20:
+				retval = -5200;
+				break;
+			case 25:
+				retval = -6400;
+				break;
+			case 30:
+				retval = -7700;
+				break;
+			default:
+				retval = -8000;
+				break;
+			}
+			break;
+		case 5:
+			retval = -8000;
+			break;
+		case 6:
+		case 7:
+			retval = -12000;
+			break;
+		case 8:
+		case 9:
+		case 10:
+			retval = -16000;
+			break;
+		case 11:
+		case 12:
+			retval = -24000;
+			break;
+		case 13:
+			retval = -32000;
+			break;
+		case 26:
+			retval = -64000;
+			break;
+		case 39:
+			retval = -96000;
+			break;
+		case 52:
+			retval = -128000;
+			break;
+		}
+	} else {
+		switch (points) {
+		case 1:
+			switch (fu) {
+			case 30:
+				retval = -1500;
+				break;
+			case 40:
+				retval = -2000;
+				break;
+			case 50:
+				retval = -2400;
+				break;
+			case 60:
+				retval = -2900;
+				break;
+			case 70:
+				retval = -3400;
+				break;
+			case 80:
+				retval = -3900;
+				break;
+			case 90:
+				retval = -4400;
+				break;
+			case 100:
+				retval = -4800;
+				break;
+			case 110:
+				retval = -5300;
+				break;
+			}
+			break;
+		case 2:
+			switch (fu) {
+			case 20:
+				retval = -2000;
+				break;
+			case 25:
+				retval = -2400;
+				break;
+			case 30:
+				retval = -2900;
+				break;
+			case 40:
+				retval = -3900;
+				break;
+			case 50:
+				retval = -4800;
+				break;
+			case 60:
+				retval = -5800;
+				break;
+			case 70:
+				retval = -6800;
+				break;
+			case 80:
+				retval = -7700;
+				break;
+			case 90:
+				retval = -8700;
+				break;
+			case 100:
+				retval = -9600;
+				break;
+			case 110:
+				retval = -10600;
+				break;
+			}
+			break;
+		case 3:
+			switch (fu) {
+			case 20:
+				retval = -3900;
+				break;
+			case 25:
+				retval = -4800;
+				break;
+			case 30:
+				retval = -5800;
+				break;
+			case 40:
+				retval = -7700;
+				break;
+			case 50:
+				retval = -9600;
+				break;
+			case 60:
+				retval = -11600;
+				break;
+			default:
+				retval = -12000;
+				break;
+			}
+			break;
+		case 4:
+			switch (fu) {
+			case 20:
+				retval = -7700;
+				break;
+			case 25:
+				retval = -9600;
+				break;
+			case 30:
+				retval = -11600;
+				break;
+			default:
+				retval = -12000;
+				break;
+			}
+			break;
+		case 5:
+			retval = -12000;
+			break;
+		case 6:
+		case 7:
+			retval = -18000;
+			break;
+		case 8:
+		case 9:
+		case 10:
+			retval = -24000;
+			break;
+		case 11:
+		case 12:
+			retval = -36000;
+			break;
+		case 13:
+			retval = -48000;
+			break;
+		case 26:
+			retval = -96000;
+			break;
+		case 39:
+			retval = -144000;
+			break;
+		case 52:
+			retval = -192000;
+			break;
+		}
 	}
-	var retval = direction * Math.pow(2, exponent);
+
+	if ( playerWind == winnerWind )
+		retval = -1 * retval + 300 * Number(Session.get("current_bonus"));
+	else
+		retval = retval - 300 * Number(Session.get("current_bonus"));
+
 	return retval;
 };
 
-function selfdraw_delta(points, player, winner) {
-	var exponent = points;
+function selfdraw_delta(points, fu, playerWind, winnerWind) {
+	var retval;
+	var dealerWind = NewGameUtils.roundToDealerDirection(Number(Session.get("current_round")));
 
-	if (exponent == 5 || exponent == 6)
-		exponent = 4;
-	else if (exponent == 7 || exponent == 8 || exponent == 9)
-		exponent = 5;
-	if (exponent >= 10)
-		exponent = 6;
-
-	var direction = -1;
-
-	if ( player == winner ) {
-		direction = 1.5;
-		exponent++;
+	if (winnerWind != dealerWind) {
+		switch (points) {
+		case 1:
+			switch (fu) {
+			case 30:
+				retval = (playerWind == dealerWind ? -500 : -300);
+				retval = (playerWind == winnerWind ? 1100 : retval);
+				break;
+			case 40:
+				retval = (playerWind == dealerWind ? -700 : -400);
+				retval = (playerWind == winnerWind ? 1500 : retval);
+				break;
+			case 50:
+				retval = (playerWind == dealerWind ? -800 : -400);
+				retval = (playerWind == winnerWind ? 1600 : retval);
+				break;
+			case 60:
+				retval = (playerWind == dealerWind ? -100 : -500);
+				retval = (playerWind == winnerWind ? 2000 : retval);
+				break;
+			case 70:
+				retval = (playerWind == dealerWind ? -1200 : -600);
+				retval = (playerWind == winnerWind ? 2400 : retval);
+				break;
+			case 80:
+				retval = (playerWind == dealerWind ? -1300 : -700);
+				retval = (playerWind == winnerWind ? 2700 : retval);
+				break;
+			case 90:
+				retval = (playerWind == dealerWind ? -1500 : -800);
+				retval = (playerWind == winnerWind ? 3100 : retval);
+				break;
+			case 100:
+				retval = (playerWind == dealerWind ? -1600 : -800);
+				retval = (playerWind == winnerWind ? 3200 : retval);
+				break;
+			case 110:
+				retval = (playerWind == dealerWind ? -1800 : -900);
+				retval = (playerWind == winnerWind ? 3600 : retval);
+				break;
+			}
+			break;
+		case 2:
+			switch (fu) {
+			case 20:
+				retval = (playerWind == dealerWind ? -700 : -400);
+				retval = (playerWind == winnerWind ? 1500 : retval);
+				break;
+			case 30:
+				retval = (playerWind == dealerWind ? -1000 : -500);
+				retval = (playerWind == winnerWind ? 2000 : retval);
+				break;
+			case 40:
+				retval = (playerWind == dealerWind ? -1300 : -700);
+				retval = (playerWind == winnerWind ? 2700 : retval);
+				break;
+			case 50:
+				retval = (playerWind == dealerWind ? -1600 : -800);
+				retval = (playerWind == winnerWind ? 3200 : retval);
+				break;
+			case 60:
+				retval = (playerWind == dealerWind ? -2000 : -1000);
+				retval = (playerWind == winnerWind ? 4000 : retval);
+				break;
+			case 70:
+				retval = (playerWind == dealerWind ? -2300 : -1200);
+				retval = (playerWind == winnerWind ? 4700 : retval);
+				break;
+			case 80:
+				retval = (playerWind == dealerWind ? -2600 : -1300);
+				retval = (playerWind == winnerWind ? 5200 : retval);
+				break;
+			case 90:
+				retval = (playerWind == dealerWind ? -2900 : -1500);
+				retval = (playerWind == winnerWind ? 5900 : retval);
+				break;
+			case 100:
+				retval = (playerWind == dealerWind ? -3200 : -1600);
+				retval = (playerWind == winnerWind ? 6400 : retval);
+				break;
+			case 110:
+				retval = (playerWind == dealerWind ? -3600 : -1800);
+				retval = (playerWind == winnerWind ? 7200 : retval);
+				break;
+			}
+			break;
+		case 3:
+			switch (fu) {
+			case 20:
+				retval = (playerWind == dealerWind ? -1300 : -700);
+				retval = (playerWind == winnerWind ? 2700 : retval);
+				break;
+			case 25:
+				retval = (playerWind == dealerWind ? -1600 : -800);
+				retval = (playerWind == winnerWind ? 3200 : retval);
+				break;
+			case 30:
+				retval = (playerWind == dealerWind ? -2000 : -1000);
+				retval = (playerWind == winnerWind ? 4000 : retval);
+				break;
+			case 40:
+				retval = (playerWind == dealerWind ? -2600 : -1300);
+				retval = (playerWind == winnerWind ? 5200 : retval);
+				break;
+			case 50:
+				retval = (playerWind == dealerWind ? -3200 : -1600);
+				retval = (playerWind == winnerWind ? 6400 : retval);
+				break;
+			case 60:
+				retval = (playerWind == dealerWind ? -3900 : -2000);
+				retval = (playerWind == winnerWind ? 7900 : retval);
+				break;
+			default:
+				retval = (playerWind == dealerWind ? -4000 : -2000);
+				retval = (playerWind == winnerWind ? 8000 : retval);
+				break;
+			}
+			break;
+		case 4:
+			switch (fu) {
+			case 20:
+				retval = (playerWind == dealerWind ? -2600 : -1300);
+				retval = (playerWind == winnerWind ? 5200 : retval);
+				break;
+			case 25:
+				retval = (playerWind == dealerWind ? -3200 : -1600);
+				retval = (playerWind == winnerWind ? 6400 : retval);
+				break;
+			case 30:
+				retval = (playerWind == dealerWind ? -3900 : -2000);
+				retval = (playerWind == winnerWind ? 7900 : retval);
+				break;
+			default:
+				retval = (playerWind == dealerWind ? -4000 : -2000);
+				retval = (playerWind == winnerWind ? 8000 : retval);
+				break;
+			}
+			break;
+		case 5:
+			retval = (playerWind == dealerWind ? -4000 : -2000);
+			retval = (playerWind == winnerWind ? 8000 : retval);
+			break;
+		case 6:
+		case 7:
+			retval = (playerWind == dealerWind ? -6000 : -3000);
+			retval = (playerWind == winnerWind ? 12000 : retval);
+			break;
+		case 8:
+		case 9:
+		case 10:
+			retval = (playerWind == dealerWind ? -8000 : -4000);
+			retval = (playerWind == winnerWind ? 16000 : retval);
+			break;
+		case 11:
+		case 12:
+			retval = (playerWind == dealerWind ? -12000 : -6000);
+			retval = (playerWind == winnerWind ? 24000 : retval);
+			break;
+		case 13:
+			retval = (playerWind == dealerWind ? -16000 : -8000);
+			retval = (playerWind == winnerWind ? 32000 : retval);
+			break;
+		case 26:
+			retval = (playerWind == dealerWind ? -32000 : -16000);
+			retval = (playerWind == winnerWind ? 64000 : retval);
+			break;
+		case 39:
+			retval = (playerWind == dealerWind ? -48000 : -24000);
+			retval = (playerWind == winnerWind ? 96000 : retval);
+			break;
+		case 52:
+			retval = (playerWind == dealerWind ? -64000 : -32000);
+			retval = (playerWind == winnerWind ? 128000 : retval);
+			break;
+		}
+	} else {
+		switch (points) {
+		case 1:
+			switch (fu) {
+			case 30:
+				retval = -500;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 40:
+				retval = -700;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 50:
+				retval = -800;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 60:
+				retval = -1000;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 70:
+				retval = -1200;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 80:
+				retval = -1300;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 90:
+				retval = -1500;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 100:
+				retval = -1600;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 110:
+				retval = -1800;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			}
+			break;
+		case 2:
+			switch (fu) {
+			case 20:
+				retval = -700;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 30:
+				retval = -1000;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 40:
+				retval = -1300;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 50:
+				retval = -1600;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 60:
+				retval = -2000;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 70:
+				retval = -1300;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 80:
+				retval = -2600;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 90:
+				retval = -2900;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 100:
+				retval = -3200;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 110:
+				retval = -3600;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			}
+			break;
+		case 3:
+			switch (fu) {
+			case 20:
+				retval = -1300;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 25:
+				retval = -1600;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 30:
+				retval = -2000;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 40:
+				retval = -2600;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 50:
+				retval = -3200;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 60:
+				retval = -3900;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			default:
+				retval = -4000;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			}
+			break;
+		case 4:
+			switch (fu) {
+			case 20:
+				retval = -2600;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 25:
+				retval = -3200;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			case 30:
+				retval = -3900;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			default:
+				retval = -4000;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			}
+			break;
+		case 5:
+				retval = -4000;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+			break;
+		case 6:
+		case 7:
+				retval = -6000;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+			break;
+		case 8:
+		case 9:
+		case 10:
+				retval = -8000;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+			break;
+		case 11:
+		case 12:
+				retval = -12000;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+			break;
+		case 13:
+				retval = -16000;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+			break;
+		case 26:
+				retval = -32000;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+			break;
+		case 39:
+				retval = -48000;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+			break;
+		case 52:
+				retval = -64000;
+				retval = (playerWind == winnerWind ? -3 * retval : retval);
+			break;
+		}
 	}
 
-	var retval = direction * Math.pow(2, exponent);
+	if ( playerWind == winnerWind )
+		retval = retval + 300 * Number(Session.get("current_bonus"));
+	else
+		retval = retval - 100 * Number(Session.get("current_bonus"));
+
 	return retval;
+
 };
 
 function fuckup_delta(player, loser) {
@@ -491,13 +1108,6 @@ function fuckup_delta(player, loser) {
 		return 4000;
 };
 
-function all_players_selected() {
-	return (Session.get("current_east") != "Select East!" && 
-	 		Session.get("current_south") != "Select South!" && 
-	 		Session.get("current_west") != "Select West!" && 
-	 		Session.get("current_north") != "Select North!")
-};
-
 Template.jpn_points.events({
 	'change select[name="points"]'(event) {
 		Session.set("current_points", event.target.value);
@@ -505,7 +1115,7 @@ Template.jpn_points.events({
 });
 
 Template.jpn_fu.events({
-	'change select[name="points"]'(event) {
+	'change select[name="fu"]'(event) {
 		Session.set("current_fu", event.target.value);
 	}
 })
