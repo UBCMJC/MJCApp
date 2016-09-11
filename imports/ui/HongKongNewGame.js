@@ -466,7 +466,7 @@ function selfdraw_delta(points, playerWind, winnerWind) {
 		break;
 	}
 
-	if ( player == winnerWind )
+	if ( playerWind == winnerWind )
 		retval = -3 * retval;
 
 	return retval;
