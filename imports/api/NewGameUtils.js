@@ -19,8 +19,6 @@ export var NewGameUtils = {
 		Session.set("current_round", 1);
 		Session.set("current_bonus", 0);
 		Session.set("current_points", 0);
-		Session.set("current_fu", 0);
-		Session.set("current_dora", 0);
 		Session.set("east_score_fuckup", 0);
 		Session.set("south_score_fuckup", 0);
 		Session.set("west_score_fuckup", 0);

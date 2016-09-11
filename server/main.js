@@ -33,7 +33,7 @@ Meteor.startup(() => {
   			japaneseWinPointsTotal: 0,
   			japaneseWinDoraTotal: 0,
   			japaneseRiichiTotal: 0,
-        	japaneseWinRiichiTotal: 0,
+        japaneseWinRiichiTotal: 0,
   			japaneseChomboTotal: 0,
   			japaneseBankruptTotal: 0,
 	
