@@ -381,11 +381,13 @@ function save_game_to_database(hands_array) {
 	var west_id = Players.findOne({japaneseLeagueName: west_player}, {})._id;
 	var north_id = Players.findOne({japaneseLeagueName: north_player}, {})._id;
 
-	Players.update({_id: east_id}, {$inc: {japaneseElo: east_elo_delta}});
-	Players.update({_id: south_id}, {$inc: {japaneseElo: south_elo_delta}});
-	Players.update({_id: west_id}, {$inc: {japaneseElo: west_elo_delta}});
-	Players.update({_id: north_id}, {$inc: {japaneseElo: north_elo_delta}});
-
+	if (east_elo_delta != NaN && south_elo_delta != NaN && west_elo_delta != NaN && north_elo_delta != NaN) {
+		Players.update({_id: east_id}, {$inc: {japaneseElo: east_elo_delta}});
+		Players.update({_id: south_id}, {$inc: {japaneseElo: south_elo_delta}});
+		Players.update({_id: west_id}, {$inc: {japaneseElo: west_elo_delta}});
+		Players.update({_id: north_id}, {$inc: {japaneseElo: north_elo_delta}});
+	}
+	
 	//Save game to database
 	JapaneseHands.insert(game);
 };
@@ -721,6 +723,11 @@ function dealin_delta(points, fu, playerWind, winnerWind, loserWind) {
 		switch (points) {
 		case 1:
 			switch (fu) {
+			//Issue protection against 20 and 25 other ways
+			case 20:
+			case 25:
+				retval = 0;
+				break;
 			case 30:
 				retval = -1000;
 				break;
@@ -861,6 +868,11 @@ function dealin_delta(points, fu, playerWind, winnerWind, loserWind) {
 		switch (points) {
 		case 1:
 			switch (fu) {
+			//Issue protection against 20 and 25 other ways
+			case 20:
+			case 25:
+				retval = 0;
+				break;
 			case 30:
 				retval = -1500;
 				break;
@@ -1015,6 +1027,11 @@ function selfdraw_delta(points, fu, playerWind, winnerWind) {
 		switch (points) {
 		case 1:
 			switch (fu) {
+			// Issue protection against 20 and 25 other ways
+			case 20:
+			case 25:
+				retval = 0;
+				break;
 			case 30:
 				retval = (playerWind == dealerWind ? -500 : -300);
 				retval = (playerWind == winnerWind ? 1100 : retval);
@@ -1058,6 +1075,10 @@ function selfdraw_delta(points, fu, playerWind, winnerWind) {
 			case 20:
 				retval = (playerWind == dealerWind ? -700 : -400);
 				retval = (playerWind == winnerWind ? 1500 : retval);
+				break;
+			//Issue protection against selfdraw 2p25f other ways
+			case 25:
+				retval = 0;
 				break;
 			case 30:
 				retval = (playerWind == dealerWind ? -1000 : -500);
@@ -1190,6 +1211,11 @@ function selfdraw_delta(points, fu, playerWind, winnerWind) {
 		switch (points) {
 		case 1:
 			switch (fu) {
+			//Issue protection against 20 and 25 fu other ways
+			case 20:
+			case 25:
+				retval = 0;
+				break;
 			case 30:
 				retval = -500;
 				retval = (playerWind == winnerWind ? -3 * retval : retval);
@@ -1233,6 +1259,10 @@ function selfdraw_delta(points, fu, playerWind, winnerWind) {
 			case 20:
 				retval = -700;
 				retval = (playerWind == winnerWind ? -3 * retval : retval);
+				break;
+			//Issue protection against 2p25 selfdraw other ways
+			case 25:
+				retval = 0;
 				break;
 			case 30:
 				retval = -1000;
