@@ -139,9 +139,9 @@ export class EloCalculator {
 	getPlayerElo (player) {
 		switch (this.gameType) {
 		case Constants.GAME_TYPE.HONG_KONG:
-			return Number(Players.findOne({name: player}).hongKongElo);
+			return Number(Players.findOne({hongKongLeagueName: player}).hongKongElo);
 		case Constants.GAME_TYPE.JAPANESE:
-			return Number(Players.findOne({name: player}).japaneseElo);
+			return Number(Players.findOne({japaneseLeagueName: player}).japaneseElo);
 		}
 	}
 };

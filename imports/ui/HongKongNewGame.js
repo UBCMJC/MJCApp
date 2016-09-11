@@ -155,37 +155,36 @@ Template.HongKongNewGame.events({
 		if ( !$( event.target ).hasClass( "disabled")) {
 			var pnt = Number(Session.get("current_points"));
 
-			switch(template.hand_type.get()) {
-			case "dealin":
-				//Do nothing if we don't have players yet
-				if (NewGameUtils.allPlayersSelected() ) {
+			//Do nothing if we don't have players yet
+			if (NewGameUtils.allPlayersSelected() ) {
+				switch(template.hand_type.get()) {
+				case "dealin":
 					push_dealin_hand(template);
-				}
-				else {
-					window.alert("You need to fill out the above information!");
-				}
-				break;
+					break;
 
-			case "selfdraw":
-				push_selfdraw_hand(template);
-				break;
+				case "selfdraw":
+					push_selfdraw_hand(template);
+					break;
 
-			case "nowin":
-				push_nowin_hand(template);
-				break;	
+				case "nowin":
+					push_nowin_hand(template);
+					break;
 
-			case "restart":
-				push_restart_hand(template);
-				break;	
+				case "restart":
+					push_restart_hand(template);
+					break;
 
-			case "fuckup":
-				push_fuckup_hand(template);
-				break;
+				case "fuckup":
+					push_fuckup_hand(template);
+					break;
 			
-			default:
-				console.log("Something went wrong; Received hand type: " + template.hand_type);
-				break;
-			};
+				default:
+					console.log("Something went wrong; Received hand type: " + template.hand_type);
+					break;
+				};
+			} else {
+				window.alert("You need to fill out the above information!");
+			}
 
 			if (Session.get("east_score") < 0 || 
 				Session.get("south_score") < 0 ||
@@ -270,6 +269,7 @@ function save_game_to_database(hands_array) {
 		north_score: (Number(Session.get("north_score")) + Number(Session.get("north_score_fuckup"))),
 		all_hands: hands_array,
 	};
+
 
 	var hk_elo_calculator = new EloCalculator(3000, 5, [100, 50, -50, -100], game, Constants.GAME_TYPE.HONG_KONG);
 	var east_elo_delta = hk_elo_calculator.eloChange(east_player);

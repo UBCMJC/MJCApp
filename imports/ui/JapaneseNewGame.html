@@ -95,24 +95,24 @@
 		</tr>
 		<tr>
 			<th colspan="5">Transaction total:</th>
-			<td>{{get_player_delta "jpn_east_score"}}</td>
-			<td>{{get_player_delta "jpn_south_score"}}</td>
-			<td>{{get_player_delta "jpn_west_score"}}</td>
-			<td>{{get_player_delta "jpn_north_score"}}</td>
+			<td>{{get_player_delta "east_score"}}</td>
+			<td>{{get_player_delta "south_score"}}</td>
+			<td>{{get_player_delta "west_score"}}</td>
+			<td>{{get_player_delta "north_score"}}</td>
 		</tr>
 		<tr>
 			<th colspan="5">Current score:</th>
-			<td>{{get_player_score "jpn_east_score"}}</td>
-			<td>{{get_player_score "jpn_south_score"}}</td>
-			<td>{{get_player_score "jpn_west_score"}}</td>
-			<td>{{get_player_score "jpn_north_score"}}</td>
+			<td>{{get_player_score "east_score"}}</td>
+			<td>{{get_player_score "south_score"}}</td>
+			<td>{{get_player_score "west_score"}}</td>
+			<td>{{get_player_score "north_score"}}</td>
 		</tr>
 		<tr>
 			<th colspan="5">End score:</th>
-			<td>{{get_player_score_final "jpn_east_score"}}</td>
-			<td>{{get_player_score_final "jpn_south_score"}}</td>
-			<td>{{get_player_score_final "jpn_west_score"}}</td>
-			<td>{{get_player_score_final "jpn_north_score"}}</td>
+			<td>{{get_player_score_final "east_score"}}</td>
+			<td>{{get_player_score_final "south_score"}}</td>
+			<td>{{get_player_score_final "west_score"}}</td>
+			<td>{{get_player_score_final "north_score"}}</td>
 		</tr>
 		</table>
 
@@ -172,7 +172,7 @@
 </template>
 
 <template name="jpn_player_select_south">
-	<option value={{name}} class="south player_select">{{japaneseLeagueName}}</option>
+	<option value={{japaneseLeagueName}} class="south player_select">{{japaneseLeagueName}}</option>
 </template>
 
 <template name="jpn_player_select_west">
