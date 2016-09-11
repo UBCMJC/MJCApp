@@ -1,0 +1,248 @@
+<template name="JapaneseNewGame">
+	<h2>Riichi Japanese Mahjong Game Sheet</h2>
+
+	<form class="game_input_form">
+		<div class="player-entry">
+			<p>East</p>
+			<select name="east_player">
+				<option disabled selected value> -- Select East Player (東) -- </option>
+				{{#each players}}
+					{{> jpn_player_select_east}}
+				{{/each}}
+			</select>
+		</div>
+		<div class="player-entry">
+			<p>South</p>
+			<select name="south_player">
+				<option disabled selected value> -- Select South Player (南) -- </option>
+				{{#each players}}
+						{{> jpn_player_select_south}}
+				{{/each}}
+			</select>
+		</div>
+		<div class="player-entry">
+			<p>West</p>
+			<select name="west_player">
+				<option disabled selected value> -- Select West Player (西) -- </option>
+				{{#each players}}
+					{{> jpn_player_select_west}}
+				{{/each}}
+			</select>
+		</div>
+		<div class="player-entry">
+			<p>North</p>
+			<select name="north_player">
+				<option disabled selected value> -- Select North Player (北) -- </option> 
+				{{#each players}}
+					{{> jpn_player_select_north}}
+				{{/each}}
+			</select>
+		</div>
+
+		<u1 class="nav nav-pills">
+			<li data-template="dealin" role="presentation" class="active">
+				<a data-toggle="pill" href="#">Deal in (Ron ロン)</a>
+			</li>
+			<li data-template="selfdraw" role="presentation">
+				<a data-toggle="pill" href="#">Self draw (Tsumo ツモ)</a>
+			</li>
+			<li data-template="nowin" role="presentation">
+				<a data-toggle="pill" href="#">Deck out (Tenpai 聴牌)</a>
+			</li>
+			<li data-template="restart" role="presentation">
+				<a data-toggle="pill" href="#">Reshuffle</a>
+			</li>
+			<li data-template="fuckup" role="presentation">
+				<a data-toggle="pill" href="#">Fuckup (Chombo チョンボ)</a>
+			</li>
+		</u1>
+
+		<!-- Dynamically use different HTML templates for different hand types
+			 By changing the hand_type variable you can select between the different
+			 template names.
+		  -->
+		{{> Template.dynamic template=hand_type }}
+
+		<input type="button" value="Submit Hand" class="btn btn-primary btn-block submit_hand_button">
+
+		<table style="width:100%">
+		<tr>
+			<th colspan="5"></th>
+			<th>{{get_east}} ({{get_jpn_elo get_east}})</th>
+			<th>{{get_south}} ({{get_jpn_elo get_south}})</th>
+			<th>{{get_west}} ({{get_jpn_elo get_west}})</th>
+			<th>{{get_north}} ({{get_jpn_elo get_north}})</th>
+		</tr>
+		<tr>
+			<th>Round</th>
+			<th>Bonus</th>
+			<th>Points</th>
+			<th>Fu</th>
+			<th>Dora</th>
+			<th>{{get_jpn_start_points}}</th>
+			<th>{{get_jpn_start_points}}</th>
+			<th>{{get_jpn_start_points}}</th>
+			<th>{{get_jpn_start_points}}</th>
+		</tr>
+		{{#each hands}}
+			{{> jpn_render_hand}}
+		{{/each}}
+		<tr>
+			<td>
+				{{displayRoundWind get_round}} {{jpn_round_mod4 get_round}}
+			</td>
+			<td>B{{get_bonus}}</td>
+		</tr>
+		<tr>
+			<th colspan="5">Transaction total:</th>
+			<td>{{get_player_delta "jpn_east_score"}}</td>
+			<td>{{get_player_delta "jpn_south_score"}}</td>
+			<td>{{get_player_delta "jpn_west_score"}}</td>
+			<td>{{get_player_delta "jpn_north_score"}}</td>
+		</tr>
+		<tr>
+			<th colspan="5">Current score:</th>
+			<td>{{get_player_score "jpn_east_score"}}</td>
+			<td>{{get_player_score "jpn_south_score"}}</td>
+			<td>{{get_player_score "jpn_west_score"}}</td>
+			<td>{{get_player_score "jpn_north_score"}}</td>
+		</tr>
+		<tr>
+			<th colspan="5">End score:</th>
+			<td>{{get_player_score_final "jpn_east_score"}}</td>
+			<td>{{get_player_score_final "jpn_south_score"}}</td>
+			<td>{{get_player_score_final "jpn_west_score"}}</td>
+			<td>{{get_player_score_final "jpn_north_score"}}</td>
+		</tr>
+		</table>
+
+		<input type="button" value="Delete last Hand" class="btn btn-primary btn-block delete_hand_button">
+
+		<input type="button" value="Submit game!" class="btn btn-primary btn-block disabled submit_game_button">
+	</form>
+</template>
+
+<template name="jpn_render_hand">
+	<tr>
+		<td>
+			{{displayRoundWind round}} {{jpn_round_mod4 round}}
+		</td>
+		<td>B{{bonus}}</td>
+
+		{{#if is_dealin hand_type}}
+		<td>{{points}}</td>
+		<td>{{fu}}</td>
+		<td>{{dora}}</td>
+		<td>{{east_delta}}</td>
+		<td>{{south_delta}}</td>
+		<td>{{west_delta}}</td>
+		<td>{{north_delta}}</td>
+		{{/if}}
+
+		{{#if is_selfdraw hand_type}}
+		<td>{{points}}</td>
+		<td>{{fu}}</td>
+		<td>{{dora}}</td>
+		<td>{{east_delta}}</td>
+		<td>{{south_delta}}</td>
+		<td>{{west_delta}}</td>
+		<td>{{north_delta}}</td>
+		{{/if}}
+
+		{{#if is_nowin hand_type}}
+		<td colspan="3">No win!</td>
+		{{/if}}
+
+		{{#if is_restart hand_type}}
+		<td colspan="3">Reshuffle!</td>
+		{{/if}}
+
+		{{#if is_fuckup hand_type}}
+		<td colspan="3">Fucked up!</td>
+		<td>({{east_delta}})</td>
+		<td>({{south_delta}})</td>
+		<td>({{west_delta}})</td>
+		<td>({{north_delta}})</td>
+		{{/if}}
+	</tr>
+</template>
+
+<template name="jpn_player_select_east">
+	<option value={{name}} class="east player_select">{{name}}</option>
+</template>
+
+<template name="jpn_player_select_south">
+	<option value={{name}} class="south player_select">{{name}}</option>
+</template>
+
+<template name="jpn_player_select_west">
+	<option value={{name}} class="west player_select">{{name}}</option>
+</template>
+
+<template name="jpn_player_select_north">
+	<option value={{name}} class="north player_select">{{name}}</option>
+</template>
+
+<template name="jpn_dealin">
+	<p>Someone dealt in the winning tile!</p>
+	{{> jpn_winner_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> jpn_loser_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> jpn_points}}
+</template>
+
+<template name="jpn_selfdraw">
+	<p>Someone drew their winning tile on their own!</p>
+	{{> jpn_winner_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> jpn_points}}
+</template>
+
+<template name="jpn_nowin">
+	<p>Wall ran out of tiles!</p>
+</template>
+
+<template name="jpn_restart">
+	<p>Game was restarted!</p>
+</template>
+
+<template name="jpn_fuckup">
+	<p>Game ruining mistake!</p>
+	{{> jpn_loser_s east=get_east south=get_south west=get_west north=get_north}}
+</template>
+
+<template name="jpn_winner_s">
+	<h4>Winner: </h4>
+	<div class="btn-group btn-group-justified winner_buttons">
+		<button type="button" class="btn btn-primary winner">{{east}}</button>
+		<button type="button" class="btn btn-primary winner">{{south}}</button>
+		<button type="button" class="btn btn-primary winner">{{west}}</button>
+		<button type="button" class="btn btn-primary winner">{{north}}</button>
+	</div>
+	<br>
+	<br>
+</template>
+
+<template name="jpn_loser_s">
+	<h4>Loser: </h4>
+	<div class="btn-group btn-group-justified loser_buttons">
+		<button type="button" class="btn btn-primary loser">{{east}}</button>
+		<button type="button" class="btn btn-primary loser">{{south}}</button>
+		<button type="button" class="btn btn-primary loser">{{west}}</button>
+		<button type="button" class="btn btn-primary loser">{{north}}</button>
+	</div>
+	<br>
+	<br>
+</template>
+
+<template name="jpn_points">
+	<select name="points">
+		<option disabled selected value> -- Select points (役) -- </option> 
+		{{#each possible_points}}
+			{{> point_select}}
+		{{/each}}
+				
+	</select>
+</template>
+
+<template name="jpn_point_select">
+	<option value={{point}} class="point_value">{{point}}</option>
+</template>

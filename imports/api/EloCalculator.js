@@ -1,13 +1,17 @@
-import { Players } from './players.js';
+import { Players } from './Players.js';
+
+import { Constants } from './Constants.js';
 
 export class EloCalculator {
-	constructor (n, exp, placing_adjustments, game) {
+	constructor (n, exp, placingAdjustments, game, gameType) {
 		this.n = n;
 		this.exp = exp;
-		this.placing_adjustments = placing_adjustments;
+		this.placingAdjustments = placingAdjustments;
 		this.game = game;
+		this.gameType = gameType;
 	}
 
+	// PUBLIC: Return ELO delta for a player
 	eloChange (player) {
 		var index, k;
 		if (player == this.game.east_player)
@@ -35,14 +39,10 @@ export class EloCalculator {
 		else
 			k = 60;
 
-		console.log("Expected Score: " + expectedScores[index]);
-		console.log("Adjusted Score: " + adjustedScores[index]);
-		console.log("ELO delta: " + (this.fieldElo(player) - this.getPlayerElo(player)));
-		console.log(k * (adjustedScores[index] - expectedScores[index]));
-
 		return (k * (adjustedScores[index] - expectedScores[index]));
 	}
 
+	// Return expected scores for players based off table's ELO's
 	expectedScores() {
 		var rawExpectedScoreSum = 0.0;
 		var rawExpectedScores = [];
@@ -62,45 +62,50 @@ export class EloCalculator {
 		return expectedScores;
 	}
 
+	// Formula for expected score
+	// see: https://github.com/Victorree/MahjongEloSystem/blob/master/src/com/company/model/EloCalculator.java
 	rawExpectedScore (player) {
 		return (1 / (1 + Math.pow(this.exp, (this.fieldElo(player) - this.getPlayerElo(player)) / this.n )));
 	}
 
+	// Return normalized, adjusted scores in [E,S,W,N] order
 	adjustedScores() {
 		var rawScoreSum = 0.0;
 		var rawScores = [];
 		var adjustments = [0, 0, 0, 0];
 		var adjustedScores = [];
 
-		var east_score = this.game.east_score;
-		var south_score = this.game.south_score;
-		var west_score = this.game.west_score;
-		var north_score = this.game.north_score;
+		var eastScore = this.game.east_score;
+		var southScore = this.game.south_score;
+		var westScore = this.game.west_score;
+		var northScore = this.game.north_score;
 
 		rawScores.push(this.game.east_score);
 		rawScores.push(this.game.south_score);
 		rawScores.push(this.game.west_score);
 		rawScores.push(this.game.north_score);
 
-		for (index in this.placing_adjustments) {
-			var nextBestScore = Math.max(east_score, south_score, west_score, north_score);
+		//Add score adjustment for 1st, 2nd, 3rd, 4th place
+		//Is this too crude? Replace this if you have a better way
+		for (index in this.placingAdjustments) {
+			var nextBestScore = Math.max(eastScore, southScore, westScore, northScore);
 
 			switch (nextBestScore) {
-			case east_score:
-				adjustments[0] = this.placing_adjustments[index];
-				east_score = Number.NEGATIVE_INFINITY;
+			case eastScore:
+				adjustments[0] = this.placingAdjustments[index];
+				eastScore = Number.NEGATIVE_INFINITY;
 				break;
-			case south_score:
-				adjustments[1] = this.placing_adjustments[index];
-				south_score = Number.NEGATIVE_INFINITY;
+			case southScore:
+				adjustments[1] = this.placingAdjustments[index];
+				southScore = Number.NEGATIVE_INFINITY;
 				break;
-			case west_score:
-				adjustments[2] = this.placing_adjustments[index];
-				west_score = Number.NEGATIVE_INFINITY;
+			case westScore:
+				adjustments[2] = this.placingAdjustments[index];
+				westScore = Number.NEGATIVE_INFINITY;
 				break;
-			case north_score:
-				adjustments[3] = this.placing_adjustments[index];
-				north_score = Number.NEGATIVE_INFINITY;
+			case northScore:
+				adjustments[3] = this.placingAdjustments[index];
+				northScore = Number.NEGATIVE_INFINITY;
 				break;
 			};
 		}
@@ -114,6 +119,7 @@ export class EloCalculator {
 		return adjustedScores;
 	}
 
+	// Average ELO of all players except (player)
 	fieldElo (player) {
 		var fieldElo = 0.0;
 
@@ -129,7 +135,13 @@ export class EloCalculator {
 		return fieldElo / 3;
 	}
 
+	// Return a player's ELO
 	getPlayerElo (player) {
-		return Number(Players.findOne({name: player}).hongkong_elo);
+		switch (this.gameType) {
+		case Constants.GAME_TYPE.HONG_KONG:
+			return Number(Players.findOne({name: player}).hongKongElo);
+		case Constants.GAME_TYPE.JAPANESE:
+			return Number(Players.findOne({name: player}).japaneseElo);
+		}
 	}
 };

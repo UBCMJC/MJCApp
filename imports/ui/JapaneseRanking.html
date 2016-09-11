@@ -1,0 +1,12 @@
+<template name="JapaneseRanking">
+	<h2>Japanese Mahjong ELO Rankings</h2>
+	<u1>
+		{{#each japanesePlayers}}
+			{{> japaneseRankingOneByOne}}
+		{{/each}}
+	</u1>
+</template>
+
+<template name="japaneseRankingOneByOne">
+	<li>{{name}} : {{japaneseElo}}</li>
+</template>

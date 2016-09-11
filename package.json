@@ -10,7 +10,7 @@
   },
   "version": "1.0.0",
   "description": "none",
-  "main": "main.js",
+  "main": "Main.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Futochu/MJCApp.git"

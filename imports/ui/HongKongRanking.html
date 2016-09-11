@@ -1,0 +1,13 @@
+<template name="HongKongRanking">
+	<h2>Hong Kong Mahjong ELO Rankins</h2>
+	<u1>
+		{{#each hongKongPlayers}}
+			{{> hongKongRankingOneByOne}}
+		{{/each}}
+	</u1>
+</template>
+
+
+<template name="hongKongRankingOneByOne">
+	<li>{{name}} : {{hongKongElo}}</li>
+</template>

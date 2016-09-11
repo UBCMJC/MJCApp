@@ -1,80 +1,31 @@
-import { Players } from '../api/players.js';
-import { Hongkong_Hands } from '../api/hongkong_hands.js';
+//Databases
+import { Players } from '../api/Players.js';
+import { JapaneseHands } from '../api/GameDatabases.js';
 
+import { Constants } from '../api/Constants.js';
 import { EloCalculator } from '../api/EloCalculator.js';
+import { NewGameUtils } from '../api/NewGameUtils.js';
 
-const START_POINTS = 250;
-const NO_PERSON = "no one";
-const DEFAULT_EAST = "Select East!";
-const DEFAULT_SOUTH = "Select South!";
-const DEFAULT_WEST = "Select West!";
-const DEFAULT_NORTH = "Select North!";
-
-Template.hongkong_new_game.onCreated( function() {
+Template.JapaneseNewGame.onCreated( function() {
 	this.hand_type = new ReactiveVar( "dealin" );
-
 	this.hands = new ReactiveArray();
 
-	Session.set("current_east", DEFAULT_EAST);
-	Session.set("current_south", DEFAULT_SOUTH);
-	Session.set("current_west", DEFAULT_WEST);
-	Session.set("current_north", DEFAULT_NORTH);
-
-	Session.set("round_winner", NO_PERSON);
-	Session.set("round_loser", NO_PERSON);
-
-	Session.set("current_round", 1);
-	Session.set("current_bonus", 0);
-	Session.set("current_points", 0);
-
-	Session.set("east_score", START_POINTS);
-	Session.set("south_score", START_POINTS);
-	Session.set("west_score", START_POINTS);
-	Session.set("north_score", START_POINTS);
-
-	Session.set("east_score_fuckup", 0);
-	Session.set("south_score_fuckup", 0);
-	Session.set("west_score_fuckup", 0);
-	Session.set("north_score_fuckup", 0);
+	NewGameUtils.resetGameValues(Constants.JPN_START_POINTS);
 });
 
-Template.registerHelper("get_start_points", function () {
-	return START_POINTS;
+Template.registerHelper("get_jpn_start_points", function () {
+	return Constants.JPN_START_POINTS;
 });
-Template.registerHelper("get_east", function () {
-	return Session.get("current_east");
-});
-Template.registerHelper("get_south", function () {
-	return Session.get("current_south");
-});
-Template.registerHelper("get_west", function () {
-	return Session.get("current_west");
-})
-Template.registerHelper("get_north", function () {
-	return Session.get("current_north");
-})
-Template.registerHelper("is_east_round", function(round) {
-	return round <= 4;
-});
-Template.registerHelper("is_south_round", function(round) {
-	return (round > 4 && round <= 8);
-});
-Template.registerHelper("is_west_round", function(round) {
-	return (round > 8 && round <= 12);
-});
-Template.registerHelper("is_north_round", function(round) {
-	return (round > 12);
-});
-Template.registerHelper("round_mod4", function(round) {
-	if (Number(round) > 12)
-		return (Number(round) - 12);
+Template.registerHelper("jpn_round_mod4", function(round) {
+	if (Number(round) > 8)
+		return (Number(round) - 8);
 	var retval = Number(round) % 4;
 	if (retval == 0)
 		retval = 4;
 	return retval;
 })
 
-Template.hongkong_new_game.helpers({
+Template.JapaneseNewGame.helpers({
 	hand_type() {
 		return Template.instance().hand_type.get();
 	},
@@ -85,7 +36,7 @@ Template.hongkong_new_game.helpers({
 		return Template.instance().hands.get();
 	},
 	get_player_delta(direction_score) {
-		return (Number(Session.get(direction_score)) - START_POINTS);
+		return (Number(Session.get(direction_score)) - Constants.JPN_START_POINTS);
 	},
 	get_player_score(direction_score) {
 		return Session.get(direction_score);
@@ -101,24 +52,27 @@ Template.hongkong_new_game.helpers({
 	get_bonus() {
 		return Session.get("current_bonus");
 	},
-	get_hk_elo(player) {
+	get_jpn_elo(player) {
 		switch (player) {
-		case DEFAULT_EAST:
-		case DEFAULT_SOUTH:
-		case DEFAULT_WEST:
-		case DEFAULT_NORTH:
+		case Constants.DEFAULT_EAST:
+		case Constants.DEFAULT_SOUTH:
+		case Constants.DEFAULT_WEST:
+		case Constants.DEFAULT_NORTH:
 			return "?";
 			break;
 		default:
-			return Players.findOne({name: player}).hongkong_elo;
+			return Players.findOne({name: player}).japaneseElo;
 			break;
 		};
+	},
+	displayRoundWind(round) {
+		return NewGameUtils.displayRoundWind(round, Constants.GAME_TYPE.JAPANESE);
 	},
 
 });
 
 
-Template.render_hand.helpers({
+Template.jpn_render_hand.helpers({
 	is_dealin(hand_type) {
 		return hand_type == "dealin";
 	},
@@ -136,10 +90,13 @@ Template.render_hand.helpers({
 	},
 	next_round(round) {
 		return (round + 1);
-	}
+	},
+	displayRoundWind(round) {
+		return NewGameUtils.displayRoundWind(round, Constants.GAME_TYPE.JAPANESE);
+	},
 })
 
-Template.points.helpers({
+Template.jpn_points.helpers({
 	possible_points: [
 		{ point: 1 },
 		{ point: 2 },
@@ -150,11 +107,14 @@ Template.points.helpers({
 		{ point: 7 },
 		{ point: 8 },
 		{ point: 9 },
-		{ point: 10 }
+		{ point: 10 },
+		{ point: 11 },
+		{ point: 12 },
+		{ point: 13 },
 	],
 });
 
-Template.hongkong_new_game.events({
+Template.JapaneseNewGame.events({
 	//Selecting who the east player is
 	'change select[name="east_player"]'(event) {
 		Session.set("current_east", event.target.value);
@@ -177,7 +137,7 @@ Template.hongkong_new_game.events({
 			if ( $( event.target ).hasClass( "active" )) {
 				$( event.target ).removeClass( "active" );
 				$( ".winner_buttons button" ).not( event.target ).removeClass( "disabled" );
-				Session.set("round_winner", NO_PERSON);
+				Session.set("round_winner", Constants.NO_PERSON);
 			} else {
 				$( event.target ).addClass( "active" );
 				$( ".winner_buttons button" ).not( event.target ).addClass( "disabled" );
@@ -271,10 +231,10 @@ Template.hongkong_new_game.events({
 
 			//Deletes all hands
 			while (template.hands.pop()) {}
-			Session.set("east_score", START_POINTS);
-			Session.set("south_score", START_POINTS);
-			Session.set("west_score", START_POINTS);
-			Session.set("north_score", START_POINTS);
+			Session.set("east_score", JPN_START_POINTS);
+			Session.set("south_score", JPN_START_POINTS);
+			Session.set("west_score", JPN_START_POINTS);
+			Session.set("north_score", JPN_START_POINTS);
 			Session.set("east_score_fuckup", 0);
 			Session.set("south_score_fuckup", 0);
 			Session.set("west_score_fuckup", 0);
@@ -318,11 +278,11 @@ function save_game_to_database(hands_array) {
 		all_hands: hands_array,
 	};
 
-	var hk_elo_calculator = new EloCalculator(3000, 5, [100, 50, -50, -100], game);
-	var east_elo_delta = hk_elo_calculator.eloChange(east_player);
-	var south_elo_delta = hk_elo_calculator.eloChange(south_player);
-	var west_elo_delta = hk_elo_calculator.eloChange(west_player);
-	var north_elo_delta = hk_elo_calculator.eloChange(north_player);
+	var jpn_elo_calculator = new EloCalculator(3000, 5, [15000, 0, -5000, -10000], game);
+	var east_elo_delta = jpn_elo_calculator.eloChange(east_player);
+	var south_elo_delta = jpn_elo_calculator.eloChange(south_player);
+	var west_elo_delta = jpn_elo_calculator.eloChange(west_player);
+	var north_elo_delta = jpn_elo_calculator.eloChange(north_player);
 
 	var east_id = Players.findOne({name: east_player}, {})._id;
 	var south_id = Players.findOne({name: south_player}, {})._id;
@@ -331,13 +291,13 @@ function save_game_to_database(hands_array) {
 
 	console.log("ID: " + east_id);
 
-	Players.update({_id: east_id}, {$inc: {hongkong_elo: east_elo_delta}});
-	Players.update({_id: south_id}, {$inc: {hongkong_elo: south_elo_delta}});
-	Players.update({_id: west_id}, {$inc: {hongkong_elo: west_elo_delta}});
-	Players.update({_id: north_id}, {$inc: {hongkong_elo: north_elo_delta}});
+	Players.update({_id: east_id}, {$inc: {japaneseElo: east_elo_delta}});
+	Players.update({_id: south_id}, {$inc: {japaneseElo: south_elo_delta}});
+	Players.update({_id: west_id}, {$inc: {japaneseElo: west_elo_delta}});
+	Players.update({_id: north_id}, {$inc: {japaneseElo: north_elo_delta}});
 
 	//Save game to database
-	Hongkong_Hands.insert(game);
+	Japanese_Hands.insert(game);
 }
 
 function push_dealin_hand(template) {
@@ -510,9 +470,9 @@ function selfdraw_delta(points, player, winner) {
 
 function fuckup_delta(player, loser) {
 	if (player == loser)
-		return -36;
+		return -12000;
 	else
-		return 12;
+		return 4000;
 }
 
 function all_players_selected() {

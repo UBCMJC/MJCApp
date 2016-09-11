@@ -1,4 +1,4 @@
-<template name="hongkong_new_game">
+<template name="HongKongNewGame">
 	<h2>Hong Kong Mahjong Game Sheet</h2>
 
 	<form class="game_input_form">
@@ -41,13 +41,13 @@
 
 		<u1 class="nav nav-pills">
 			<li data-template="dealin" role="presentation" class="active">
-				<a data-toggle="pill" href="#">Ron (Deal in)</a>
+				<a data-toggle="pill" href="#">Deal in (Sik Wu 食糊)</a>
 			</li>
 			<li data-template="selfdraw" role="presentation">
-				<a data-toggle="pill" href="#">Tsumo (Self draw)</a>
+				<a data-toggle="pill" href="#">Self draw (Zi Mo 自摸)</a>
 			</li>
 			<li data-template="nowin" role="presentation">
-				<a data-toggle="pill" href="#">Tenpai (Deck out)</a>
+				<a data-toggle="pill" href="#">Deck out</a>
 			</li>
 			<li data-template="restart" role="presentation">
 				<a data-toggle="pill" href="#">Reshuffle</a>
@@ -77,23 +77,19 @@
 			<th>Round</th>
 			<th>Bonus</th>
 			<th>Points</th>
-			<th>{{get_start_points}}</th>
-			<th>{{get_start_points}}</th>
-			<th>{{get_start_points}}</th>
-			<th>{{get_start_points}}</th>
+			<th>{{get_hkg_start_points}}</th>
+			<th>{{get_hkg_start_points}}</th>
+			<th>{{get_hkg_start_points}}</th>
+			<th>{{get_hkg_start_points}}</th>
 		</tr>
 		{{#each hands}}
 			{{> render_hand}}
 		{{/each}}
 		<tr>
 			<td>
-				{{#if is_east_round get_round}}東{{/if}}
-				{{#if is_south_round get_round}}南{{/if}}
-				{{#if is_west_round get_round}}西{{/if}}
-				{{#if is_north_round get_round}}北{{/if}}
-				{{round_mod4 get_round}}
+				{{displayRoundWind get_round}} {{hkg_round_mod4 get_round}}
 			</td>
-			<td>B{{get_bonus}}</td>
+			<td>B {{get_bonus}}</td>
 		</tr>
 		<tr>
 			<th colspan="3">Transaction total:</th>
@@ -127,13 +123,9 @@
 <template name="render_hand">
 	<tr>
 		<td>
-			{{#if is_east_round round}}東{{/if}}
-			{{#if is_south_round round}}南{{/if}}
-			{{#if is_west_round round}}西{{/if}}
-			{{#if is_north_round round}}北{{/if}}
-			{{round_mod4 round}}
+			{{displayRoundWind round}} {{hkg_round_mod4 round}}
 		</td>
-		<td>B{{bonus}}</td>
+		<td>B {{bonus}}</td>
 
 		{{#if is_dealin hand_type}}
 		<td>{{points}}</td>
