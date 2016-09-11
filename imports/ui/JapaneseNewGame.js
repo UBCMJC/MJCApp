@@ -30,7 +30,7 @@ Template.JapaneseNewGame.helpers({
 		return Template.instance().hand_type.get();
 	},
 	players() {
-		return Players.find({}, {sort: { name: 1}});
+		return Players.find({}, {sort: { japaneseLeagueName: 1}});
 	},
 	hands() {
 		return Template.instance().hands.get();
@@ -61,7 +61,7 @@ Template.JapaneseNewGame.helpers({
 			return "?";
 			break;
 		default:
-			return Players.findOne({name: player}).japaneseElo;
+			return Players.findOne({japaneseLeagueName: player}).japaneseElo;
 			break;
 		};
 	},
@@ -284,10 +284,10 @@ function save_game_to_database(hands_array) {
 	var west_elo_delta = jpn_elo_calculator.eloChange(west_player);
 	var north_elo_delta = jpn_elo_calculator.eloChange(north_player);
 
-	var east_id = Players.findOne({name: east_player}, {})._id;
-	var south_id = Players.findOne({name: south_player}, {})._id;
-	var west_id = Players.findOne({name: west_player}, {})._id;
-	var north_id = Players.findOne({name: north_player}, {})._id;
+	var east_id = Players.findOne({japaneseLeagueName: east_player}, {})._id;
+	var south_id = Players.findOne({japaneseLeagueName: south_player}, {})._id;
+	var west_id = Players.findOne({japaneseLeagueName: west_player}, {})._id;
+	var north_id = Players.findOne({japaneseLeagueName: north_player}, {})._id;
 
 	console.log("ID: " + east_id);
 

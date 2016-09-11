@@ -30,7 +30,7 @@ Template.HongKongNewGame.helpers({
 		return Template.instance().hand_type.get();
 	},
 	players() {
-		return Players.find({}, {sort: { name: 1}});
+		return Players.find({}, {sort: { hongKongLeagueName: 1}});
 	},
 	hands() {
 		return Template.instance().hands.get();
@@ -61,7 +61,7 @@ Template.HongKongNewGame.helpers({
 			return "?";
 			break;
 		default:
-			return Players.findOne({name: player}).hongKongElo;
+			return Players.findOne({hongKongLeagueName: player}).hongKongElo;
 			break;
 		};
 	},
@@ -277,10 +277,10 @@ function save_game_to_database(hands_array) {
 	var west_elo_delta = hk_elo_calculator.eloChange(west_player);
 	var north_elo_delta = hk_elo_calculator.eloChange(north_player);
 
-	var east_id = Players.findOne({name: east_player}, {})._id;
-	var south_id = Players.findOne({name: south_player}, {})._id;
-	var west_id = Players.findOne({name: west_player}, {})._id;
-	var north_id = Players.findOne({name: north_player}, {})._id;
+	var east_id = Players.findOne({hongKongLeagueName: east_player}, {})._id;
+	var south_id = Players.findOne({hongKongLeagueName: south_player}, {})._id;
+	var west_id = Players.findOne({hongKongLeagueName: west_player}, {})._id;
+	var north_id = Players.findOne({hongKongLeagueName: north_player}, {})._id;
 
 	Players.update({_id: east_id}, {$inc: {hongKongElo: east_elo_delta}});
 	Players.update({_id: south_id}, {$inc: {hongKongElo: south_elo_delta}});
