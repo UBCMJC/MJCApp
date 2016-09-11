@@ -409,32 +409,78 @@ function hkRoundToDirection(round) {
 };
 
 function dealin_delta(points, player, winner, loser) {
-	var exponent = points;
-	var direction = -1;
+	var retval;
 
-	if ( player == winner ) {
-		direction = 1;
-		exponent += 2;
-	} 
-	else if ( player == loser ) {
-		exponent++;
+	switch (points) {
+	case 3:
+		retval = -8;
+		break;
+	case 4:
+		retval = -16;
+		break;
+	case 5:
+		retval = -32;
+		break;
+	case 6:
+		retval = -64;
+		break;
+	case 7:
+		retval = -96;
+		break;
+	case 8:
+		retval = -128;
+		break;
+	case 9:
+		retval = -192;
+		break;
+	case 10:
+		retval = -256;
+		break;
 	}
-	var retval = direction * Math.pow(2, exponent);
+
+	if ( player == winner )
+		retval = -4 * retval;
+	else if ( player == loser )
+		retval = 2 * retval;
+
 	return retval;
-};
+}
 
 function selfdraw_delta(points, player, winner) {
-	var exponent = points + 1;
-	var direction = -1;
+	var retval;
 
-	if ( player == winner ) {
-		direction = 1.5;
-		exponent++;
+	switch (points) {
+	case 3:
+		retval = -16;
+		break;
+	case 4:
+		retval = -32;
+		break;
+	case 5:
+		retval = -48;
+		break;
+	case 6:
+		retval = -64;
+		break;
+	case 7:
+		retval = -96;
+		break;
+	case 8:
+		retval = -128;
+		break;
+	case 9:
+		retval = -192;
+		break;
+	case 10:
+		retval = -256;
+		break;
 	}
 
-	var retval = direction * Math.pow(2, exponent);
+	if ( player == winner )
+		retval = -3 * retval;
+
 	return retval;
-};
+}
 
 function fuckup_delta(player, loser) {
 	if (player == loser)
