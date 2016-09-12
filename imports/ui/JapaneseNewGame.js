@@ -449,6 +449,7 @@ Template.JapaneseNewGame.events({
 });
 
 function save_game_to_database(hands_array) {
+	var position;
 
 	var east_player = Session.get("current_east");
 	var south_player= Session.get("current_south");
@@ -498,6 +499,50 @@ function save_game_to_database(hands_array) {
 			Players.update({_id: west_id}, {$inc: {japaneseBankruptTotal: 1}});
 		if (Number(Session.get("north_score")) < 0)
 			Players.update({_id: north_id}, {$inc: {japaneseBankruptTotal: 1}});
+
+		//Calculate east position quickly?
+		position = 4;
+		if (Number(Session.get("east_score")) >= Number(Session.get("south_score")))
+			position--;
+		if (Number(Session.get("east_score")) >= Number(Session.get("west_score")))
+			position--;
+		if (Number(Session.get("east_score")) >= Number(Session.get("north_score")))
+			position--;
+
+		Players.update({_id: east_id}, {$inc: {japanesePositionSum: position}});
+
+		//Calculate east position quickly?
+		position = 4;
+		if (Number(Session.get("south_score")) > Number(Session.get("east_score")))
+			position--;
+		if (Number(Session.get("south_score")) >= Number(Session.get("west_score")))
+			position--;
+		if (Number(Session.get("south_score")) >= Number(Session.get("north_score")))
+			position--;
+
+		Players.update({_id: south_id}, {$inc: {japanesePositionSum: position}});
+
+		//Calculate east position quickly?
+		position = 4;
+		if (Number(Session.get("west_score")) > Number(Session.get("east_score")))
+			position--;
+		if (Number(Session.get("west_score")) > Number(Session.get("south_score")))
+			position--;
+		if (Number(Session.get("west_score")) >= Number(Session.get("north_score")))
+			position--;
+
+		Players.update({_id: west_id}, {$inc: {japanesePositionSum: position}});
+
+		//Calculate east position quickly?
+		var position = 4;
+		if (Number(Session.get("north_score")) > Number(Session.get("east_score")))
+			position--;
+		if (Number(Session.get("north_score")) > Number(Session.get("south_score")))
+			position--;
+		if (Number(Session.get("north_score")) > Number(Session.get("west_score")))
+			position--;
+
+		Players.update({_id: north_id}, {$inc: {japanesePositionSum: position}});
 
 		//Save game to database
 		JapaneseHands.insert(game);
