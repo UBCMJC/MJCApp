@@ -88,16 +88,14 @@ Template.JapaneseNewGame.helpers({
 	hands() {
 		return Template.instance().hands.get();
 	},
-	get_player_delta(direction_score) {
-		return (Number(Session.get(direction_score)) - Constants.JPN_START_POINTS);
+	get_player_delta(direction) {
+		return (NewGameUtils.getDirectionScore(direction) - Constants.JPN_START_POINTS);
 	},
-	get_player_score(direction_score) {
-		return Session.get(direction_score);
+	get_player_score(direction) {
+		return NewGameUtils.getDirectionScore(direction);
 	},
-	//Horribly exploitive of javascript.  This is why I hate this language
 	get_player_score_final(direction) {
-		retval = Number(Session.get(direction + "_score")) +
-				 Number(Session.get(direction + "_score_fuckup"));
+		retval = NewGameUtils.getDirectionScore(direction);
 
 		var winScore = Math.max(Number(Session.get("east_score")),
 								Number(Session.get("south_score")),

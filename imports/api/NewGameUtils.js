@@ -81,6 +81,19 @@ export var NewGameUtils = {
 					this.someoneAboveMinimum(Constants.JPN_END_POINTS)));
 	},
 
+	getDirectionScore(direction) {
+		switch (direction) {
+		case "east":
+			return Number(Session.get("east_score"));
+		case "south":
+			return Number(Session.get("south_score"));
+		case "west":
+			return Number(Session.get("west_score"));
+		case "north":
+			return Number(Session.get("north_score"));
+		}
+	},
+
 	playerToDirection(player) {
 		if (player == Session.get("current_east")) return "east";
 		if (player == Session.get("current_south")) return "south";

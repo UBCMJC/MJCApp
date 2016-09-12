@@ -35,16 +35,14 @@ Template.HongKongNewGame.helpers({
 	hands() {
 		return Template.instance().hands.get();
 	},
-	get_player_delta(direction_score) {
-		return (Number(Session.get(direction_score)) - Constants.HKG_START_POINTS);
+	get_player_delta(direction) {
+		return (NewGameUtils.getDirectionScore(direction) - Constants.HKG_START_POINTS);
 	},
-	get_player_score(direction_score) {
-		return Session.get(direction_score);
+	get_player_score(direction) {
+		return NewGameUtils.getDirectionScore(direction);
 	},
-	//Horribly exploitive of javascript.  This is why I hate this language
-	get_player_score_final(direction_score) {
-		return (Number(Session.get(direction_score)) + 
-			    Number(Session.get(direction_score + "_fuckup")));
+	get_player_score_final(direction) {
+		return NewGameUtils.getDirectionScore(direction);
 	},
 	get_round() {
 		return Session.get("current_round");
