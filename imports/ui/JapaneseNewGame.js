@@ -268,6 +268,7 @@ Template.JapaneseNewGame.events({
 			Session.set( NewGameUtils.playerToDirection(event.target.innerHTML) + "_tenpai", false);
 		}
 	},
+	//Selecting who is under pao
 	'click .pao'(event) {
 		if ( !$( event.target ).hasClass( "disabled" )) {
 			if ( $( event.target ).hasClass( "active" )) {

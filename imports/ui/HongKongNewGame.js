@@ -140,12 +140,27 @@ Template.HongKongNewGame.events({
 			if ( $( event.target ).hasClass( "active" )) {
 				$( event.target ).removeClass( "active" );
 				$( ".loser_buttons button" ).not( event.target ).removeClass( "disabled" );
+				Session.set("round_loser", Constants.NO_PERSON);
 			} else {
 				$( event.target ).addClass( "active" );
 				$( ".loser_buttons button" ).not( event.target ).addClass( "disabled" );
+				Session.set("round_loser", event.target.innerHTML);
 			}
 		}
-		Session.set("round_loser", event.target.innerHTML);
+	},
+	//Selecting who is under pao
+	'click .pao'(event) {
+		if ( !$( event.target ).hasClass( "disabled" )) {
+			if ( $( event.target ).hasClass( "active" )) {
+				$( event.target ).removeClass( "active" );
+				$( ".pao_buttons button" ).not( event.target ).removeClass( "disabled" );
+				Session.set("round_pao_player", Constants.NO_PERSON);
+			} else {
+				$( event.target ).addClass( "active" );
+				$( ".pao_buttons button" ).not( event.target ).addClass( "disabled" );
+				Session.set("round_pao_player", event.target.innerHTML);
+			}
+		}
 	},
 	//Submission of a hand
 	'click .submit_hand_button'(event, template) {
@@ -196,6 +211,35 @@ Template.HongKongNewGame.events({
 					else
 						window.alert("You need to fill out who made the mistake!");
 					break;
+
+				case "dealin_pao":
+					if (Session.get("round_winner") != Constants.NO_PERSON &&
+						Session.get("round_loser") != Constants.NO_PERSON &&
+						Session.get("round_pao_player") != Constants.NO_PERSON &&
+						Session.get("round_winner") != Session.get("round_loser") &&
+						Session.get("round_pao_player") != Session.get("round_winner")) {
+						if (Session.get("current_points") != 0) {
+							push_dealin_pao_hand(template);
+						} else {
+							window.alert("Invalid points entry!");
+						}
+					} else {
+						window.alert("You need to fill out who won, who dealt in, and who has pao penalty!");
+					}
+					break;
+
+				case "selfdraw_pao":
+					if (Session.get("round_winner") != Constants.NO_PERSON &&
+						Session.get("round_pao_player") != Constants.NO_PERSON &&
+						Session.get("round_winner")	!= Session.get("round_pao_player")) {
+						if (Session.get("current_points") != 0) {
+							push_selfdraw_pao_hand(template);
+						} else {
+							window.alert("Invalid points entry!");
+						}
+					} else {
+						window.alert("You need to fill out who won, who dealt in, and who has pao penalty!");
+					}
 					break;
 			
 				default:
@@ -366,6 +410,126 @@ function push_selfdraw_hand(template) {
 		Session.set("current_round", Number(Session.get("current_round")) + 1);
 	}
 };
+
+function push_selfdraw_pao_hand(template) {
+	var points = Number(Session.get("current_points"));
+	var winnerWind = NewGameUtils.playerToDirection(Session.get("round_winner"));
+	var paoWind = NewGameUtils.playerToDirection(Session.get("round_pao_player"));
+	var eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
+
+	var value = selfdraw_delta(points, winnerWind, winnerWind);
+
+	if (winnerWind == "east")
+		eastDelta += value;
+	else if (winnerWind == "south")
+		southDelta += value;
+	else if (winnerWind == "west")
+		westDelta += value;
+	else if (winnerWind == "north")
+		northDelta += value;
+
+	if (paoWind == "east")
+		eastDelta -= value;
+	else if (paoWind == "south")
+		southDelta -= value;
+	else if (paoWind == "west")
+		westDelta -= value;
+	else if (paoWind == "north")
+		northDelta -= value;
+
+	template.hands.push( 
+		{
+			hand_type: "selfdraw",
+		  	round: Session.get("current_round"),
+		  	bonus: Session.get("current_bonus"),
+			points: Session.get("current_points"),
+	  		east_delta: eastDelta,
+	  		south_delta: southDelta,
+	  		west_delta: westDelta,
+	  		north_delta: northDelta,
+		}
+	);
+
+	Session.set("east_score", Number(Session.get("east_score")) + eastDelta);
+	Session.set("south_score", Number(Session.get("south_score")) + southDelta);
+	Session.set("west_score", Number(Session.get("west_score")) + westDelta);
+	Session.set("north_score", Number(Session.get("north_score")) + northDelta);
+
+	if (winnerWind == NewGameUtils.roundToDealerDirection(Session.get("current_round")))
+		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
+	else {
+		Session.set("current_bonus", 0);
+		Session.set("current_round", Number(Session.get("current_round")) + 1);
+	}
+}
+
+function push_dealin_pao_hand(template) {
+	var points = Number(Session.get("current_points"));
+	var winnerWind = NewGameUtils.playerToDirection(Session.get("round_winner"));
+	var loserWind = NewGameUtils.playerToDirection(Session.get("round_loser"));
+	var paoWind = NewGameUtils.playerToDirection(Session.get("round_pao_player"));
+	var eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
+
+	var value = dealin_delta(points, winnerWind, winnerWind);
+
+	switch (winnerWind) {
+	case "east":
+		eastDelta += value;
+		break;
+	case "south":
+		southDelta += value;
+		break;
+	case "west":
+		westDelta += value;
+		break;
+	case "north":
+		northDelta += value;
+		break;
+	}
+
+	if (loserWind == "east")
+		eastDelta -= value / 2;
+	else if (loserWind == "south")
+		southDelta -= value / 2;
+	else if (loserWind == "west")
+		westDelta -= value / 2;
+	else if (loserWind == "north")
+		northDelta -= value / 2;
+
+	if (paoWind == "east")
+		eastDelta -= value / 2;
+	else if (paoWind == "south")
+		southDelta -= value / 2;
+	else if (paoWind == "west")
+		westDelta -= value / 2;
+	else if (paoWind == "north")
+		northDelta -= value / 2;
+
+	template.hands.push( 
+		{
+			hand_type: "dealin",
+		  	round: Session.get("current_round"),
+		  	bonus: Session.get("current_bonus"),
+			points: Session.get("current_points"),
+	  		east_delta: eastDelta,
+	  		south_delta: southDelta,
+	  		west_delta: westDelta,
+	  		north_delta: northDelta,
+		}
+	);
+
+	Session.set("east_score", Number(Session.get("east_score")) + eastDelta);
+	Session.set("south_score", Number(Session.get("south_score")) + southDelta);
+	Session.set("west_score", Number(Session.get("west_score")) + westDelta);
+	Session.set("north_score", Number(Session.get("north_score")) + northDelta);
+
+	if (winnerWind == NewGameUtils.roundToDealerDirection(Session.get("current_round")))
+		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
+	else {
+		Session.set("current_bonus", 0);
+		Session.set("current_round", Number(Session.get("current_round")) + 1);
+	}
+}
 
 function push_nowin_hand(template) {
 	template.hands.push(

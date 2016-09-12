@@ -55,6 +55,12 @@
 			<li data-template="fuckup" role="presentation">
 				<a data-toggle="pill" href="#">Mistake! (Zaa Wu 詐糊)</a>
 			</li>
+			<li data-template="dealin_pao" role="presentation">
+				<a data-toggle="pill" href="#">Dealin pao</a>
+			</li>
+			<li data-template="selfdraw_pao" role="presentation">
+				<a data-toggle="pill" href="#">Selfdraw pao</a>
+			</li>
 		</u1>
 
 		<!-- Dynamically use different HTML templates for different hand types
@@ -203,6 +209,21 @@
 	{{> loser_s east=get_east south=get_south west=get_west north=get_north}}
 </template>
 
+<template name="dealin_pao">
+	<p>Someone dealt in while someone was under pao</p>
+	{{> winner_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> loser_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> pao_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> points}}
+</template>
+
+<template name="selfdraw_pao">
+	<p>Someone self drew while someone was under pao or someone under pao dealt in!</p>
+	{{> winner_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> pao_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> points}}
+</template>
+
 <template name="winner_s">
 	<span class="player-select-header"><b>Winner: </b></span>
 	<div class="btn-group btn-group-justified winner_buttons">
@@ -222,6 +243,18 @@
 		<button type="button" class="btn btn-primary loser">{{south}}</button>
 		<button type="button" class="btn btn-primary loser">{{west}}</button>
 		<button type="button" class="btn btn-primary loser">{{north}}</button>
+	</div>
+	<br>
+	<br>
+</template>
+
+<template name="pao_s">
+	<span class="player-select-header"><b>Pao player: </b></span>
+	<div class="btn-group btn-group-justified pao_buttons">
+		<button type="button" class="btn btn-primary pao">{{east}}</button>
+		<button type="button" class="btn btn-primary pao">{{south}}</button>
+		<button type="button" class="btn btn-primary pao">{{west}}</button>
+		<button type="button" class="btn btn-primary pao">{{north}}</button>
 	</div>
 	<br>
 	<br>
