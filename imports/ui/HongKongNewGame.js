@@ -343,13 +343,20 @@ function save_game_to_database(hands_array) {
 	var west_id = Players.findOne({hongKongLeagueName: west_player}, {})._id;
 	var north_id = Players.findOne({hongKongLeagueName: north_player}, {})._id;
 
-	Players.update({_id: east_id}, {$inc: {hongKongElo: east_elo_delta}});
-	Players.update({_id: south_id}, {$inc: {hongKongElo: south_elo_delta}});
-	Players.update({_id: west_id}, {$inc: {hongKongElo: west_elo_delta}});
-	Players.update({_id: north_id}, {$inc: {hongKongElo: north_elo_delta}});
+	if (east_elo_delta != NaN && south_elo_delta != NaN && west_elo_delta != NaN && north_elo_delta != NaN) {
+		Players.update({_id: east_id}, {$inc: {hongKongElo: east_elo_delta}});
+		Players.update({_id: south_id}, {$inc: {hongKongElo: south_elo_delta}});
+		Players.update({_id: west_id}, {$inc: {hongKongElo: west_elo_delta}});
+		Players.update({_id: north_id}, {$inc: {hongKongElo: north_elo_delta}});
 
-	//Save game to database
-	HongKongHands.insert(game);
+		Players.update({_id: east_id}, {$inc: {hongKongGamesPlayed: 1}});
+		Players.update({_id: south_id}, {$inc: {hongKongGamesPlayed: 1}});
+		Players.update({_id: west_id}, {$inc: {hongKongGamesPlayed: 1}});
+		Players.update({_id: north_id}, {$inc: {hongKongGamesPlayed: 1}});
+
+		//Save game to database
+		HongKongHands.insert(game);
+	}
 };
 
 function push_dealin_hand(template) {

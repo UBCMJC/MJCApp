@@ -484,10 +484,15 @@ function save_game_to_database(hands_array) {
 		Players.update({_id: south_id}, {$inc: {japaneseElo: Number(south_elo_delta)}});
 		Players.update({_id: west_id}, {$inc: {japaneseElo: Number(west_elo_delta)}});
 		Players.update({_id: north_id}, {$inc: {japaneseElo: Number(north_elo_delta)}});
-	}
 
-	//Save game to database
-	JapaneseHands.insert(game);
+		Players.update({_id: east_id}, {$inc: {japaneseGamesPlayed: 1}});
+		Players.update({_id: south_id}, {$inc: {japaneseGamesPlayed: 1}});
+		Players.update({_id: west_id}, {$inc: {japaneseGamesPlayed: 1}});
+		Players.update({_id: north_id}, {$inc: {japaneseGamesPlayed: 1}});
+
+		//Save game to database
+		JapaneseHands.insert(game);
+	}
 };
 
 function push_split_pao_hand(template) {
