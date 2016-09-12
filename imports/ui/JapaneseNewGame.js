@@ -95,9 +95,31 @@ Template.JapaneseNewGame.helpers({
 		return Session.get(direction_score);
 	},
 	//Horribly exploitive of javascript.  This is why I hate this language
-	get_player_score_final(direction_score) {
-		return (Number(Session.get(direction_score)) + 
-			    Number(Session.get(direction_score + "_fuckup")));
+	get_player_score_final(direction) {
+		retval = Number(Session.get(direction + "_score")) +
+				 Number(Session.get(direction + "_score_fuckup"));
+
+		var winScore = Math.max(Number(Session.get("east_score")),
+								Number(Session.get("south_score")),
+								Number(Session.get("west_score")),
+								Number(Session.get("north_score")));
+
+		if (winScore == Session.get("east_score")) {
+			if (direction == "east")
+				retval += 1000 * Number(Session.get("free_riichi_sticks"));
+		} else if (winScore == Session.get("south_score")) {
+			if (direction == "south")
+				retval += 1000 * Number(Session.get("free_riichi_sticks"));
+		} else if (winScore == Session.get("west_score")) {
+			if (direction == "west")
+				retval += 1000 * Number(Session.get("free_riichi_sticks"));
+		} else if (winScore == Session.get("north_score")) {
+			if (direction == "north")
+				retval += 1000 * Number(Session.get("free_riichi_sticks"));	
+		} 
+
+
+		return retval;
 	},
 	get_round() {
 		return Session.get("current_round");
@@ -336,6 +358,21 @@ Template.JapaneseNewGame.events({
 	'click .submit_game_button'(event, template) {
 		var r = confirm("Are you sure?");
 		if (r == true) {
+			var winScore = Math.max(Number(Session.get("east_score")),
+									Number(Session.get("south_score")),
+									Number(Session.get("west_score")),
+									Number(Session.get("north_score")));
+
+			if (winScore == Session.get("east_score"))
+				Session.set("east_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
+			else if (winScore == Session.get("south_score"))
+				Session.set("south_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
+			else if (winScore == Session.get("west_score"))
+				Session.set("west_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
+			else //if (winScore == Session.get("north_score"))
+				Session.set("north_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
+
+
 			save_game_to_database(template.hands.get());
 
 			//Deletes all hands
