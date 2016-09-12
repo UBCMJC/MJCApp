@@ -304,8 +304,7 @@ Template.JapaneseNewGame.events({
 				break;
 			};
 
-			if (NewGameUtils.someoneBankrupt() ||
-				Number(Session.get("current_round")) >= 12)
+			if (NewGameUtils.japaneseGameOver())
 			{
 				$( event.target ).addClass( "disabled");
 				$( ".submit_game_button" ).removeClass( "disabled" );

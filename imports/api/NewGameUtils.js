@@ -64,7 +64,21 @@ export var NewGameUtils = {
 		return (Session.get("east_score") < 0 || 
 				Session.get("south_score") < 0 ||
 				Session.get("west_score") < 0 ||
-				Session.get("north_score") < 0)
+				Session.get("north_score") < 0);
+	},
+
+	someoneAboveMinimum(minimum) {
+		return (Session.get("east_score") > minimum ||
+				Session.get("south_score") > minimum || 
+				Session.get("west_score") > minimum ||
+				Session.get("north_score") > minimum);
+	},
+
+	japaneseGameOver() {
+		return (this.someoneBankrupt() ||
+				Session.get("current_round") >= 12 ||
+				(Session.get("current_round") >= 8 && 
+					this.someoneAboveMinimum(Constants.JPN_END_POINTS)));
 	},
 
 	playerToDirection(player) {
