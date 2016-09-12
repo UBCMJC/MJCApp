@@ -480,10 +480,10 @@ function save_game_to_database(hands_array) {
 	var north_id = Players.findOne({japaneseLeagueName: north_player}, {})._id;
 
 	if (east_elo_delta != NaN && south_elo_delta != NaN && west_elo_delta != NaN && north_elo_delta != NaN) {
-		Players.update({_id: east_id}, {$inc: {japaneseElo: east_elo_delta}});
-		Players.update({_id: south_id}, {$inc: {japaneseElo: south_elo_delta}});
-		Players.update({_id: west_id}, {$inc: {japaneseElo: west_elo_delta}});
-		Players.update({_id: north_id}, {$inc: {japaneseElo: north_elo_delta}});
+		Players.update({_id: east_id}, {$inc: {japaneseElo: Number(east_elo_delta)}});
+		Players.update({_id: south_id}, {$inc: {japaneseElo: Number(south_elo_delta)}});
+		Players.update({_id: west_id}, {$inc: {japaneseElo: Number(west_elo_delta)}});
+		Players.update({_id: north_id}, {$inc: {japaneseElo: Number(north_elo_delta)}});
 	}
 
 	//Save game to database
