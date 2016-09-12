@@ -55,6 +55,9 @@
 			<li data-template="jpn_fuckup" role="presentation">
 				<a data-toggle="pill" href="#">Fuckup (Chombo チョンボ)</a>
 			</li>
+			<li data-template="jpn_split_pao" role="presentation">
+				<a data-toggle="pill" href="#">Split pao</a>
+			</li>
 		</u1>
 
 		<!-- Dynamically use different HTML templates for different hand types
@@ -221,6 +224,16 @@
 	{{> jpn_loser_s east=get_east south=get_south west=get_west north=get_north}}
 </template>
 
+<template name="jpn_split_pao">
+	<p>Dealin pao penalty!</p>
+	{{> jpn_winner_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> jpn_loser_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> jpn_pao_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> jpn_riichi_s east=get_east south=get_south west=get_west north=get_north}}
+	{{> jpn_points}}
+	{{> jpn_fu}}
+</template>
+
 <template name="jpn_winner_s">
 	<span class="player-select-header"><b>Winner: </b></span>
 	<div class="btn-group btn-group-justified winner_buttons">
@@ -264,6 +277,18 @@
 		<button type="button" class="btn btn-primary tenpai">{{south}}</button>
 		<button type="button" class="btn btn-primary tenpai">{{west}}</button>
 		<button type="button" class="btn btn-primary tenpai">{{north}}</button>
+	</div>
+	<br>
+	<br>
+</template>
+
+<template name="jpn_pao_s">
+	<span class="player-select-header"><b>Pao player: </b></span>
+	<div class="btn-group btn-group-justified pao_buttons">
+		<button type="button" class="btn btn-primary pao">{{east}}</button>
+		<button type="button" class="btn btn-primary pao">{{south}}</button>
+		<button type="button" class="btn btn-primary pao">{{west}}</button>
+		<button type="button" class="btn btn-primary pao">{{north}}</button>
 	</div>
 	<br>
 	<br>

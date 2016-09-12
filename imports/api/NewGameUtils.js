@@ -10,6 +10,7 @@ export var NewGameUtils = {
 
 		Session.set("round_winner", Constants.NO_PERSON);
 		Session.set("round_loser", Constants.NO_PERSON);
+		Session.set("round_pao_player", Constants.NO_PERSON);
 
 		Session.set("east_score", defaultScore);
 		Session.set("south_score", defaultScore);
