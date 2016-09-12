@@ -93,7 +93,7 @@ export var NewGameUtils = {
 		var retval = true;
 
 		retval = retval && (Session.get("current_points") != 0);
-		retval = retval && (Session.get("current_fu") == 0 && Session.get("current_points") > 4);
+		retval = retval && (Session.get("current_fu") != 0 || Session.get("current_points") > 4);
 
 		retval = retval && !(Session.get("current_points") == 1 && Session.get("current_fu") == 20);
 		retval = retval && !(Session.get("current_points") == 1 && Session.get("current_fu") == 25);
