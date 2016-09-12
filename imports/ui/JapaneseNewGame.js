@@ -294,7 +294,8 @@ Template.JapaneseNewGame.events({
 				switch(template.hand_type.get()) {
 				case "jpn_dealin":
 					if (Session.get("round_winner") != Constants.NO_PERSON &&
-						Session.get("round_loser") != Constants.NO_PERSON) {
+						Session.get("round_loser") != Constants.NO_PERSON &&
+						Session.get("round_winner") != Session.get("round_loser")) {
 						if (NewGameUtils.noIllegalJapaneseHands()) {
 							push_dealin_hand(template);
 						}
@@ -337,7 +338,10 @@ Template.JapaneseNewGame.events({
 				case "jpn_split_pao":
 					if (Session.get("round_winner") != Constants.NO_PERSON &&
 						Session.get("round_loser") != Constants.NO_PERSON &&
-						Session.get("round_pao_player") != Constants.NO_PERSON) {
+						Session.get("round_pao_player") != Constants.NO_PERSON &&
+						Session.get("round_winner") != Session.get("round_loser") &&
+						Session.get("round_loser") != Session.get("round_pao_player") &&
+						Session.get("round_pao_player") != Session.get("round_winner")) {
 						if (NewGameUtils.noIllegalJapaneseHands()) {
 							push_split_pao_hand(template);
 						}

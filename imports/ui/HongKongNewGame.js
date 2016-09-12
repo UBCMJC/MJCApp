@@ -158,7 +158,8 @@ Template.HongKongNewGame.events({
 				switch(template.hand_type.get()) {
 				case "dealin":
 					if (Session.get("round_winner") != Constants.NO_PERSON &&
-						Session.get("round_loser") != Constants.NO_PERSON) {
+						Session.get("round_loser") != Constants.NO_PERSON &&
+						Session.get("round_winner") != Session.get("round_loser")) {
 						if (Session.get("current_points") != 0) {
 							push_dealin_hand(template);
 						} else {
