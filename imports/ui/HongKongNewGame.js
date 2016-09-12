@@ -157,11 +157,28 @@ Template.HongKongNewGame.events({
 			if (NewGameUtils.allPlayersSelected() ) {
 				switch(template.hand_type.get()) {
 				case "dealin":
-					push_dealin_hand(template);
+					if (Session.get("round_winner") != Constants.NO_PERSON &&
+						Session.get("round_loser") != Constants.NO_PERSON) {
+						if (Session.get("current_points") != 0) {
+							push_dealin_hand(template);
+						} else {
+							window.alert("Invalid points entry!");
+						}
+					} else {
+						window.alert("You need to fill out who won and who dealt in!");
+					}
 					break;
 
 				case "selfdraw":
-					push_selfdraw_hand(template);
+					if (Session.get("round_winner") != Constants.NO_PERSON) {
+						if (Session.get("current_points") != 0) {
+							push_selfdraw_hand(template);
+						} else {
+							window.alert("Invalid points entry!");
+						}
+					} else {
+						window.alert("You need to fill out who self drew!");
+					}
 					break;
 
 				case "nowin":
@@ -173,7 +190,11 @@ Template.HongKongNewGame.events({
 					break;
 
 				case "fuckup":
-					push_fuckup_hand(template);
+					if (Session.get("round_loser") != Constants.NO_PERSON)
+						push_fuckup_hand(template);
+					else
+						window.alert("You need to fill out who made the mistake!");
+					break;
 					break;
 			
 				default:
@@ -181,7 +202,7 @@ Template.HongKongNewGame.events({
 					break;
 				};
 			} else {
-				window.alert("You need to fill out the above information!");
+				window.alert("You need to fill out the player information!");
 			}
 
 			if (NewGameUtils.someoneBankrupt() ||

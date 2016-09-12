@@ -81,6 +81,26 @@ export var NewGameUtils = {
 					this.someoneAboveMinimum(Constants.JPN_END_POINTS)));
 	},
 
+	noIllegalSelfdrawJapaneseHands() {
+		var retval = this.noIllegalJapaneseHands();
+
+		retval = retval && !(Session.get("current_points") == 2 && Session.get("current_fu") == 25); 
+
+		return retval;
+	},
+
+	noIllegalJapaneseHands() {
+		var retval = true;
+
+		retval = retval && (Session.get("current_points") != 0);
+		retval = retval && (Session.get("current_fu") != 0);
+
+		retval = retval && !(Session.get("current_points") == 1 && Session.get("current_fu") == 20);
+		retval = retval && !(Session.get("current_points") == 1 && Session.get("current_fu") == 25);
+
+		return retval;
+	},
+
 	getDirectionScore(direction) {
 		switch (direction) {
 		case "east":

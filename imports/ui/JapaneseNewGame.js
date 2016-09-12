@@ -287,42 +287,76 @@ Template.JapaneseNewGame.events({
 		if ( !$( event.target ).hasClass( "disabled")) {
 
 
-			template.riichi_sum_history.push(Session.get("free_riichi_sticks"));
-			switch(template.hand_type.get()) {
-			case "jpn_dealin":
-				//Do nothing if we don't have players yet
-				if (NewGameUtils.allPlayersSelected()) {
-					push_dealin_hand(template);
-				}
-				else {
-					window.alert("You need to fill out the above information!");
-				}
-				break;
+			//Do nothing if we don't have players yet
+			if (NewGameUtils.allPlayersSelected()) {
+				template.riichi_sum_history.push(Session.get("free_riichi_sticks"));
 
-			case "jpn_selfdraw":
-				push_selfdraw_hand(template);
-				break;
+				switch(template.hand_type.get()) {
+				case "jpn_dealin":
+					if (Session.get("round_winner") != Constants.NO_PERSON &&
+						Session.get("round_loser") != Constants.NO_PERSON) {
+						if (NewGameUtils.noIllegalJapaneseHands()) {
+							push_dealin_hand(template);
+						}
+						else {
+							window.alert("Invalid points/fu entry!");
+						}
+					} else {
+						window.alert("You need to fill out who won and who dealt in!");
+					}
+					break;
 
-			case "jpn_nowin":
-				push_nowin_hand(template);
-				break;	
+				case "jpn_selfdraw":
+					if (Session.get("round_winner") != Constants.NO_PERSON) {
+						if (NewGameUtils.noIllegalSelfdrawJapaneseHands()) {
+							push_selfdraw_hand(template);
+						}
+						else {
+							window.alert("Invalid points/fu entry!");
+						}
+					} else {
+						window.alert("You need to fill out who self drew!");
+					}
+					break;
 
-			case "jpn_restart":
-				push_restart_hand(template);
-				break;	
+				case "jpn_nowin":
+					push_nowin_hand(template);
+					break;	
 
-			case "jpn_fuckup":
-				push_fuckup_hand(template);
-				break;
+				case "jpn_restart":
+					push_restart_hand(template);
+					break;	
 
-			case "jpn_split_pao":
-				push_split_pao_hand(template);
-				break;
-			
-			default:
-				console.log(template.hand_type);
-				break;
-			};
+				case "jpn_fuckup":
+					if (Session.get("round_loser") != Constants.NO_PERSON)
+						push_fuckup_hand(template);
+					else
+						window.alert("You need to fill out who chomboed!");
+					break;
+
+				case "jpn_split_pao":
+					if (Session.get("round_winner") != Constants.NO_PERSON &&
+						Session.get("round_loser") != Constants.NO_PERSON &&
+						Session.get("round_pao_player") != Constants.NO_PERSON) {
+						if (NewGameUtils.noIllegalJapaneseHands()) {
+							push_split_pao_hand(template);
+						}
+						else {
+							window.alert("Invalid points/fu entry!");
+						}
+					} else {
+						window.alert("You need to fill out who won, who dealt in, and who has pao penalty!");
+					}
+					break;
+				
+				default:
+					console.log(template.hand_type);
+					break;
+				};
+			}
+			else {
+				window.alert("You need to fill out the player information!");
+			}
 
 			if (NewGameUtils.japaneseGameOver())
 			{
