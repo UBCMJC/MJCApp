@@ -59,6 +59,12 @@ Template.jpn_restart.onCreated( function() {
 	Session.set("west_riichi", false);
 	Session.set("north_riichi", false);
 });
+Template.jpn_split_pao.onCreated( function() {
+	Session.set("east_richii", false);
+	Session.set("south_riichi", false);
+	Session.set("west_riichi", false);
+	Session.set("north_riichi", false);
+})
 
 Template.registerHelper("get_jpn_start_points", function () {
 	return Constants.JPN_START_POINTS;
