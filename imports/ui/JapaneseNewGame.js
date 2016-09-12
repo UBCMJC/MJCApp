@@ -490,6 +490,15 @@ function save_game_to_database(hands_array) {
 		Players.update({_id: west_id}, {$inc: {japaneseGamesPlayed: 1}});
 		Players.update({_id: north_id}, {$inc: {japaneseGamesPlayed: 1}});
 
+		if (Number(Session.get("east_score")) < 0)
+			Players.update({_id: east_id}, {$inc: {japaneseBankruptTotal: 1}});
+		if (Number(Session.get("south_score")) < 0)
+			Players.update({_id: south_id}, {$inc: {japaneseBankruptTotal: 1}});
+		if (Number(Session.get("west_score")) < 0)
+			Players.update({_id: west_id}, {$inc: {japaneseBankruptTotal: 1}});
+		if (Number(Session.get("north_score")) < 0)
+			Players.update({_id: north_id}, {$inc: {japaneseBankruptTotal: 1}});
+
 		//Save game to database
 		JapaneseHands.insert(game);
 	}
