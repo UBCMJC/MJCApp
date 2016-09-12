@@ -326,6 +326,7 @@ Template.JapaneseNewGame.events({
 			Session.set("current_round", del_hand.round);
 
 			Session.set("free_riichi_sticks", template.riichi_sum_history.pop())
+			template.riichi_round_history.pop();
 
 			$( ".submit_hand_button" ).removeClass( "disabled" );
 			$( ".submit_game_button" ).addClass( "disabled" );
@@ -751,6 +752,11 @@ function push_nowin_hand(template) {
 		}
 	);
 
+	Session.set("east_score", Number(Session.get("east_score")) + eastDelta);
+	Session.set("south_score", Number(Session.get("south_score")) + southDelta);
+	Session.set("west_score", Number(Session.get("west_score")) + westDelta);
+	Session.set("north_score", Number(Session.get("north_score")) + northDelta);
+
 	if (Session.get(NewGameUtils.roundToDealerDirection(Session.get("current_round")) + "_tenpai") == true)
 		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 	else {
@@ -802,6 +808,12 @@ function push_restart_hand(template) {
 	  		north_delta: northDelta,
 		}
 	);
+
+	Session.set("east_score", Number(Session.get("east_score")) + eastDelta);
+	Session.set("south_score", Number(Session.get("south_score")) + southDelta);
+	Session.set("west_score", Number(Session.get("west_score")) + westDelta);
+	Session.set("north_score", Number(Session.get("north_score")) + northDelta);
+
 	Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 
 	template.riichi_round_history.push({east: Session.get("east_riichi"),
