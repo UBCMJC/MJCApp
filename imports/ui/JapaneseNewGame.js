@@ -446,12 +446,10 @@ function push_split_pao_hand(template) {
 		Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) + 1);
 	}
 
-	var value = selfdraw_delta(pnt, fu, win_direc, win_direc);
+	var value = dealin_delta(pnt, fu, win_direc, win_direc);
 
 	if (((value / 2 ) % 100) == 50)
 		value += 100;
-
-	console.log(pao_direc);
 
 	switch (win_direc) {
 	case "east":
