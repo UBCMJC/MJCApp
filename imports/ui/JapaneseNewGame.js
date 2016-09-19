@@ -1001,6 +1001,7 @@ function push_fuckup_hand(template) {
 function push_split_pao_hand(template) {
 	var points = Number(Session.get("current_points"));
 	var fu = Number(Session.get("current_fu"));
+	var dora = Number(Session.get("current_dora"));
 	var winnerWind = NewGameUtils.playerToDirection(Session.get("round_winner"));
 	var loserWind = NewGameUtils.playerToDirection(Session.get("round_loser"));
 	var paoWind = NewGameUtils.playerToDirection(Session.get("round_pao_player"));
