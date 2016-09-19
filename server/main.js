@@ -20,7 +20,7 @@ Meteor.startup(() => {
   			hongKongHandsLose: 0,
   			hongKongHandsTotal: 0,
   			hongKongWinPointsTotal: 0,
-  			hongKongChomboTotal: 0, // added
+  			hongKongChomboTotal: 0, //added
   			hongKongBankruptTotal: 0, //added
 
   			japaneseLeagueName: "JPN_DELETE_ME",
@@ -32,9 +32,9 @@ Meteor.startup(() => {
   			japaneseHandsTotal: 0,
   			japaneseWinPointsTotal: 0,
   			japaneseWinDoraTotal: 0,
-  			japaneseRiichiTotal: 0,
-        japaneseWinRiichiTotal: 0, //added
-  			japaneseChomboTotal: 0,
+  			japaneseRiichiTotal: 0, //added
+        japaneseWinRiichiTotal: 0,
+  			japaneseChomboTotal: 0, //added
   			japaneseBankruptTotal: 0, //added
 	
   		});

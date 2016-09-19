@@ -424,6 +424,18 @@ Template.JapaneseNewGame.events({
 			if (riichiHistory.north == true)
 				Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) - 1);
 
+			// Roll back chombo stat
+			if (del_hand.handType == "fuckup") {
+				if 		(Number(del_hand.eastDelta) < 0)
+					Session.set("eastFuckupTotal", Number(Session.get("eastFuckupTotal")) - 1);
+				else if (Number(del_hand.southDelta) < 0)
+					Session.set("southFuckupTotal", Number(Session.get("southFuckupTotal")) - 1);
+				else if (Number(del_hand.westDelta) < 0)
+					Session.set("westFuckupTotal", Number(Session.get("westFuckupTotal")) - 1);
+				else if (Number(del_hand.northDelta) < 0)
+					Session.set("northFuckupTotal", Number(Session.get("northFuckupTotal")) - 1);
+			}
+
 			$( ".submit_hand_button" ).removeClass( "disabled" );
 			$( ".submit_game_button" ).addClass( "disabled" );
 		}
@@ -482,6 +494,10 @@ Template.JapaneseNewGame.events({
 		$( ".nav-pills li" ).not( hand_type ).removeClass( "active" );
 
 		template.hand_type.set( hand_type.data( "template" ) );
+		console.log("e_ch " + Session.get("eastFuckupTotal"));
+		console.log("es_ch " + Session.get("southFuckupTotal"));
+		console.log("ew_ch " + Session.get("westFuckupTotal"));
+		console.log("en_ch " + Session.get("northFuckupTotal"));
 	},
 });
 
@@ -858,11 +874,16 @@ function push_restart_hand(template) {
 };
 
 function push_fuckup_hand(template) {
-	var lose_direc = NewGameUtils.playerToDirection(Session.get("round_loser"));
-	var eastDelta = fuckup_delta("east", lose_direc);
-	var southDelta = fuckup_delta("south", lose_direc);
-	var westDelta = fuckup_delta("west", lose_direc);
-	var northDelta = fuckup_delta("north", lose_direc);
+	var loserWind = NewGameUtils.playerToDirection(Session.get("round_loser"));
+	var eastDelta = fuckup_delta("east", loserWind);
+	var southDelta = fuckup_delta("south", loserWind);
+	var westDelta = fuckup_delta("west", loserWind);
+	var northDelta = fuckup_delta("north", loserWind);
+
+	if 		(loserWind == "east")  Session.set("eastFuckupTotal",  Number(Session.get("eastFuckupTotal"))  + 1);
+	else if (loserWind == "south") Session.set("southFuckupTotal", Number(Session.get("southFuckupTotal")) + 1);
+	else if (loserWind == "west")  Session.set("westFuckupTotal",  Number(Session.get("westFuckupTotal"))  + 1);
+	else if (loserWind == "north") Session.set("northFuckupTotal", Number(Session.get("northFuckupTotal")) + 1);
 
 	pushHand(template, "fuckup", eastDelta, southDelta, westDelta, northDelta);
 
