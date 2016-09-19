@@ -92,8 +92,8 @@ export var NewGameUtils = {
 
 	japaneseGameOver() {
 		return (this.someoneBankrupt() ||
-				Session.get("current_round") >= 12 ||
-				(Session.get("current_round") >= 8 && 
+				Session.get("current_round") > 12 ||
+				(Session.get("current_round") > 8 && 
 					this.someoneAboveMinimum(Constants.JPN_END_POINTS)));
 	},
 
