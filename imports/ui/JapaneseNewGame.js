@@ -863,11 +863,11 @@ function push_selfdraw_hand(template) {
 
 	eastDelta  += selfdraw_delta(points, fu, "east", winnerWind) +
 				  rewardRiichiSticks(riichiSum, "east", winnerWind);
-	southDelta += selfdraw_delta(points, fu, "south", winnerWind)
+	southDelta += selfdraw_delta(points, fu, "south", winnerWind) +
 				  rewardRiichiSticks(riichiSum, "south", winnerWind);
-	westDelta  += selfdraw_delta(points, fu, "west", winnerWind)
+	westDelta  += selfdraw_delta(points, fu, "west", winnerWind) +
 				  rewardRiichiSticks(riichiSum, "west", winnerWind);
-	northDelta += selfdraw_delta(points, fu, "north", winnerWind)
+	northDelta += selfdraw_delta(points, fu, "north", winnerWind) +
 				  rewardRiichiSticks(riichiSum, "north", winnerWind);
 
 	pushHand(template, "selfdraw", eastDelta, southDelta, westDelta, northDelta);
