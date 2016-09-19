@@ -266,40 +266,17 @@ Template.HongKongNewGame.events({
 			Session.set("current_bonus", del_hand.bonus);
 			Session.set("current_round", del_hand.round);
 
-			// Roll back chombo stat
-			if (del_hand.handType == "fuckup") {
-				if 		(Number(del_hand.eastDelta) < 0)
-					Session.set("eastFuckupTotal", Number(Session.get("eastFuckupTotal")) - 1);
-				else if (Number(del_hand.southDelta) < 0)
-					Session.set("southFuckupTotal", Number(Session.get("southFuckupTotal")) - 1);
-				else if (Number(del_hand.westDelta) < 0)
-					Session.set("westFuckupTotal", Number(Session.get("westFuckupTotal")) - 1);
-				else if (Number(del_hand.northDelta) < 0)
-					Session.set("northFuckupTotal", Number(Session.get("northFuckupTotal")) - 1);
-			}
+			// Rollback chombo stat
+			if (del_hand.handType == "fuckup")
+				rollbackChomboStat(del_hand);
 
-			// Roll back hand win stat
-			if (del_hand.handType != "nowin" && del_hand.handType != "restart" && del_hand.handType != "fuckup") {
-				if 		(Number(del_hand.eastDelta) > 0)
-					Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) - 1);
-				else if (Number(del_hand.southDelta) > 0)
-					Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) - 1);
-				else if (Number(del_hand.westDelta) > 0)
-					Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) - 1);
-				else if (Number(del_hand.northDelta) > 0)
-					Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) - 1);
-			}
+			// Rollback hand stats for wins/losses
+			if (del_hand.handType == "dealin" || del_hand.handType == "selfdraw") {
+				// win stat
+				rollbackHandWinStat(del_hand);
 
-			// Roll back hand deal in stat
-			if (del_hand.handType != "nowin" && del_hand.handType != "restart" && del_hand.handType != "fuckup") {
-				if 		(Number(del_hand.eastDelta) > 0)
-					Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) - 1);
-				else if (Number(del_hand.southDelta) > 0)
-					Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) - 1);
-				else if (Number(del_hand.westDelta) > 0)
-					Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) - 1);
-				else if (Number(del_hand.northDelta) > 0)
-					Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) - 1);
+				// loss stat -> may occur when pao selfdraw
+				rollbackHandDealinStat(del_hand);
 			}
 
 			$( ".submit_hand_button" ).removeClass( "disabled" );

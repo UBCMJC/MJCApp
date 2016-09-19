@@ -112,6 +112,43 @@ export var NewGameUtils = {
 		return retval;
 	},
 
+	rollbackChomboStat(lastHand) {
+		if 		(Number(lastHand.eastDelta) < 0)
+			Session.set("eastFuckupTotal", Number(Session.get("eastFuckupTotal")) - 1);
+		else if (Number(lastHand.southDelta) < 0)
+			Session.set("southFuckupTotal", Number(Session.get("southFuckupTotal")) - 1);
+		else if (Number(lastHand.westDelta) < 0)
+			Session.set("westFuckupTotal", Number(Session.get("westFuckupTotal")) - 1);
+		else if (Number(lastHand.northDelta) < 0)
+			Session.set("northFuckupTotal", Number(Session.get("northFuckupTotal")) - 1);
+	},
+
+	rollbackHandWinStat(lastHand) {
+		if 		(Number(del_hand.eastDelta) > 0)
+			Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) - 1);
+		else if (Number(del_hand.southDelta) > 0)
+			Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) - 1);
+		else if (Number(del_hand.westDelta) > 0)
+			Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) - 1);
+		else if (Number(del_hand.northDelta) > 0)
+			Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) - 1);
+	},
+
+	rollbackHandDealinStat(lastHand) {
+		// If we hit a self draw, ensure nothing happens
+		if (lastHand.eastDelta == 0 || lastHand.southDelta == 0 || lastHand.westDelta == 0 || lastHand.northDelta == 0)
+			return -1;
+
+		if 		(Number(lastHand.eastDelta) < 0)
+			Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) - 1);
+		else if (Number(lastHand.southDelta) < 0)
+			Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) - 1);
+		else if (Number(lastHand.westDelta) < 0)
+			Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) - 1);
+		else if (Number(lastHand.northDelta) < 0)
+			Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) - 1);
+	},
+
 	getDirectionScore(direction) {
 		switch (direction) {
 		case "east":
