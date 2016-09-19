@@ -488,6 +488,11 @@ Template.JapaneseNewGame.events({
 			Session.set("westPlayerWins", 0);
 			Session.set("northPlayerWins", 0);
 
+			Session.set("eastPlayerLosses", 0);
+			Session.set("southPlayerLosses", 0);
+			Session.set("westPlayerLosses", 0);
+			Session.set("northPlayerLosses", 0);
+
 			$( ".submit_hand_button" ).removeClass( "disabled" );
 			$( ".submit_game_button" ).addClass( "disabled" );
 		}
