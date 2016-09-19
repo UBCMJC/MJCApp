@@ -53,7 +53,7 @@ Template.HongKongNewGame.helpers({
 			return "?";
 			break;
 		default:
-			return Players.findOne({hongKongLeagueName: player}).hongKongElo;
+			return Players.findOne({hongKongLeagueName: player}).hongKongElo.toFixed(2);
 			break;
 		};
 	},

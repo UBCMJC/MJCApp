@@ -152,7 +152,7 @@ Template.JapaneseNewGame.helpers({
 			return "?";
 			break;
 		default:
-			return Players.findOne({japaneseLeagueName: player}).japaneseElo;
+			return Players.findOne({japaneseLeagueName: player}).japaneseElo.toFixed(2);
 			break;
 		};
 	},
