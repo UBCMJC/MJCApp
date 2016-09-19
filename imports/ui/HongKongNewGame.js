@@ -379,6 +379,12 @@ function save_game_to_database(hands_array) {
 		Players.update({_id: west_id}, {$inc: {hongKongChomboTotal: Number(Session.get("westFuckupTotal"))}});
 		Players.update({_id: north_id}, {$inc: {hongKongChomboTotal: Number(Session.get("northFuckupTotal"))}});
 
+		// Save number of hands (includes chombos, do we want this?)
+		Players.update({_id: east_id}, {$inc: {hongKongHandsTotal: hands_array.length}});
+		Players.update({_id: south_id}, {$inc: {hongKongHandsTotal: hands_array.length}});
+		Players.update({_id: west_id}, {$inc: {hongKongHandsTotal: hands_array.length}});
+		Players.update({_id: north_id}, {$inc: {hongKongHandsTotal: hands_array.length}});
+
 		// Calculate positions
 		// Calculate east position quickly?
 		position = 4;

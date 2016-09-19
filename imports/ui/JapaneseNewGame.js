@@ -565,6 +565,12 @@ function save_game_to_database(hands_array) {
 		Players.update({_id: west_id}, {$inc: {japaneseRiichiTotal: Number(Session.get("west_riichi_sum"))}});
 		Players.update({_id: north_id}, {$inc: {japaneseRiichiTotal: Number(Session.get("north_riichi_sum"))}});
 
+		// Update hands cound (Includes chombos, do we want this?)
+		Players.update({_id: east_id}, {$inc: {japaneseHandsTotal: hands_array.length}});
+		Players.update({_id: south_id}, {$inc: {japaneseHandsTotal: hands_array.length}});
+		Players.update({_id: west_id}, {$inc: {japaneseHandsTotal: hands_array.length}});
+		Players.update({_id: north_id}, {$inc: {japaneseHandsTotal: hands_array.length}});
+
 		// Calculate positions
 		// Calculate east position quickly?
 		position = 4;
