@@ -31,6 +31,11 @@ export var NewGameUtils = {
 		Session.set("westPlayerLosses", 0);
 		Session.set("northPlayerLosses", 0);
 
+		Session.set("eastPlayerPointsWon", 0);
+		Session.set("southPlayerPointsWon", 0);
+		Session.set("westPlayerPointsWon", 0);
+		Session.set("northPlayerPointsWon", 0);
+
 		Session.set("eastFuckupTotal", 0);
 		Session.set("southFuckupTotal", 0);
 		Session.set("westFuckupTotal", 0);
@@ -132,6 +137,17 @@ export var NewGameUtils = {
 			Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) - 1);
 		else if (Number(del_hand.northDelta) > 0)
 			Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) - 1);
+	},
+
+	rollbackTotalPointsStat(lastHand) {
+		if 		(Number(del_hand.eastDelta) > 0)
+			Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) - del_hand.points);
+		else if (Number(del_hand.southDelta) > 0)
+			Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) - del_hand.points);
+		else if (Number(del_hand.westDelta) > 0)
+			Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) - del_hand.points);
+		else if (Number(del_hand.northDelta) > 0)
+			Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) - del_hand.points);
 	},
 
 	rollbackHandDealinStat(lastHand) {
