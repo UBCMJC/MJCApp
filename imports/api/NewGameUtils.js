@@ -139,6 +139,26 @@ export var NewGameUtils = {
 			Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) - 1);
 	},
 
+	rollbackHandRiichiStat(lastHand, riichiHistory) {
+		if 		(Number(del_hand.eastDelta) > 0) {
+			if (riichiHistory.east == true)
+				Session.set("eastPlayerRiichisWon", Number(Session.get("eastPlayerRiichisWon")) - 1);
+		}
+		else if (Number(del_hand.southDelta) > 0) {
+			if (riichiHistory.south == true)
+				Session.set("southPlayerRiichisWon", Number(Session.get("southPlayerRiichisWon")) - 1);
+		}
+		else if (Number(del_hand.westDelta) > 0) {
+			if (riichiHistory.west == true)
+				Session.set("westPlayerRiichisWon", Number(Session.get("westPlayerRiichisWon")) - 1);
+		}
+		else if (Number(del_hand.northDelta) > 0) {
+			if (riichiHistory.north == true)
+				Session.set("northPlayerRiichisWon", Number(Session.get("northPlayerRiichisWon")) - 1);
+		}
+
+	},
+
 	rollbackTotalPointsStat(lastHand) {
 		if 		(Number(del_hand.eastDelta) > 0)
 			Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) - del_hand.points);
