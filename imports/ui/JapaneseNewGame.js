@@ -448,6 +448,18 @@ Template.JapaneseNewGame.events({
 					Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) - 1);
 			}
 
+			// Roll back hand deal in stat
+			if (del_hand.handType != "nowin" && del_hand.handType != "restart" && del_hand.handType != "fuckup") {
+				if 		(Number(del_hand.eastDelta) > 0)
+					Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) - 1);
+				else if (Number(del_hand.southDelta) > 0)
+					Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) - 1);
+				else if (Number(del_hand.westDelta) > 0)
+					Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) - 1);
+				else if (Number(del_hand.northDelta) > 0)
+					Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) - 1);
+			}
+
 			$( ".submit_hand_button" ).removeClass( "disabled" );
 			$( ".submit_game_button" ).addClass( "disabled" );
 		}
@@ -590,6 +602,12 @@ function save_game_to_database(hands_array) {
 		Players.update({_id: west_id}, {$inc: {japaneseHandsWin: Number(Session.get("westPlayerWins"))}});
 		Players.update({_id: north_id}, {$inc: {japaneseHandsWin: Number(Session.get("northPlayerWins"))}});
 
+		// Save number of hands lost
+		Players.update({_id: east_id}, {$inc: {japaneseHandsLose: Number(Session.get("eastPlayerLosses"))}});
+		Players.update({_id: south_id}, {$inc: {japaneseHandsLose: Number(Session.get("southPlayerLosses"))}});
+		Players.update({_id: west_id}, {$inc: {japaneseHandsLose: Number(Session.get("westPlayerLosses"))}});
+		Players.update({_id: north_id}, {$inc: {japaneseHandsLose: Number(Session.get("northPlayerLosses"))}});
+
 		// Calculate positions
 		// Calculate east position quickly?
 		position = 4;
@@ -640,6 +658,15 @@ function push_dealin_hand(template) {
 		Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) + 1);
 	else if (winnerWind == "north")
 		Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) + 1);
+
+	if 		(loserWind == "east")
+		Session.set("eastPlayerLosses", Number(Session.get("eastPlayerLosses")) + 1);
+	else if (loserWind == "south")
+		Session.set("southPlayerLosses", Number(Session.get("southPlayerLosses")) + 1);
+	else if (loserWind == "west")
+		Session.set("westPlayerLosses", Number(Session.get("westPlayerLosses")) + 1);
+	else if (loserWind == "north")
+		Session.set("northPlayerLosses", Number(Session.get("northPlayerLosses")) + 1);
 
 	if (Session.get("east_riichi") == true) {
 		eastDelta -= 1000;
@@ -877,6 +904,15 @@ function push_split_pao_hand(template) {
 		Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) + 1);
 	else if (winnerWind == "north")
 		Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) + 1);
+
+	if 		(loserWind == "east" || paoWind == "east")
+		Session.set("eastPlayerLosses", Number(Session.get("eastPlayerLosses")) + 1);
+	else if (loserWind == "south" || paoWind == "south")
+		Session.set("southPlayerLosses", Number(Session.get("southPlayerLosses")) + 1);
+	else if (loserWind == "west" || paoWind == "west")
+		Session.set("westPlayerLosses", Number(Session.get("westPlayerLosses")) + 1);
+	else if (loserWind == "north" || paoWind == "north")
+		Session.set("northPlayerLosses", Number(Session.get("northPlayerLosses")) + 1);
 
 	if (Session.get("east_riichi") == true) {
 		eastDelta -= 1000;

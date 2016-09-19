@@ -16,8 +16,8 @@ Meteor.startup(() => {
   			hongKongElo: 0, //added
   			hongKongGamesPlayed: 0, //added
   			hongKongPositionSum: 0, //added
-  			hongKongHandsWin: 0,
-  			hongKongHandsLose: 0,
+  			hongKongHandsWin: 0, //added
+  			hongKongHandsLose: 0, //added
   			hongKongHandsTotal: 0, //added
   			hongKongWinPointsTotal: 0,
   			hongKongChomboTotal: 0, //added
@@ -27,8 +27,8 @@ Meteor.startup(() => {
   			japaneseElo: 0, //added
   			japaneseGamesPlayed: 0, //added
   			japanesePositionSum: 0, //added
-  			japaneseHandsWin: 0,
-  			japaneseHandsLose: 0,
+  			japaneseHandsWin: 0, //added
+  			japaneseHandsLose: 0, //added
   			japaneseHandsTotal: 0, //added
   			japaneseWinPointsTotal: 0,
   			japaneseWinDoraTotal: 0,

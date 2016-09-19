@@ -26,6 +26,11 @@ export var NewGameUtils = {
 		Session.set("westPlayerWins", 0);
 		Session.set("northPlayerWins", 0);
 
+		Session.set("eastPlayerLosses", 0);
+		Session.set("southPlayerLosses", 0);
+		Session.set("westPlayerLosses", 0);
+		Session.set("northPlayerLosses", 0);
+
 		Session.set("eastFuckupTotal", 0);
 		Session.set("southFuckupTotal", 0);
 		Session.set("westFuckupTotal", 0);
