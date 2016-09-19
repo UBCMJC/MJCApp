@@ -129,30 +129,30 @@ export var NewGameUtils = {
 	},
 
 	rollbackHandWinStat(lastHand) {
-		if 		(Number(del_hand.eastDelta) > 0)
+		if 		(Number(lastHand.eastDelta) > 0)
 			Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) - 1);
-		else if (Number(del_hand.southDelta) > 0)
+		else if (Number(lastHand.southDelta) > 0)
 			Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) - 1);
-		else if (Number(del_hand.westDelta) > 0)
+		else if (Number(lastHand.westDelta) > 0)
 			Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) - 1);
-		else if (Number(del_hand.northDelta) > 0)
+		else if (Number(lastHand.northDelta) > 0)
 			Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) - 1);
 	},
 
 	rollbackHandRiichiStat(lastHand, riichiHistory) {
-		if 		(Number(del_hand.eastDelta) > 0) {
+		if 		(Number(lastHand.eastDelta) > 0) {
 			if (riichiHistory.east == true)
 				Session.set("eastPlayerRiichisWon", Number(Session.get("eastPlayerRiichisWon")) - 1);
 		}
-		else if (Number(del_hand.southDelta) > 0) {
+		else if (Number(lastHand.southDelta) > 0) {
 			if (riichiHistory.south == true)
 				Session.set("southPlayerRiichisWon", Number(Session.get("southPlayerRiichisWon")) - 1);
 		}
-		else if (Number(del_hand.westDelta) > 0) {
+		else if (Number(lastHand.westDelta) > 0) {
 			if (riichiHistory.west == true)
 				Session.set("westPlayerRiichisWon", Number(Session.get("westPlayerRiichisWon")) - 1);
 		}
-		else if (Number(del_hand.northDelta) > 0) {
+		else if (Number(lastHand.northDelta) > 0) {
 			if (riichiHistory.north == true)
 				Session.set("northPlayerRiichisWon", Number(Session.get("northPlayerRiichisWon")) - 1);
 		}
@@ -160,14 +160,14 @@ export var NewGameUtils = {
 	},
 
 	rollbackTotalPointsStat(lastHand) {
-		if 		(Number(del_hand.eastDelta) > 0)
-			Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) - del_hand.points);
-		else if (Number(del_hand.southDelta) > 0)
-			Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) - del_hand.points);
-		else if (Number(del_hand.westDelta) > 0)
-			Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) - del_hand.points);
-		else if (Number(del_hand.northDelta) > 0)
-			Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) - del_hand.points);
+		if 		(Number(lastHand.eastDelta) > 0)
+			Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) - lastHand.points);
+		else if (Number(lastHand.southDelta) > 0)
+			Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) - lastHand.points);
+		else if (Number(lastHand.westDelta) > 0)
+			Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) - lastHand.points);
+		else if (Number(lastHand.northDelta) > 0)
+			Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) - lastHand.points);
 	},
 
 	rollbackHandDealinStat(lastHand) {
