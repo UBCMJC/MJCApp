@@ -198,6 +198,7 @@
 	{{> jpn_riichi_s east=get_east south=get_south west=get_west north=get_north}}
 	{{> jpn_points}}
 	{{> jpn_fu}}
+	{{> jpn_dora}}
 </template>
 
 <template name="jpn_selfdraw">
@@ -206,6 +207,7 @@
 	{{> jpn_riichi_s east=get_east south=get_south west=get_west north=get_north}}
 	{{> jpn_points}}
 	{{> jpn_fu}}
+	{{> jpn_dora}}
 </template>
 
 <template name="jpn_nowin">
@@ -232,6 +234,7 @@
 	{{> jpn_riichi_s east=get_east south=get_south west=get_west north=get_north}}
 	{{> jpn_points}}
 	{{> jpn_fu}}
+	{{> jpn_dora}}
 </template>
 
 <template name="jpn_winner_s">
@@ -322,4 +325,18 @@
 
 <template name="jpn_fu_select">
 	<option value={{fu}} class="fu_value">{{fu}}</option>
+</template>
+
+<template name="jpn_dora">
+	<span class="player-select-header"><b>Dora: </b></span>
+	<select name="dora">
+		<option disabled selected value> -- Select Dora (ドラ) -- </option>
+		{{#each possible_dora}}
+			{{> jpn_dora_select}}
+		{{/each}}
+	</select>
+</template>
+
+<template name="jpn_dora_select">
+	<option value={{dora}} class="dora_value">{{dora}}</option>
 </template>
