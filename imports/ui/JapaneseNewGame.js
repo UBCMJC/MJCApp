@@ -808,7 +808,7 @@ function push_selfdraw_hand(template) {
 	var fu = Number(Session.get("current_fu"));
 	var dora = Number(Session.get("current_dora"));
 	var winnerWind = NewGameUtils.playerToDirection(Session.get("round_winner"));
-	var riichiSum = 0;
+	var riichiSum = Session.get("free_riichi_sticks");
 	var eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
 
 	if 		(winnerWind == "east") {
@@ -1004,7 +1004,7 @@ function push_split_pao_hand(template) {
 	var winnerWind = NewGameUtils.playerToDirection(Session.get("round_winner"));
 	var loserWind = NewGameUtils.playerToDirection(Session.get("round_loser"));
 	var paoWind = NewGameUtils.playerToDirection(Session.get("round_pao_player"));
-	var riichiSum = 0;
+	var riichiSum = Session.get("free_riichi_sticks");
 	var eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
 
 	if 		(winnerWind == "east") {
