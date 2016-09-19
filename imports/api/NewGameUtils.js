@@ -20,10 +20,11 @@ export var NewGameUtils = {
 		Session.set("current_round", 1);
 		Session.set("current_bonus", 0);
 		Session.set("current_points", 0);
-		Session.set("east_score_fuckup", 0);
-		Session.set("south_score_fuckup", 0);
-		Session.set("west_score_fuckup", 0);
-		Session.set("north_score_fuckup", 0);
+
+		Session.set("eastFuckupTotal", 0);
+		Session.set("southFuckupTotal", 0);
+		Session.set("westFuckupTotal", 0);
+		Session.set("northFuckupTotal", 0);
 	},
 
 	// UX: Convert a round and gametype into the correct round wind

@@ -133,36 +133,36 @@
 		</td>
 		<td>B {{bonus}}</td>
 
-		{{#if is_dealin hand_type}}
+		{{#if is_dealin handType}}
 		<td>{{points}}</td>
-		<td>{{east_delta}}</td>
-		<td>{{south_delta}}</td>
-		<td>{{west_delta}}</td>
-		<td>{{north_delta}}</td>
+		<td>{{eastDelta}}</td>
+		<td>{{southDelta}}</td>
+		<td>{{westDelta}}</td>
+		<td>{{northDelta}}</td>
 		{{/if}}
 
-		{{#if is_selfdraw hand_type}}
+		{{#if is_selfdraw handType}}
 		<td>{{points}}</td>
-		<td>{{east_delta}}</td>
-		<td>{{south_delta}}</td>
-		<td>{{west_delta}}</td>
-		<td>{{north_delta}}</td>
+		<td>{{eastDelta}}</td>
+		<td>{{southDelta}}</td>
+		<td>{{westDelta}}</td>
+		<td>{{northDelta}}</td>
 		{{/if}}
 
-		{{#if is_nowin hand_type}}
+		{{#if is_nowin handType}}
 		<td>No win!</td>
 		{{/if}}
 
-		{{#if is_restart hand_type}}
+		{{#if is_restart handType}}
 		<td>Reshuffle!</td>
 		{{/if}}
 
-		{{#if is_fuckup hand_type}}
+		{{#if is_fuckup handType}}
 		<td>Fucked up!</td>
-		<td>{{east_delta}}</td>
-		<td>{{south_delta}}</td>
-		<td>{{west_delta}}</td>
-		<td>{{north_delta}}</td>
+		<td>{{eastDelta}}</td>
+		<td>{{southDelta}}</td>
+		<td>{{westDelta}}</td>
+		<td>{{northDelta}}</td>
 		{{/if}}
 	</tr>
 </template>

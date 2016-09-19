@@ -12,30 +12,30 @@ Meteor.startup(() => {
 		Players.insert(
   		{
 			name: "DELETE_ME",
-			hongKongLeagueName: "JPN_DELETE_ME",
-  			hongKongElo: 0,
-  			hongKongGamesPlayed: 0,
-  			hongKongPositionSum: 0,
+			hongKongLeagueName: "HK_DELETE_ME",
+  			hongKongElo: 0, //added
+  			hongKongGamesPlayed: 0, //added
+  			hongKongPositionSum: 0, //added
   			hongKongHandsWin: 0,
   			hongKongHandsLose: 0,
   			hongKongHandsTotal: 0,
   			hongKongWinPointsTotal: 0,
-  			hongKongChomboTotal: 0,
-  			hongKongBankruptTotal: 0,
+  			hongKongChomboTotal: 0, // added
+  			hongKongBankruptTotal: 0, //added
 
-  			japaneseLeagueName: "HK_DELETE_ME",
-  			japaneseElo: 0,
-  			japaneseGamesPlayed: 0,
-  			japanesePositionSum: 0,
+  			japaneseLeagueName: "JPN_DELETE_ME",
+  			japaneseElo: 0, //added
+  			japaneseGamesPlayed: 0, //added
+  			japanesePositionSum: 0, //added
   			japaneseHandsWin: 0,
   			japaneseHandsLose: 0,
   			japaneseHandsTotal: 0,
   			japaneseWinPointsTotal: 0,
   			japaneseWinDoraTotal: 0,
   			japaneseRiichiTotal: 0,
-        japaneseWinRiichiTotal: 0,
+        japaneseWinRiichiTotal: 0, //added
   			japaneseChomboTotal: 0,
-  			japaneseBankruptTotal: 0,
+  			japaneseBankruptTotal: 0, //added
 	
   		});
 	}

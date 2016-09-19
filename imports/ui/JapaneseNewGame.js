@@ -455,10 +455,6 @@ Template.JapaneseNewGame.events({
 			Session.set("south_score", Constants.JPN_START_POINTS);
 			Session.set("west_score", Constants.JPN_START_POINTS);
 			Session.set("north_score", Constants.JPN_START_POINTS);
-			Session.set("east_score_fuckup", 0);
-			Session.set("south_score_fuckup", 0);
-			Session.set("west_score_fuckup", 0);
-			Session.set("north_score_fuckup", 0);
 
 			Session.set("current_round", 1);
 			Session.set("current_bonus", 0);
@@ -468,6 +464,11 @@ Template.JapaneseNewGame.events({
 			Session.set("current_dora", 0);
 	
 			Session.set("free_riichi_sticks", 0);
+
+			Session.set("eastFuckupTotal", 0);
+			Session.set("southFuckupTotal", 0);
+			Session.set("westFuckupTotal", 0);
+			Session.set("northFuckupTotal", 0);
 
 			$( ".submit_hand_button" ).removeClass( "disabled" );
 			$( ".submit_game_button" ).addClass( "disabled" );
@@ -500,10 +501,10 @@ function save_game_to_database(hands_array) {
 		south_player: south_player,
 		west_player: west_player,
 		north_player: north_player,
-		east_score: (Number(Session.get("east_score")) + Number(Session.get("east_score_fuckup"))),
-		south_score: (Number(Session.get("south_score")) + Number(Session.get("south_score_fuckup"))),
-		west_score: (Number(Session.get("west_score")) + Number(Session.get("west_score_fuckup"))),
-		north_score: (Number(Session.get("north_score")) + Number(Session.get("north_score_fuckup"))),
+		east_score: (Number(Session.get("east_score"))),
+		south_score: (Number(Session.get("south_score"))),
+		west_score: (Number(Session.get("west_score"))),
+		north_score: (Number(Session.get("north_score"))),
 		all_hands: hands_array,
 	};
 
@@ -543,10 +544,10 @@ function save_game_to_database(hands_array) {
 			Players.update({_id: north_id}, {$inc: {japaneseBankruptTotal: 1}});
 
 		// Update riichi count
-		Players.update({_id: east_id}, {$inc: {japaneseRiichiTotal: Session.get("east_riichi_sum")}});
-		Players.update({_id: south_id}, {$inc: {japaneseRiichiTotal: Session.get("south_riichi_sum")}});
-		Players.update({_id: west_id}, {$inc: {japaneseRiichiTotal: Session.get("west_riichi_sum")}});
-		Players.update({_id: north_id}, {$inc: {japaneseRiichiTotal: Session.get("north_riichi_sum")}});
+		Players.update({_id: east_id}, {$inc: {japaneseRiichiTotal: Number(Session.get("east_riichi_sum"))}});
+		Players.update({_id: south_id}, {$inc: {japaneseRiichiTotal: Number(Session.get("south_riichi_sum"))}});
+		Players.update({_id: west_id}, {$inc: {japaneseRiichiTotal: Number(Session.get("west_riichi_sum"))}});
+		Players.update({_id: north_id}, {$inc: {japaneseRiichiTotal: Number(Session.get("north_riichi_sum"))}});
 
 		// Calculate positions
 		// Calculate east position quickly?

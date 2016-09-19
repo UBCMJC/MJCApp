@@ -259,12 +259,24 @@ Template.HongKongNewGame.events({
 		if (r == true) {
 			var del_hand = Template.instance().hands.pop();
 
-			Session.set("east_score", Number(Session.get("east_score")) - Number(del_hand.east_delta));
-			Session.set("south_score", Number(Session.get("south_score")) - Number(del_hand.south_delta));
-			Session.set("west_score", Number(Session.get("west_score")) - Number(del_hand.west_delta));
-			Session.set("north_score", Number(Session.get("north_score")) - Number(del_hand.north_delta));
+			Session.set("east_score", Number(Session.get("east_score")) - Number(del_hand.eastDelta));
+			Session.set("south_score", Number(Session.get("south_score")) - Number(del_hand.southDelta));
+			Session.set("west_score", Number(Session.get("west_score")) - Number(del_hand.westDelta));
+			Session.set("north_score", Number(Session.get("north_score")) - Number(del_hand.northDelta));
 			Session.set("current_bonus", del_hand.bonus);
 			Session.set("current_round", del_hand.round);
+
+			// Roll back chombo stat
+			if (del_hand.handType == "fuckup") {
+				if 		(Number(del_hand.eastDelta) < 0)
+					Session.set("eastFuckupTotal", Number(Session.get("eastFuckupTotal")) - 1);
+				else if (Number(del_hand.southDelta) < 0)
+					Session.set("southFuckupTotal", Number(Session.get("southFuckupTotal")) - 1);
+				else if (Number(del_hand.westDelta) < 0)
+					Session.set("westFuckupTotal", Number(Session.get("westFuckupTotal")) - 1);
+				else if (Number(del_hand.northDelta) < 0)
+					Session.set("northFuckupTotal", Number(Session.get("northFuckupTotal")) - 1);
+			}
 
 			$( ".submit_hand_button" ).removeClass( "disabled" );
 			$( ".submit_game_button" ).addClass( "disabled" );
@@ -282,13 +294,14 @@ Template.HongKongNewGame.events({
 			Session.set("south_score", Constants.HKG_START_POINTS);
 			Session.set("west_score", Constants.HKG_START_POINTS);
 			Session.set("north_score", Constants.HKG_START_POINTS);
-			Session.set("east_score_fuckup", 0);
-			Session.set("south_score_fuckup", 0);
-			Session.set("west_score_fuckup", 0);
-			Session.set("north_score_fuckup", 0);
 
 			Session.set("current_round", 1);
 			Session.set("current_bonus", 0);
+
+			Session.set("eastFuckupTotal", 0);
+			Session.set("southFuckupTotal", 0);
+			Session.set("westFuckupTotal", 0);
+			Session.set("northFuckupTotal", 0);
 
 			$( ".submit_hand_button" ).removeClass( "disabled" );
 			$( ".submit_game_button" ).addClass( "disabled" );
@@ -318,10 +331,10 @@ function save_game_to_database(hands_array) {
 		south_player: south_player,
 		west_player: west_player,
 		north_player: north_player,
-		east_score: (Number(Session.get("east_score")) + Number(Session.get("east_score_fuckup"))),
-		south_score: (Number(Session.get("south_score")) + Number(Session.get("south_score_fuckup"))),
-		west_score: (Number(Session.get("west_score")) + Number(Session.get("west_score_fuckup"))),
-		north_score: (Number(Session.get("north_score")) + Number(Session.get("north_score_fuckup"))),
+		east_score: (Number(Session.get("east_score"))),
+		south_score: (Number(Session.get("south_score"))),
+		west_score: (Number(Session.get("west_score"))),
+		north_score: (Number(Session.get("north_score"))),
 		all_hands: hands_array,
 	};
 
@@ -359,6 +372,12 @@ function save_game_to_database(hands_array) {
 			Players.update({_id: west_id}, {$inc: {hongKongBankruptTotal: 1}});
 		if (Number(Session.get("north_score")) < 0)
 			Players.update({_id: north_id}, {$inc: {hongKongBankruptTotal: 1}});
+
+		// Save chombo counts
+		Players.update({_id: east_id}, {$inc: {hongKongChomboTotal: Number(Session.get("eastFuckupTotal"))}});
+		Players.update({_id: south_id}, {$inc: {hongKongChomboTotal: Number(Session.get("southFuckupTotal"))}});
+		Players.update({_id: west_id}, {$inc: {hongKongChomboTotal: Number(Session.get("westFuckupTotal"))}});
+		Players.update({_id: north_id}, {$inc: {hongKongChomboTotal: Number(Session.get("northFuckupTotal"))}});
 
 		// Calculate positions
 		// Calculate east position quickly?
@@ -517,6 +536,11 @@ function push_fuckup_hand(template) {
 	var westDelta = fuckup_delta("west", loserWind);
 	var northDelta = fuckup_delta("north", loserWind);
 
+	if 		(loserWind == "east")  Session.set("eastFuckupTotal",  Number(Session.get("eastFuckupTotal"))  + 1);
+	else if (loserWind == "south") Session.set("southFuckupTotal", Number(Session.get("southFuckupTotal")) + 1);
+	else if (loserWind == "west")  Session.set("westFuckupTotal",  Number(Session.get("westFuckupTotal"))  + 1);
+	else if (loserWind == "north") Session.set("northFuckupTotal", Number(Session.get("northFuckupTotal")) + 1);
+
 	pushHand(template, "fuckup", eastDelta, southDelta, westDelta, northDelta);
 };
 
@@ -527,7 +551,7 @@ function pushHand(template, handType, eastDelta, southDelta, westDelta, northDel
 		  	round: Session.get("current_round"),
 		  	bonus: Session.get("current_bonus"),
 			points: Session.get("current_points"),
-	  		eastDelta: eastDelta
+	  		eastDelta: eastDelta,
 	  		southDelta: southDelta,
 	  		westDelta: westDelta,
 	  		northDelta: northDelta,
