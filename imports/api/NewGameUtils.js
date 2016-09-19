@@ -21,6 +21,11 @@ export var NewGameUtils = {
 		Session.set("current_bonus", 0);
 		Session.set("current_points", 0);
 
+		Session.set("eastPlayerWins", 0);
+		Session.set("southPlayerWins", 0);
+		Session.set("westPlayerWins", 0);
+		Session.set("northPlayerWins", 0);
+
 		Session.set("eastFuckupTotal", 0);
 		Session.set("southFuckupTotal", 0);
 		Session.set("westFuckupTotal", 0);
