@@ -268,18 +268,18 @@ Template.HongKongNewGame.events({
 
 			// Rollback chombo stat
 			if (del_hand.handType == "fuckup")
-				rollbackChomboStat(del_hand);
+				NewGameUtils.rollbackChomboStat(del_hand);
 
 			// Rollback hand stats for wins/losses
 			if (del_hand.handType == "dealin" || del_hand.handType == "selfdraw") {
 				// win stat
-				rollbackHandWinStat(del_hand);
+				NewGameUtils.rollbackHandWinStat(del_hand);
 
 				// points stat
-				rollbackTotalPointsStat(del_hand);
+				NewGameUtils.rollbackTotalPointsStat(del_hand);
 
 				// loss stat -> may occur when pao selfdraw
-				rollbackHandDealinStat(del_hand);
+				NewGameUtils.rollbackHandDealinStat(del_hand);
 			}
 
 			$( ".submit_hand_button" ).removeClass( "disabled" );

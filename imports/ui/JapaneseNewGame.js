@@ -478,21 +478,21 @@ Template.JapaneseNewGame.events({
 
 			// Rollback chombo stat
 			if (del_hand.handType == "fuckup")
-				rollbackChomboStat(del_hand);
+				NewGameUtils.rollbackChomboStat(del_hand);
 
 			// Rollback hand win/loss stat
 			if (del_hand.handType == "dealin" || del_hand.handType == "selfdraw") {
 				// win stat
-				rollbackHandWinStat(del_hand);
+				NewGameUtils.rollbackHandWinStat(del_hand);
 
 				// win riichis stat
-				rollbackHandRiichiStat(del_hand, riichiHistory);
+				NewGameUtils.rollbackHandRiichiStat(del_hand, riichiHistory);
 
 				// points stat
-				rollbackTotalPointsStat(del_hand);
+				NewGameUtils.rollbackTotalPointsStat(del_hand);
 
 				// loss stat -> may occur when pao selfdraw
-				rollbackHandDealinStat(del_hand);
+				NewGameUtils.rollbackHandDealinStat(del_hand);
 			}
 
 			$( ".submit_hand_button" ).removeClass( "disabled" );
