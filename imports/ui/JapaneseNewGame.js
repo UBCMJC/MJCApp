@@ -1075,19 +1075,19 @@ function push_split_pao_hand(template) {
 	switch (winnerWind) {
 	case "east":
 		eastDelta += value;
-		eastDelta += (riichiSum + Number(Session.get("free_riichi_sticks"))) * 1000;
+		eastDelta += (riichiSum * 1000);
 		break;
 	case "south":
 		southDelta += value;
-		southDelta += (riichiSum + Number(Session.get("free_riichi_sticks"))) * 1000;
+		southDelta += (riichiSum * 1000);
 		break;
 	case "west":
 		westDelta += value;
-		westDelta += (riichiSum + Number(Session.get("free_riichi_sticks"))) * 1000;
+		westDelta += (riichiSum * 1000);
 		break;
 	case "north":
 		northDelta += value;
-		northDelta += (riichiSum + Number(Session.get("free_riichi_sticks"))) * 1000;
+		northDelta += (riichiSum * 1000);
 		break;
 	}
 
