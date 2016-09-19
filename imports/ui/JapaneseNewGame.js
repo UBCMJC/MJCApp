@@ -894,7 +894,7 @@ function push_nowin_hand(template) {
 	if (Session.get("north_tenpai") == true) tenpaiSum++;
 
 	tenpaiWin = Constants.JPN_TENPAI_PAYOUT / tenpaiSum;
-	tenpaiLose = Constants.JPN_TENPAI_PAYOUT / (4 - tenpaiSum);
+	tenpaiLose = -Constants.JPN_TENPAI_PAYOUT / (4 - tenpaiSum);
 	if (tenpaiSum != 4 && tenpaiSum != 0) {
 		eastDelta += Session.get("east_tenpai") == true ? tenpaiWin : tenpaiLose;
 		southDelta += Session.get("south_tenpai") == true ? tenpaiWin : tenpaiLose;
