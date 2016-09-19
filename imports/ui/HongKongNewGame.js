@@ -44,12 +44,6 @@ Template.HongKongNewGame.helpers({
 	get_player_score_final(direction) {
 		return NewGameUtils.getDirectionScore(direction);
 	},
-	get_round() {
-		return Session.get("current_round");
-	},
-	get_bonus() {
-		return Session.get("current_bonus");
-	},
 	get_hk_elo(player) {
 		switch (player) {
 		case Constants.DEFAULT_EAST:
@@ -344,16 +338,19 @@ function save_game_to_database(hands_array) {
 	var north_id = Players.findOne({hongKongLeagueName: north_player}, {})._id;
 
 	if (east_elo_delta != NaN && south_elo_delta != NaN && west_elo_delta != NaN && north_elo_delta != NaN) {
+		// Save ELO
 		Players.update({_id: east_id}, {$inc: {hongKongElo: east_elo_delta}});
 		Players.update({_id: south_id}, {$inc: {hongKongElo: south_elo_delta}});
 		Players.update({_id: west_id}, {$inc: {hongKongElo: west_elo_delta}});
 		Players.update({_id: north_id}, {$inc: {hongKongElo: north_elo_delta}});
 
+		// Save number of games
 		Players.update({_id: east_id}, {$inc: {hongKongGamesPlayed: 1}});
 		Players.update({_id: south_id}, {$inc: {hongKongGamesPlayed: 1}});
 		Players.update({_id: west_id}, {$inc: {hongKongGamesPlayed: 1}});
 		Players.update({_id: north_id}, {$inc: {hongKongGamesPlayed: 1}});
 
+		// Save bankruptcy counts
 		if (Number(Session.get("east_score")) < 0)
 			Players.update({_id: east_id}, {$inc: {hongKongBankruptTotal: 1}});
 		if (Number(Session.get("south_score")) < 0)
@@ -363,7 +360,8 @@ function save_game_to_database(hands_array) {
 		if (Number(Session.get("north_score")) < 0)
 			Players.update({_id: north_id}, {$inc: {hongKongBankruptTotal: 1}});
 
-		//Calculate east position quickly?
+		// Calculate positions
+		// Calculate east position quickly?
 		position = 4;
 		if (Number(Session.get("east_score")) >= Number(Session.get("south_score")))
 			position--;
@@ -374,7 +372,7 @@ function save_game_to_database(hands_array) {
 
 		Players.update({_id: east_id}, {$inc: {hongKongPositionSum: position}});
 
-		//Calculate east position quickly?
+		// Calculate east position quickly?
 		position = 4;
 		if (Number(Session.get("south_score")) > Number(Session.get("east_score")))
 			position--;
@@ -385,7 +383,7 @@ function save_game_to_database(hands_array) {
 
 		Players.update({_id: south_id}, {$inc: {hongKongPositionSum: position}});
 
-		//Calculate east position quickly?
+		// Calculate east position quickly?
 		position = 4;
 		if (Number(Session.get("west_score")) > Number(Session.get("east_score")))
 			position--;
@@ -396,7 +394,7 @@ function save_game_to_database(hands_array) {
 
 		Players.update({_id: west_id}, {$inc: {hongKongPositionSum: position}});
 
-		//Calculate east position quickly?
+		// Calculate east position quickly?
 		var position = 4;
 		if (Number(Session.get("north_score")) > Number(Session.get("east_score")))
 			position--;

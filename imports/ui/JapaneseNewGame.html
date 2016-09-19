@@ -129,48 +129,48 @@
 			{{displayRoundWind round}} {{jpn_round_mod4 round}} B{{bonus}}
 		</td>
 
-		{{#if is_dealin hand_type}}
+		{{#if is_dealin handType}}
 		<td>{{points}}</td>
 		<td>{{fu}}</td>
 		<td>{{dora}}</td>
-		<td>{{east_delta}}</td>
-		<td>{{south_delta}}</td>
-		<td>{{west_delta}}</td>
-		<td>{{north_delta}}</td>
+		<td>{{eastDelta}}</td>
+		<td>{{southDelta}}</td>
+		<td>{{westDelta}}</td>
+		<td>{{northDelta}}</td>
 		{{/if}}
 
-		{{#if is_selfdraw hand_type}}
+		{{#if is_selfdraw handType}}
 		<td>{{points}}</td>
 		<td>{{fu}}</td>
 		<td>{{dora}}</td>
-		<td>{{east_delta}}</td>
-		<td>{{south_delta}}</td>
-		<td>{{west_delta}}</td>
-		<td>{{north_delta}}</td>
+		<td>{{eastDelta}}</td>
+		<td>{{southSelta}}</td>
+		<td>{{westDelta}}</td>
+		<td>{{northDelta}}</td>
 		{{/if}}
 
-		{{#if is_nowin hand_type}}
+		{{#if is_nowin handType}}
 		<td colspan="3">No win!</td>
-		<td>{{east_delta}}</td>
-		<td>{{south_delta}}</td>
-		<td>{{west_delta}}</td>
-		<td>{{north_delta}}</td>
+		<td>{{eastDelta}}</td>
+		<td>{{southDelta}}</td>
+		<td>{{westDelta}}</td>
+		<td>{{northDelta}}</td>
 		{{/if}}
 
-		{{#if is_restart hand_type}}
+		{{#if is_restart handType}}
 		<td colspan="3">Reshuffle!</td>
-		<td>{{east_delta}}</td>
-		<td>{{south_delta}}</td>
-		<td>{{west_delta}}</td>
-		<td>{{north_delta}}</td>
+		<td>{{eastDelta}}</td>
+		<td>{{southDelta}}</td>
+		<td>{{westDelta}}</td>
+		<td>{{northDelta}}</td>
 		{{/if}}
 
-		{{#if is_fuckup hand_type}}
+		{{#if is_fuckup handType}}
 		<td colspan="3">Fucked up!</td>
-		<td>{{east_delta}}</td>
-		<td>{{south_delta}}</td>
-		<td>{{west_delta}}</td>
-		<td>{{north_delta}}</td>
+		<td>{{eastDelta}}</td>
+		<td>{{southDelta}}</td>
+		<td>{{westDelta}}</td>
+		<td>{{northDelta}}</td>
 		{{/if}}
 	</tr>
 </template>

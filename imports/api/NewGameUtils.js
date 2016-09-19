@@ -137,7 +137,14 @@ Template.registerHelper("get_south", function () {
 });
 Template.registerHelper("get_west", function () {
 	return Session.get("current_west");
-})
+});
 Template.registerHelper("get_north", function () {
 	return Session.get("current_north");
-})
+});
+
+Template.registerHelper("get_round", function() {
+	return Session.get("current_round");
+});
+Template.registerHelper("get_bonus", function () {
+	return Session.get("current_bonus");
+});
