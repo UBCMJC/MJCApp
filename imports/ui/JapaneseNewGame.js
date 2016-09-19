@@ -542,49 +542,39 @@ function save_game_to_database(hands_array) {
 		if (Number(Session.get("north_score")) < 0)
 			Players.update({_id: north_id}, {$inc: {japaneseBankruptTotal: 1}});
 
+		// Update riichi count
+		Players.update({_id: east_id}, {$inc: {japaneseRiichiTotal: Session.get("east_riichi_sum")}});
+		Players.update({_id: south_id}, {$inc: {japaneseRiichiTotal: Session.get("south_riichi_sum")}});
+		Players.update({_id: west_id}, {$inc: {japaneseRiichiTotal: Session.get("west_riichi_sum")}});
+		Players.update({_id: north_id}, {$inc: {japaneseRiichiTotal: Session.get("north_riichi_sum")}});
+
 		// Calculate positions
 		// Calculate east position quickly?
 		position = 4;
-		if (Number(Session.get("east_score")) >= Number(Session.get("south_score")))
-			position--;
-		if (Number(Session.get("east_score")) >= Number(Session.get("west_score")))
-			position--;
-		if (Number(Session.get("east_score")) >= Number(Session.get("north_score")))
-			position--;
-
+		if (Number(Session.get("east_score")) >= Number(Session.get("south_score"))) position--;
+		if (Number(Session.get("east_score")) >= Number(Session.get("west_score"))) position--;
+		if (Number(Session.get("east_score")) >= Number(Session.get("north_score"))) position--;
 		Players.update({_id: east_id}, {$inc: {japanesePositionSum: position}});
 
 		// Calculate east position quickly?
 		position = 4;
-		if (Number(Session.get("south_score")) > Number(Session.get("east_score")))
-			position--;
-		if (Number(Session.get("south_score")) >= Number(Session.get("west_score")))
-			position--;
-		if (Number(Session.get("south_score")) >= Number(Session.get("north_score")))
-			position--;
-
+		if (Number(Session.get("south_score")) > Number(Session.get("east_score"))) position--;
+		if (Number(Session.get("south_score")) >= Number(Session.get("west_score"))) position--;
+		if (Number(Session.get("south_score")) >= Number(Session.get("north_score"))) position--;
 		Players.update({_id: south_id}, {$inc: {japanesePositionSum: position}});
 
 		// Calculate east position quickly?
 		position = 4;
-		if (Number(Session.get("west_score")) > Number(Session.get("east_score")))
-			position--;
-		if (Number(Session.get("west_score")) > Number(Session.get("south_score")))
-			position--;
-		if (Number(Session.get("west_score")) >= Number(Session.get("north_score")))
-			position--;
-
+		if (Number(Session.get("west_score")) > Number(Session.get("east_score"))) position--;
+		if (Number(Session.get("west_score")) > Number(Session.get("south_score"))) position--;
+		if (Number(Session.get("west_score")) >= Number(Session.get("north_score"))) position--;
 		Players.update({_id: west_id}, {$inc: {japanesePositionSum: position}});
 
 		// Calculate east position quickly?
 		var position = 4;
-		if (Number(Session.get("north_score")) > Number(Session.get("east_score")))
-			position--;
-		if (Number(Session.get("north_score")) > Number(Session.get("south_score")))
-			position--;
-		if (Number(Session.get("north_score")) > Number(Session.get("west_score")))
-			position--;
-
+		if (Number(Session.get("north_score")) > Number(Session.get("east_score"))) position--;
+		if (Number(Session.get("north_score")) > Number(Session.get("south_score"))) position--;
+		if (Number(Session.get("north_score")) > Number(Session.get("west_score"))) position--;
 		Players.update({_id: north_id}, {$inc: {japanesePositionSum: position}});
 
 		//Save game to database

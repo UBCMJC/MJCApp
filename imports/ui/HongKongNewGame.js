@@ -363,46 +363,30 @@ function save_game_to_database(hands_array) {
 		// Calculate positions
 		// Calculate east position quickly?
 		position = 4;
-		if (Number(Session.get("east_score")) >= Number(Session.get("south_score")))
-			position--;
-		if (Number(Session.get("east_score")) >= Number(Session.get("west_score")))
-			position--;
-		if (Number(Session.get("east_score")) >= Number(Session.get("north_score")))
-			position--;
-
+		if (Number(Session.get("east_score")) >= Number(Session.get("south_score"))) position--;
+		if (Number(Session.get("east_score")) >= Number(Session.get("west_score"))) position--;
+		if (Number(Session.get("east_score")) >= Number(Session.get("north_score"))) position--;
 		Players.update({_id: east_id}, {$inc: {hongKongPositionSum: position}});
 
 		// Calculate east position quickly?
 		position = 4;
-		if (Number(Session.get("south_score")) > Number(Session.get("east_score")))
-			position--;
-		if (Number(Session.get("south_score")) >= Number(Session.get("west_score")))
-			position--;
-		if (Number(Session.get("south_score")) >= Number(Session.get("north_score")))
-			position--;
-
+		if (Number(Session.get("south_score")) > Number(Session.get("east_score"))) position--;
+		if (Number(Session.get("south_score")) >= Number(Session.get("west_score"))) position--;
+		if (Number(Session.get("south_score")) >= Number(Session.get("north_score"))) position--;
 		Players.update({_id: south_id}, {$inc: {hongKongPositionSum: position}});
 
 		// Calculate east position quickly?
 		position = 4;
-		if (Number(Session.get("west_score")) > Number(Session.get("east_score")))
-			position--;
-		if (Number(Session.get("west_score")) > Number(Session.get("south_score")))
-			position--;
-		if (Number(Session.get("west_score")) >= Number(Session.get("north_score")))
-			position--;
-
+		if (Number(Session.get("west_score")) > Number(Session.get("east_score"))) position--;
+		if (Number(Session.get("west_score")) > Number(Session.get("south_score"))) position--;
+		if (Number(Session.get("west_score")) >= Number(Session.get("north_score"))) position--;
 		Players.update({_id: west_id}, {$inc: {hongKongPositionSum: position}});
 
 		// Calculate east position quickly?
 		var position = 4;
-		if (Number(Session.get("north_score")) > Number(Session.get("east_score")))
-			position--;
-		if (Number(Session.get("north_score")) > Number(Session.get("south_score")))
-			position--;
-		if (Number(Session.get("north_score")) > Number(Session.get("west_score")))
-			position--;
-
+		if (Number(Session.get("north_score")) > Number(Session.get("east_score"))) position--;
+		if (Number(Session.get("north_score")) > Number(Session.get("south_score"))) position--;
+		if (Number(Session.get("north_score")) > Number(Session.get("west_score"))) position--;
 		Players.update({_id: north_id}, {$inc: {hongKongPositionSum: position}});
 
 		//Save game to database
@@ -414,23 +398,13 @@ function push_dealin_hand(template) {
 	var points = Number(Session.get("current_points"));
 	var winnerWind = NewGameUtils.playerToDirection(Session.get("round_winner"));
 	var loserWind = NewGameUtils.playerToDirection(Session.get("round_loser"));
-		
-	template.hands.push( 
-		{
-			hand_type: "dealin",
-		  	round: Session.get("current_round"),
-		  	bonus: Session.get("current_bonus"),
-			points: Session.get("current_points"),
-	  		east_delta: dealin_delta(points, "east", winnerWind, loserWind),
-	  		south_delta: dealin_delta(points, "south", winnerWind, loserWind),
-	  		west_delta: dealin_delta(points, "west", winnerWind, loserWind),
-	  		north_delta: dealin_delta(points, "north", winnerWind, loserWind),
-		});
 
-	Session.set("east_score", Number(Session.get("east_score")) + dealin_delta(points, "east", winnerWind, loserWind));
-	Session.set("south_score", Number(Session.get("south_score")) + dealin_delta(points, "south", winnerWind, loserWind));
-	Session.set("west_score", Number(Session.get("west_score")) + dealin_delta(points, "west", winnerWind, loserWind));
-	Session.set("north_score", Number(Session.get("north_score")) + dealin_delta(points, "north", winnerWind, loserWind));
+ 	var eastDelta = dealin_delta(points, "east", winnerWind, loserWind);
+	var southDelta = dealin_delta(points, "south", winnerWind, loserWind);
+	var westDelta = dealin_delta(points, "west", winnerWind, loserWind);
+	var northDelta = dealin_delta(points, "north", winnerWind, loserWind);
+
+	pushHand(template, "dealin", eastDelta, southDelta, westDelta, northDelta);
 
 	if (winnerWind == NewGameUtils.roundToDealerDirection(Session.get("current_round")))
 		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
@@ -444,22 +418,12 @@ function push_selfdraw_hand(template) {
 	var points = Number(Session.get("current_points"));
 	var winnerWind = NewGameUtils.playerToDirection(Session.get("round_winner"));
 
-	template.hands.push( 
-		{
-			hand_type: "selfdraw",
-			round: Session.get("current_round"),
-			bonus: Session.get("current_bonus"),
-			points: Session.get("current_points"),
-			east_delta: selfdraw_delta(points, "east", winnerWind),
-			south_delta: selfdraw_delta(points, "south", winnerWind),
-			west_delta: selfdraw_delta(points, "west", winnerWind),
-			north_delta: selfdraw_delta(points, "north", winnerWind),
-		});
+ 	var eastDelta = selfdraw_delta(points, "east", winnerWind);
+	var southDelta = selfdraw_delta(points, "south", winnerWind);
+	var westDelta = selfdraw_delta(points, "west", winnerWind);
+	var northDelta = selfdraw_delta(points, "north", winnerWind);
 
-	Session.set("east_score", Number(Session.get("east_score")) + selfdraw_delta(points, "east", winnerWind));
-	Session.set("south_score", Number(Session.get("south_score")) + selfdraw_delta(points, "south", winnerWind));
-	Session.set("west_score", Number(Session.get("west_score")) + selfdraw_delta(points, "west", winnerWind));
-	Session.set("north_score", Number(Session.get("north_score")) + selfdraw_delta(points, "north", winnerWind));
+	pushHand(template, "selfdraw", eastDelta, southDelta, westDelta, northDelta);
 
 	if (winnerWind == NewGameUtils.roundToDealerDirection(Session.get("current_round")))
 		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
@@ -477,41 +441,17 @@ function push_selfdraw_pao_hand(template) {
 
 	var value = selfdraw_delta(points, winnerWind, winnerWind);
 
-	if (winnerWind == "east")
-		eastDelta += value;
-	else if (winnerWind == "south")
-		southDelta += value;
-	else if (winnerWind == "west")
-		westDelta += value;
-	else if (winnerWind == "north")
-		northDelta += value;
+	if 		(winnerWind == "east") 	eastDelta += value;
+	else if (winnerWind == "south") southDelta += value;
+	else if (winnerWind == "west")  westDelta += value;
+	else if (winnerWind == "north") northDelta += value;
 
-	if (paoWind == "east")
-		eastDelta -= value;
-	else if (paoWind == "south")
-		southDelta -= value;
-	else if (paoWind == "west")
-		westDelta -= value;
-	else if (paoWind == "north")
-		northDelta -= value;
+	if 		(paoWind == "east")  eastDelta -= value;
+	else if (paoWind == "south") southDelta -= value;
+	else if (paoWind == "west")  westDelta -= value;
+	else if (paoWind == "north") northDelta -= value;
 
-	template.hands.push( 
-		{
-			hand_type: "selfdraw",
-		  	round: Session.get("current_round"),
-		  	bonus: Session.get("current_bonus"),
-			points: Session.get("current_points"),
-	  		east_delta: eastDelta,
-	  		south_delta: southDelta,
-	  		west_delta: westDelta,
-	  		north_delta: northDelta,
-		}
-	);
-
-	Session.set("east_score", Number(Session.get("east_score")) + eastDelta);
-	Session.set("south_score", Number(Session.get("south_score")) + southDelta);
-	Session.set("west_score", Number(Session.get("west_score")) + westDelta);
-	Session.set("north_score", Number(Session.get("north_score")) + northDelta);
+	pushHand(template, "selfdraw", eastDelta, southDelta, westDelta, northDelta);
 
 	if (winnerWind == NewGameUtils.roundToDealerDirection(Session.get("current_round")))
 		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
@@ -519,7 +459,7 @@ function push_selfdraw_pao_hand(template) {
 		Session.set("current_bonus", 0);
 		Session.set("current_round", Number(Session.get("current_round")) + 1);
 	}
-}
+};
 
 function push_dealin_pao_hand(template) {
 	var points = Number(Session.get("current_points"));
@@ -531,55 +471,23 @@ function push_dealin_pao_hand(template) {
 	var value = dealin_delta(points, winnerWind, winnerWind);
 
 	switch (winnerWind) {
-	case "east":
-		eastDelta += value;
-		break;
-	case "south":
-		southDelta += value;
-		break;
-	case "west":
-		westDelta += value;
-		break;
-	case "north":
-		northDelta += value;
-		break;
+	case "east": eastDelta += value; break;
+	case "south": southDelta += value; break;
+	case "west": westDelta += value; break;
+	case "north": northDelta += value; break;
 	}
 
-	if (loserWind == "east")
-		eastDelta -= value / 2;
-	else if (loserWind == "south")
-		southDelta -= value / 2;
-	else if (loserWind == "west")
-		westDelta -= value / 2;
-	else if (loserWind == "north")
-		northDelta -= value / 2;
+	if 		(loserWind == "east")  eastDelta -= value / 2;
+	else if (loserWind == "south") southDelta -= value / 2;
+	else if (loserWind == "west")  westDelta -= value / 2;
+	else if (loserWind == "north") northDelta -= value / 2;
 
-	if (paoWind == "east")
-		eastDelta -= value / 2;
-	else if (paoWind == "south")
-		southDelta -= value / 2;
-	else if (paoWind == "west")
-		westDelta -= value / 2;
-	else if (paoWind == "north")
-		northDelta -= value / 2;
+	if		(paoWind == "east")  eastDelta -= value / 2;
+	else if (paoWind == "south") southDelta -= value / 2;
+	else if (paoWind == "west")  westDelta -= value / 2;
+	else if (paoWind == "north") northDelta -= value / 2;
 
-	template.hands.push( 
-		{
-			hand_type: "dealin",
-		  	round: Session.get("current_round"),
-		  	bonus: Session.get("current_bonus"),
-			points: Session.get("current_points"),
-	  		east_delta: eastDelta,
-	  		south_delta: southDelta,
-	  		west_delta: westDelta,
-	  		north_delta: northDelta,
-		}
-	);
-
-	Session.set("east_score", Number(Session.get("east_score")) + eastDelta);
-	Session.set("south_score", Number(Session.get("south_score")) + southDelta);
-	Session.set("west_score", Number(Session.get("west_score")) + westDelta);
-	Session.set("north_score", Number(Session.get("north_score")) + northDelta);
+	pushHand(template, "dealin", eastDelta, southDelta, westDelta, northDelta);
 
 	if (winnerWind == NewGameUtils.roundToDealerDirection(Session.get("current_round")))
 		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
@@ -587,138 +495,93 @@ function push_dealin_pao_hand(template) {
 		Session.set("current_bonus", 0);
 		Session.set("current_round", Number(Session.get("current_round")) + 1);
 	}
-}
+};
 
 function push_nowin_hand(template) {
-	template.hands.push(
-		{	
-			hand_type: "nowin",
-		  	round: Session.get("current_round"),
-		  	bonus: Session.get("current_bonus"),
-			points: 0,
-		  	east_delta: 0,
-		 	south_delta: 0,
-		  	west_delta: 0,
-		  	north_delta: 0,
-		});
+	pushHand(template, "nowin", 0, 0, 0, 0);
+
 	Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 };
 
 function push_restart_hand(template) {
-	template.hands.push( 
-		{
-			hand_type: "restart",
-  			round: Session.get("current_round"),	
-   			bonus: Session.get("current_bonus"),
-			points: 0,
-		  	east_delta: 0,
-		  	south_delta: 0,
-		  	west_delta: 0,
-	  		north_delta: 0,
-		});
+	pushHand(template, "restart", 0, 0, 0, 0);
+
 	Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 };
 
 function push_fuckup_hand(template) {
 	var loserWind = NewGameUtils.playerToDirection(Session.get("round_loser"));
 
-	template.hands.push(
+	var eastDelta = fuckup_delta("east", loserWind);
+	var southDelta = fuckup_delta("south", loserWind);
+	var westDelta = fuckup_delta("west", loserWind);
+	var northDelta = fuckup_delta("north", loserWind);
+
+	pushHand(template, "fuckup", eastDelta, southDelta, westDelta, northDelta);
+};
+
+function pushHand(template, handType, eastDelta, southDelta, westDelta, northDelta) {
+	template.hands.push( 
 		{
-			hand_type: "fuckup",
-			round: Session.get("current_round"),
-			bonus: Session.get("current_bonus"),
-			points: 0,
-			east_delta: fuckup_delta("east", loserWind),
-			south_delta: fuckup_delta("south", loserWind),
-			west_delta: fuckup_delta("west", loserWind),
-			north_delta: fuckup_delta("north", loserWind),
+			handType: handType,
+		  	round: Session.get("current_round"),
+		  	bonus: Session.get("current_bonus"),
+			points: Session.get("current_points"),
+	  		eastDelta: eastDelta
+	  		southDelta: southDelta,
+	  		westDelta: westDelta,
+	  		northDelta: northDelta,
 		});
 
-	Session.set("east_score", Number(Session.get("east_score")) + fuckup_delta("east", loserWind));
-	Session.set("south_score", Number(Session.get("south_score")) + fuckup_delta( "south", loserWind));
-	Session.set("west_score", Number(Session.get("west_score")) + fuckup_delta("west", loserWind));
-	Session.set("north_score", Number(Session.get("north_score")) + fuckup_delta("north", loserWind));
+	Session.set("east_score", Number(Session.get("east_score")) + eastDelta);
+	Session.set("south_score", Number(Session.get("south_score")) + southDelta);
+	Session.set("west_score", Number(Session.get("west_score")) + westDelta);
+	Session.set("north_score", Number(Session.get("north_score")) + northDelta);
 };
 
 function dealin_delta(points, playerWind, winnerWind, loserWind) {
 	var retval;
 
 	switch (points) {
-	case 3:
-		retval = -8;
-		break;
-	case 4:
-		retval = -16;
-		break;
-	case 5:
-		retval = -24;
-		break;
-	case 6:
-		retval = -32;
-		break;
-	case 7:
-		retval = -48;
-		break;
-	case 8:
-		retval = -64;
-		break;
-	case 9:
-		retval = -96;
-		break;
-	case 10:
-		retval = -128;
-		break;
+	case 3: retval = -8; break;
+	case 4: retval = -16; break;
+	case 5: retval = -24; break;
+	case 6: retval = -32; break;
+	case 7: retval = -48; break;
+	case 8: retval = -64; break;
+	case 9: retval = -96; break;
+	case 10: retval = -128; break;
 	}
 
-	if ( playerWind == winnerWind )
-		retval = -4 * retval;
-	else if ( playerWind == loserWind )
-		retval = 2 * retval;
+	if ( playerWind == winnerWind ) retval = -4 * retval;
+	else if ( playerWind == loserWind ) retval = 2 * retval;
 
 	return retval;
-}
+};
 
 function selfdraw_delta(points, playerWind, winnerWind) {
 	var retval;
 
 	switch (points) {
-	case 3:
-		retval = -16;
-		break;
-	case 4:
-		retval = -32;
-		break;
-	case 5:
-		retval = -48;
-		break;
-	case 6:
-		retval = -64;
-		break;
-	case 7:
-		retval = -96;
-		break;
-	case 8:
-		retval = -128;
-		break;
-	case 9:
-		retval = -192;
-		break;
-	case 10:
-		retval = -256;
-		break;
+	case 3: retval = -16; break;
+	case 4: retval = -32; break;
+	case 5: retval = -48; break;
+	case 6: retval = -64; break;
+	case 7: retval = -96; break;
+	case 8: retval = -128; break;
+	case 9: retval = -192; break;
+	case 10: retval = -256; break;
 	}
 
 	if ( playerWind == winnerWind )
 		retval = -3 * retval;
 
 	return retval;
-}
+};
 
 function fuckup_delta(playerWind, loserWind) {
-	if (playerWind == loserWind)
-		return -192;
-	else
-		return 64;
+	if (playerWind == loserWind) return -192;
+	else return 64;
 };
 
 Template.points.events({
@@ -726,4 +589,4 @@ Template.points.events({
 	'change select[name="points"]'(event) {
 		Session.set("current_points", event.target.value);
 	}
-})
+});
