@@ -806,6 +806,7 @@ function push_dealin_hand(template) {
 function push_selfdraw_hand(template) {
 	var points = Number(Session.get("current_points"));
 	var fu = Number(Session.get("current_fu"));
+	var dora = Number(Session.get("current_dora"));
 	var winnerWind = NewGameUtils.playerToDirection(Session.get("round_winner"));
 	var riichiSum = 0;
 	var eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
