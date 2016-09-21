@@ -23,7 +23,7 @@ Template.JapaneseRanking.helpers({
 
 Template.japaneseRankingOneByOne.helpers({
 	nicerJapaneseElo(elo) {
-		return elo.toFixed(13);
+		return elo.toFixed(3);
 	},
 });
 
@@ -35,6 +35,6 @@ Template.HongKongRanking.helpers({
 
 Template.hongKongRankingOneByOne.helpers({
 	nicerHongKongElo(elo) {
-		return elo.toFixed(13);
+		return elo.toFixed(3);
 	},
 });
