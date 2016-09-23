@@ -1,5 +1,4 @@
 import { Template } from 'meteor/templating';
-
 import { Players } from '../api/Players.js';
 
 import './About.html';
@@ -15,26 +14,31 @@ import './Index.js';
 import './HongKongNewGame.js';
 import './JapaneseNewGame.js';
 
-Template.JapaneseRanking.helpers({
-	japanesePlayers() {
-		return Players.find({}, {sort: { japaneseElo: -1}});
-	},
+var index;
+
+function initPlayer(key) {
+	index = 1;
+
+	var sort = {};
+	sort[key] = -1;
+	return Players.find({}, sort);
+}
+
+Template.registerHelper('nicerElo', (elo) => { return elo.toFixed(3) });
+Template.registerHelper('setRank', () => {
+		var returnValue = index;
+		index++;
+		return returnValue;
 });
 
-Template.japaneseRankingOneByOne.helpers({
-	nicerJapaneseElo(elo) {
-		return elo.toFixed(3);
-	},
+Template.JapaneseRanking.helpers({
+	japanesePlayers() {
+		return initPlayer("japaneseElo");
+	}
 });
 
 Template.HongKongRanking.helpers({
 	hongKongPlayers() {
-		return Players.find({}, {sort: { hongKongElo: -1}});
+		return initPlayer("hongKongElo");
 	}
-});
-
-Template.hongKongRankingOneByOne.helpers({
-	nicerHongKongElo(elo) {
-		return elo.toFixed(3);
-	},
 });
