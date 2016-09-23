@@ -12,8 +12,10 @@
 }
 
 .player-entry {
-	float: left;
-	width: 25%;
+	
+	
 	text-align: center;
 	background: white;
+	padding-bottom: 10px;
 }
+

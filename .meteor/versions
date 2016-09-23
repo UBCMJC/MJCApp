@@ -9,7 +9,6 @@ blaze@2.1.8
 blaze-html-templates@1.0.4
 blaze-tools@1.0.9
 boilerplate-generator@1.0.9
-bootstrap@1.0.1
 caching-compiler@1.0.6
 caching-html-compiler@1.0.6
 callback-hook@1.0.9
@@ -67,6 +66,7 @@ templates:array@1.0.3
 templating@1.1.14
 templating-tools@1.0.4
 tracker@1.1.0
+twbs:bootstrap@3.3.6
 ui@1.0.11
 underscore@1.0.9
 url@1.0.10
