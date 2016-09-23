@@ -17,3 +17,15 @@
 	text-align: center;
 	background: white;
 }
+
+.ranking th, td {
+	text-align: center;
+}
+
+.ranking .rank, .ranking .elo {
+	width: 3rem;
+}
+
+.ranking .players {
+	width: 12rem;
+}
