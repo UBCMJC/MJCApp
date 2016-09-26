@@ -358,7 +358,7 @@ function save_game_to_database(hands_array) {
 	};
 
 
-	var hk_elo_calculator = new EloCalculator(3000, 5, [100, 50, -50, -100], game, Constants.GAME_TYPE.HONG_KONG);
+	var hk_elo_calculator = new EloCalculator(2000, 5, [100, 50, -50, -100], game, Constants.GAME_TYPE.HONG_KONG);
 	var east_elo_delta = hk_elo_calculator.eloChange(east_player);
 	var south_elo_delta = hk_elo_calculator.eloChange(south_player);
 	var west_elo_delta = hk_elo_calculator.eloChange(west_player);
