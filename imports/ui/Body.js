@@ -25,15 +25,18 @@ Template.Ranking.helpers({
 	getInfo(format, player) {
 		let leagueName;
 		let elo;
-
-		if (format == Constants.GAME_TYPE.JAPANESE) {
-			leagueName = player.japaneseLeagueName;
-			elo = player.japaneseElo;
-		}
-
-		else if (format === Constants.GAME_TYPE.HONG_KONG) {
-			leagueName = player.hongKongLeagueName;
-			elo = player.hongKongElo;
+		switch (format) {
+			case Constants.GAME_TYPE.JAPANESE:
+				leagueName = player.japaneseLeagueName;
+				elo = player.japaneseElo;
+				break;
+			case Constants.GAME_TYPE.HONG_KONG:
+				leagueName = player.hongKongLeagueName;
+				elo = player.hongKongElo;
+				break;
+			default:
+				console.error("Format '" + format + "' is invalid");
+				break;
 		}
 
 		return {
@@ -41,6 +44,21 @@ Template.Ranking.helpers({
 			"elo": elo.toFixed(3),
 			"rank": this.rank ? ++this.rank : this.rank = 1
 		};
+	},
+	getName(format) {
+		switch (format) {
+			case Constants.GAME_TYPE.JAPANESE:
+				league = "Japanese";
+				break;
+			case Constants.GAME_TYPE.HONG_KONG:
+				league = "Hong Kong";
+				break;
+			default:
+				console.error("Format '" + format + "' is invalid");
+				break;
+		}
+
+		return league + " " + Constants.MAHJONG_CLUB_LEAGUE;
 	},
 	getPlayers(sortBy) {
 		return Players.find({}, { "sort": sortBy });

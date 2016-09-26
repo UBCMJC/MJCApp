@@ -34,9 +34,7 @@ export const Constants = {
 		// Japanese Riichi Style
 		JAPANESE: "jpn"
 	},
+	MAHJONG_CLUB_LEAGUE: "Mahjong Club League"
 };
 
-// Getter for GUI display of Japanese game start points
-Template.registerHelper("get_jpn_start_points", function () {
-	return Constants.JPN_START_POINTS;
-});
+Object.keys(Constants).forEach((k) => { Template.registerHelper(k, () => Constants[k] )});

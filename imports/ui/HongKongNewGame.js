@@ -13,9 +13,6 @@ Template.HongKongNewGame.onCreated( function() {
 	NewGameUtils.resetGameValues(Constants.HKG_START_POINTS);
 });
 
-Template.registerHelper("get_hkg_start_points", function () {
-	return Constants.HKG_START_POINTS;
-});
 Template.registerHelper("hkg_round_mod4", function(round) {
 	if (Number(round) > 12)
 		return (Number(round) - 12);

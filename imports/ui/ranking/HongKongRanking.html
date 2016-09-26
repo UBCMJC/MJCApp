@@ -1,7 +1,6 @@
 <template name="HongKongRanking">
 	{{ > Ranking 
-		name="Hong Kong Mahjong ELO Rankings"
 		sortBy=(toObj hongKongElo=-1)
-		format="hkg"
+		format=GAME_TYPE.HONG_KONG
 	}}
 </template>
