@@ -1,10 +1,14 @@
 /* CSS declarations go here */
 
 .container {
-	max-width: 900px;
+	max-width: 1080px;
 	margin: 0 auto;
 	min-height: 100%;
 	background: white;
+}
+
+.player-block {
+    clear: both;
 }
 
 .player-select-header {
@@ -12,8 +16,45 @@
 }
 
 .player-entry {
-	float: left;
-	width: 25%;
+	
+	
 	text-align: center;
 	background: white;
+	padding-bottom: 10px;
+}
+
+.nav-block {
+    clear: both;
+}
+
+.btn-primary {
+    margin: 4px;
+}
+
+.nav-justified > li > a {
+    border: 1px solid #eee;
+}
+
+tr:nth-of-type(even){
+	background-color: #f4f4f4;
+	padding: 6px;
+}
+
+@media (min-width: 768px){
+	.player-block{
+		max-width: 75%;
+	}
+.nav-justified > li > a {
+    margin-bottom: 4px;
+}
+.nav-justified > li {
+    display: block;
+    width: 100%;
+    }
+}
+
+@media (min-width: 960px){
+	.player-block{
+		max-width: 900px;
+	}
 }

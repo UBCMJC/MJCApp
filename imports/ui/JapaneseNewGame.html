@@ -1,8 +1,9 @@
 <template name="JapaneseNewGame">
 	<h2>Riichi Japanese Mahjong Game Sheet</h2>
 
-	<form class="game_input_form">
-		<div class="player-entry">
+	<section class="game_input_form container">
+	<div class="player-block">
+		<div class="player-entry col-lg-3 col-xs-6">
 			<p>East</p>
 			<select name="east_player">
 				<option disabled selected value> -- Select East Player (東) -- </option>
@@ -11,7 +12,7 @@
 				{{/each}}
 			</select>
 		</div>
-		<div class="player-entry">
+		<div class="player-entry col-lg-3 col-xs-6">
 			<p>South</p>
 			<select name="south_player">
 				<option disabled selected value> -- Select South Player (南) -- </option>
@@ -20,7 +21,7 @@
 				{{/each}}
 			</select>
 		</div>
-		<div class="player-entry">
+		<div class="player-entry col-lg-3 col-xs-6">
 			<p>West</p>
 			<select name="west_player">
 				<option disabled selected value> -- Select West Player (西) -- </option>
@@ -29,7 +30,7 @@
 				{{/each}}
 			</select>
 		</div>
-		<div class="player-entry">
+		<div class="player-entry col-lg-3 col-xs-6">
 			<p>North</p>
 			<select name="north_player">
 				<option disabled selected value> -- Select North Player (北) -- </option> 
@@ -38,28 +39,29 @@
 				{{/each}}
 			</select>
 		</div>
-
-		<u1 class="nav nav-pills nav-justified">
-			<li data-template="jpn_dealin" role="presentation" class="active">
-				<a data-toggle="pill" href="#">Deal in (Ron ロン)</a>
-			</li>
-			<li data-template="jpn_selfdraw" role="presentation">
-				<a data-toggle="pill" href="#">Self draw (Tsumo ツモ)</a>
-			</li>
-			<li data-template="jpn_nowin" role="presentation">
-				<a data-toggle="pill" href="#">Deck out (Tenpai 聴牌)</a>
-			</li>
-			<li data-template="jpn_restart" role="presentation">
-				<a data-toggle="pill" href="#">Reshuffle</a>
-			</li>
-			<li data-template="jpn_fuckup" role="presentation">
-				<a data-toggle="pill" href="#">Mistake! (Chombo チョンボ)</a>
-			</li>
-			<li data-template="jpn_split_pao" role="presentation">
-				<a data-toggle="pill" href="#">Split pao</a>
-			</li>
-		</u1>
-
+		</div>
+		<div class="nav-block">
+			<u1 class="nav nav-pills nav-justified">
+				<li data-template="jpn_dealin" role="presentation" class="active">
+					<a data-toggle="pill" href="#">Deal in (Ron ロン)</a>
+				</li>
+				<li data-template="jpn_selfdraw" role="presentation">
+					<a data-toggle="pill" href="#">Self draw (Tsumo ツモ)</a>
+				</li>
+				<li data-template="jpn_nowin" role="presentation">
+					<a data-toggle="pill" href="#">Deck out (Tenpai 聴牌)</a>
+				</li>
+				<li data-template="jpn_restart" role="presentation">
+					<a data-toggle="pill" href="#">Reshuffle</a>
+				</li>
+				<li data-template="jpn_fuckup" role="presentation">
+					<a data-toggle="pill" href="#">Mistake! (Chombo チョンボ)</a>
+				</li>
+				<li data-template="jpn_split_pao" role="presentation">
+					<a data-toggle="pill" href="#">Split pao</a>
+				</li>
+			</u1>
+		</div>
 		<!-- Dynamically use different HTML templates for different hand types
 			 By changing the hand_type variable you can select between the different
 			 template names.
@@ -120,7 +122,7 @@
 		<input type="button" value="Delete last Hand" class="btn btn-primary btn-block delete_hand_button">
 
 		<input type="button" value="Submit game!" class="btn btn-primary btn-block disabled submit_game_button">
-	</form>
+	</section>
 </template>
 
 <template name="jpn_render_hand">
@@ -239,7 +241,7 @@
 
 <template name="jpn_winner_s">
 	<span class="player-select-header"><b>Winner: </b></span>
-	<div class="btn-group btn-group-justified winner_buttons">
+	<div class="winner_buttons">
 		<button type="button" class="btn btn-primary winner">{{east}}</button>
 		<button type="button" class="btn btn-primary winner">{{south}}</button>
 		<button type="button" class="btn btn-primary winner">{{west}}</button>
@@ -251,7 +253,7 @@
 
 <template name="jpn_loser_s">
 	<span class="player-select-header"><b>Loser: </b></span>
-	<div class="btn-group btn-group-justified loser_buttons">
+	<div class="loser_buttons">
 		<button type="button" class="btn btn-primary loser">{{east}}</button>
 		<button type="button" class="btn btn-primary loser">{{south}}</button>
 		<button type="button" class="btn btn-primary loser">{{west}}</button>
@@ -263,7 +265,7 @@
 
 <template name="jpn_riichi_s">
 	<span class="player-select-header"><b>Riichis: </b></span>
-	<div class="btn-group btn-group-justified riichi_buttons">
+	<div class="riichi_buttons">
 		<button type="button" class="btn btn-primary riichi">{{east}}</button>
 		<button type="button" class="btn btn-primary riichi">{{south}}</button>
 		<button type="button" class="btn btn-primary riichi">{{west}}</button>
@@ -275,7 +277,7 @@
 
 <template name="jpn_tenpai_s">
 	<span class="player-select-header"><b>Tenpais: </b></span>
-	<div class="btn-group btn-group-justified tenpai_buttons">
+	<div class="tenpai_buttons">
 		<button type="button" class="btn btn-primary tenpai">{{east}}</button>
 		<button type="button" class="btn btn-primary tenpai">{{south}}</button>
 		<button type="button" class="btn btn-primary tenpai">{{west}}</button>
@@ -287,7 +289,7 @@
 
 <template name="jpn_pao_s">
 	<span class="player-select-header"><b>Pao player: </b></span>
-	<div class="btn-group btn-group-justified pao_buttons">
+	<div class="pao_buttons">
 		<button type="button" class="btn btn-primary pao">{{east}}</button>
 		<button type="button" class="btn btn-primary pao">{{south}}</button>
 		<button type="button" class="btn btn-primary pao">{{west}}</button>
