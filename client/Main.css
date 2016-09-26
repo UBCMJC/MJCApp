@@ -16,8 +16,6 @@
 }
 
 .player-entry {
-	
-	
 	text-align: center;
 	background: white;
 	padding-bottom: 10px;
@@ -57,4 +55,16 @@ tr:nth-of-type(even){
 	.player-block{
 		max-width: 900px;
 	}
+}
+
+.ranking th, td {
+	text-align: center;
+}
+
+.ranking .rank, .ranking .elo {
+	width: 10%;
+}
+
+.ranking .players {
+	width: 25%;
 }

@@ -32,7 +32,7 @@ export const Constants = {
 		// Hong Kong Old Style
 		HONG_KONG: "hkg",
 		// Japanese Riichi Style
-		JAPANESE: "jpn,"
+		JAPANESE: "jpn"
 	},
 };
 
