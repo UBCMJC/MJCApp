@@ -1,0 +1,19 @@
+<template name="Ranking">
+    <h2>{{ getName format }}</h2>
+    <table class="ranking">
+        <tr>
+            <th class="rank">#</th>
+            <th class="players">Players</th>
+            <th class="elo">ELO</th>
+        </tr>
+        {{ #each player in (getPlayers sortBy) }}
+            {{ #let info=(getInfo format player) }}
+                <tr>
+                    <td class="rank">{{ info.rank }}</td>
+                    <td class="players">{{ info.leagueName }}</td>
+                    <td class="elo">{{ info.elo }}</td>
+                </tr>
+            {{ /let }}
+        {{ /each }}
+    </table>
+</template>

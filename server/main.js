@@ -11,8 +11,8 @@ Meteor.startup(() => {
   if (Players.find().count() === 0) {
 		Players.insert(
   		{
-			name: "DELETE_ME",
-			hongKongLeagueName: "HK_DELETE_ME",
+  			name: "DELETE_ME",
+  			hongKongLeagueName: "HK_DELETE_ME",
   			hongKongElo: 0, //added
   			hongKongGamesPlayed: 0, //added
   			hongKongPositionSum: 0, //added
@@ -33,10 +33,9 @@ Meteor.startup(() => {
   			japaneseWinPointsTotal: 0, //added
   			japaneseWinDoraTotal: 0, //added
   			japaneseRiichiTotal: 0, //added
-			japaneseWinRiichiTotal: 0, //added
+  			japaneseWinRiichiTotal: 0, //added
   			japaneseChomboTotal: 0, //added
   			japaneseBankruptTotal: 0, //added
-	
   		});
 	}
 });
