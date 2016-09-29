@@ -370,6 +370,7 @@ Template.JapaneseNewGame.events({
 						// Ensure a valid point/fu combination
 						if (NewGameUtils.noIllegalJapaneseHands()) {
 							push_dealin_hand(template);
+							$( ".delete_hand_button" ).removeClass( "disabled" );
 						}
 						else {
 							window.alert("Invalid points/fu entry!");
@@ -385,6 +386,7 @@ Template.JapaneseNewGame.events({
 						// Ensure a valid point/fu combination
 						if (NewGameUtils.noIllegalSelfdrawJapaneseHands()) {
 							push_selfdraw_hand(template);
+							$( ".delete_hand_button" ).removeClass( "disabled" );
 						}
 						else {
 							window.alert("Invalid points/fu entry!");
@@ -396,17 +398,21 @@ Template.JapaneseNewGame.events({
 				// Push a tenpai hand -> cannot input invalid information
 				case "jpn_nowin":
 					push_nowin_hand(template);
+					$( ".delete_hand_button" ).removeClass( "disabled" );
 					break;
 				// Push a restart hand -> cannot input invalid information
 				case "jpn_restart":
 					push_restart_hand(template);
+					$( ".delete_hand_button" ).removeClass( "disabled" );
 					break;
 				// Push a chombo hand and ensure proper information
 				case "jpn_fuckup":
 					// Ensure correct input of who chomboed
-					if (Session.get("round_loser") != Constants.NO_PERSON)
+					if (Session.get("round_loser") != Constants.NO_PERSON) {
 						push_fuckup_hand(template);
-					else
+						$( ".delete_hand_button" ).removeClass( "disabled" );
+					}
+					else 
 						window.alert("You need to fill out who chomboed!");
 					break;
 				// Push a hand where pao was split and ensure proper information
@@ -421,6 +427,7 @@ Template.JapaneseNewGame.events({
 						//Ensure a valid point/fu combination
 						if (NewGameUtils.noIllegalJapaneseHands()) {
 							push_split_pao_hand(template);
+							$( ".delete_hand_button" ).removeClass( "disabled" );
 						}
 						else {
 							window.alert("Invalid points/fu entry!");
@@ -450,53 +457,58 @@ Template.JapaneseNewGame.events({
 	},
 	//Remove the last submitted hand
 	'click .delete_hand_button'(event, template) {
-		var r = confirm("Are you sure?");
-		// Reset game to last hand state
-		if (r == true) {
-			// Deletes last hand
-			var del_hand = Template.instance().hands.pop();
+		if ( !$(event.target ).hasClass( "disabled" )) {
+			var r = confirm("Are you sure?");
+			// Reset game to last hand state
+			if (r == true) {
+				// Deletes last hand
+				var del_hand = Template.instance().hands.pop();
 
-			Session.set("east_score", Number(Session.get("east_score")) - Number(del_hand.eastDelta));
-			Session.set("south_score", Number(Session.get("south_score")) - Number(del_hand.southDelta));
-			Session.set("west_score", Number(Session.get("west_score")) - Number(del_hand.westDelta));
-			Session.set("north_score", Number(Session.get("north_score")) - Number(del_hand.northDelta));
-			Session.set("current_bonus", del_hand.bonus);
-			Session.set("current_round", del_hand.round);
+				Session.set("east_score", Number(Session.get("east_score")) - Number(del_hand.eastDelta));
+				Session.set("south_score", Number(Session.get("south_score")) - Number(del_hand.southDelta));
+				Session.set("west_score", Number(Session.get("west_score")) - Number(del_hand.westDelta));
+				Session.set("north_score", Number(Session.get("north_score")) - Number(del_hand.northDelta));
+				Session.set("current_bonus", del_hand.bonus);
+				Session.set("current_round", del_hand.round);
 
-			//Set free riichi sticks to last round's value
-			Session.set("free_riichi_sticks", template.riichi_sum_history.pop())
+				//Set free riichi sticks to last round's value
+				Session.set("free_riichi_sticks", template.riichi_sum_history.pop())
 
-			var riichiHistory = template.riichi_round_history.pop();
-			if (riichiHistory.east == true)
-				Session.set("east_riichi_sum", Number(Session.get("east_riichi_sum")) - 1);
-			if (riichiHistory.south == true)
-				Session.set("south_riichi_sum", Number(Session.get("south_riichi_sum")) - 1);
-			if (riichiHistory.west == true)
-				Session.set("west_riichi_sum", Number(Session.get("west_riichi_sum")) - 1);
-			if (riichiHistory.north == true)
-				Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) - 1);
+				var riichiHistory = template.riichi_round_history.pop();
+				if (riichiHistory.east == true)
+					Session.set("east_riichi_sum", Number(Session.get("east_riichi_sum")) - 1);
+				if (riichiHistory.south == true)
+					Session.set("south_riichi_sum", Number(Session.get("south_riichi_sum")) - 1);
+				if (riichiHistory.west == true)
+					Session.set("west_riichi_sum", Number(Session.get("west_riichi_sum")) - 1);
+				if (riichiHistory.north == true)
+					Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) - 1);
 
-			// Rollback chombo stat
-			if (del_hand.handType == "fuckup")
-				NewGameUtils.rollbackChomboStat(del_hand);
+				// Rollback chombo stat
+				if (del_hand.handType == "fuckup")
+					NewGameUtils.rollbackChomboStat(del_hand);
 
-			// Rollback hand win/loss stat
-			if (del_hand.handType == "dealin" || del_hand.handType == "selfdraw") {
-				// win stat
-				NewGameUtils.rollbackHandWinStat(del_hand);
+				// Rollback hand win/loss stat
+				if (del_hand.handType == "dealin" || del_hand.handType == "selfdraw") {
+					// win stat
+					NewGameUtils.rollbackHandWinStat(del_hand);
 
-				// win riichis stat
-				NewGameUtils.rollbackHandRiichiStat(del_hand, riichiHistory);
+					// win riichis stat
+					NewGameUtils.rollbackHandRiichiStat(del_hand, riichiHistory);
 
-				// points stat
-				NewGameUtils.rollbackTotalPointsStat(del_hand);
+					// points stat
+					NewGameUtils.rollbackTotalPointsStat(del_hand);
 
-				// loss stat -> may occur when pao selfdraw
-				NewGameUtils.rollbackHandDealinStat(del_hand);
+					// loss stat -> may occur when pao selfdraw
+					NewGameUtils.rollbackHandDealinStat(del_hand);
+				}
+
+				$( ".submit_hand_button" ).removeClass( "disabled" );
+				$( ".submit_game_button" ).addClass( "disabled" );
+				if (Template.instance().hands.get().length === 0) {
+					$( ".delete_hand_button" ).addClass( "disabled" );
+				}
 			}
-
-			$( ".submit_hand_button" ).removeClass( "disabled" );
-			$( ".submit_game_button" ).addClass( "disabled" );
 		}
 	},
 	//Submit a game to the database
@@ -564,6 +576,7 @@ Template.JapaneseNewGame.events({
 
 			$( ".submit_hand_button" ).removeClass( "disabled" );
 			$( ".submit_game_button" ).addClass( "disabled" );
+			$( ".delete_hand_button" ).addClass( "disabled" );
 		}
 	},
 	//Toggle between different round types

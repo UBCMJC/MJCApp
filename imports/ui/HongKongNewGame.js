@@ -168,6 +168,7 @@ Template.HongKongNewGame.events({
 						Session.get("round_winner") != Session.get("round_loser")) {
 						if (Session.get("current_points") != 0) {
 							push_dealin_hand(template);
+							$( ".delete_hand_button" ).removeClass( "disabled" );
 						} else {
 							window.alert("Invalid points entry!");
 						}
@@ -180,6 +181,7 @@ Template.HongKongNewGame.events({
 					if (Session.get("round_winner") != Constants.NO_PERSON) {
 						if (Session.get("current_points") != 0) {
 							push_selfdraw_hand(template);
+							$( ".delete_hand_button" ).removeClass( "disabled" );
 						} else {
 							window.alert("Invalid points entry!");
 						}
@@ -190,15 +192,19 @@ Template.HongKongNewGame.events({
 
 				case "nowin":
 					push_nowin_hand(template);
+					$( ".delete_hand_button" ).removeClass( "disabled" );
 					break;
 
 				case "restart":
 					push_restart_hand(template);
+					$( ".delete_hand_button" ).removeClass( "disabled" );
 					break;
 
 				case "fuckup":
-					if (Session.get("round_loser") != Constants.NO_PERSON)
+					if (Session.get("round_loser") != Constants.NO_PERSON) {
 						push_fuckup_hand(template);
+						$( ".delete_hand_button" ).removeClass( "disabled" );
+					}
 					else
 						window.alert("You need to fill out who made the mistake!");
 					break;
@@ -211,6 +217,7 @@ Template.HongKongNewGame.events({
 						Session.get("round_pao_player") != Session.get("round_winner")) {
 						if (Session.get("current_points") != 0) {
 							push_dealin_pao_hand(template);
+							$( ".delete_hand_button" ).removeClass( "disabled" );
 						} else {
 							window.alert("Invalid points entry!");
 						}
@@ -225,6 +232,7 @@ Template.HongKongNewGame.events({
 						Session.get("round_winner")	!= Session.get("round_pao_player")) {
 						if (Session.get("current_points") != 0) {
 							push_selfdraw_pao_hand(template);
+							$( ".delete_hand_button" ).removeClass( "disabled" );
 						} else {
 							window.alert("Invalid points entry!");
 						}
@@ -232,7 +240,7 @@ Template.HongKongNewGame.events({
 						window.alert("You need to fill out who won, who dealt in, and who has pao penalty!");
 					}
 					break;
-			
+
 				default:
 					console.log("Something went wrong; Received hand type: " + template.hand_type);
 					break;
@@ -252,35 +260,41 @@ Template.HongKongNewGame.events({
 	},
 	//Remove the last submitted hand
 	'click .delete_hand_button'(event, template) {
-		var r = confirm("Are you sure?");
-		if (r == true) {
-			var del_hand = Template.instance().hands.pop();
 
-			Session.set("east_score", Number(Session.get("east_score")) - Number(del_hand.eastDelta));
-			Session.set("south_score", Number(Session.get("south_score")) - Number(del_hand.southDelta));
-			Session.set("west_score", Number(Session.get("west_score")) - Number(del_hand.westDelta));
-			Session.set("north_score", Number(Session.get("north_score")) - Number(del_hand.northDelta));
-			Session.set("current_bonus", del_hand.bonus);
-			Session.set("current_round", del_hand.round);
+		if ( !$( event.target ).hasClass( "disabled" )) {
+			var r = confirm("Are you sure?");
+			if (r == true) {
+				var del_hand = Template.instance().hands.pop();
 
-			// Rollback chombo stat
-			if (del_hand.handType == "fuckup")
-				NewGameUtils.rollbackChomboStat(del_hand);
+				Session.set("east_score", Number(Session.get("east_score")) - Number(del_hand.eastDelta));
+				Session.set("south_score", Number(Session.get("south_score")) - Number(del_hand.southDelta));
+				Session.set("west_score", Number(Session.get("west_score")) - Number(del_hand.westDelta));
+				Session.set("north_score", Number(Session.get("north_score")) - Number(del_hand.northDelta));
+				Session.set("current_bonus", del_hand.bonus);
+				Session.set("current_round", del_hand.round);
 
-			// Rollback hand stats for wins/losses
-			if (del_hand.handType == "dealin" || del_hand.handType == "selfdraw") {
-				// win stat
-				NewGameUtils.rollbackHandWinStat(del_hand);
+				// Rollback chombo stat
+				if (del_hand.handType == "fuckup")
+					NewGameUtils.rollbackChomboStat(del_hand);
 
-				// points stat
-				NewGameUtils.rollbackTotalPointsStat(del_hand);
+				// Rollback hand stats for wins/losses
+				if (del_hand.handType == "dealin" || del_hand.handType == "selfdraw") {
+					// win stat
+					NewGameUtils.rollbackHandWinStat(del_hand);
 
-				// loss stat -> may occur when pao selfdraw
-				NewGameUtils.rollbackHandDealinStat(del_hand);
+					// points stat
+					NewGameUtils.rollbackTotalPointsStat(del_hand);
+
+					// loss stat -> may occur when pao selfdraw
+					NewGameUtils.rollbackHandDealinStat(del_hand);
+				}
+
+				$( ".submit_hand_button" ).removeClass( "disabled" );
+				$( ".submit_game_button" ).addClass( "disabled" );
+				if (Template.instance().hands.get().length === 0) {
+					$( ".delete_hand_button" ).addClass( "disabled" );
+				}
 			}
-
-			$( ".submit_hand_button" ).removeClass( "disabled" );
-			$( ".submit_game_button" ).addClass( "disabled" );
 		}
 	},
 	//Submit a game to the database
@@ -321,6 +335,7 @@ Template.HongKongNewGame.events({
 
 			$( ".submit_hand_button" ).removeClass( "disabled" );
 			$( ".submit_game_button" ).addClass( "disabled" );
+			$( ".delete_hand_button" ).addClass( "disabled" );
 		}
 	},
 	//Toggle between different round types
@@ -680,7 +695,7 @@ function push_fuckup_hand(template) {
 };
 
 function pushHand(template, handType, eastDelta, southDelta, westDelta, northDelta) {
-	template.hands.push( 
+	template.hands.push(
 		{
 			handType: handType,
 		  	round: Session.get("current_round"),
