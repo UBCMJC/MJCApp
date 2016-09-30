@@ -50,8 +50,8 @@ Template.Ranking.helpers({
 		};
 	},
 	getName(format) {
+		let league;
 		switch (format) {
-			let league;
 			case Constants.GAME_TYPE.JAPANESE:
 				league = "Japanese";
 				break;
