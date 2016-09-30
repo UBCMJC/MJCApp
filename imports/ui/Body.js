@@ -25,14 +25,17 @@ Template.Ranking.helpers({
 	getInfo(format, player) {
 		let leagueName;
 		let elo;
+		let gamesPlayed;
 		switch (format) {
 			case Constants.GAME_TYPE.JAPANESE:
 				leagueName = player.japaneseLeagueName;
 				elo = player.japaneseElo;
+				gamesPlayed = player.japaneseGamesPlayed;
 				break;
 			case Constants.GAME_TYPE.HONG_KONG:
 				leagueName = player.hongKongLeagueName;
 				elo = player.hongKongElo;
+				gamesPlayed = player.hongKongGamesPlayed;
 				break;
 			default:
 				console.error("Format '" + format + "' is invalid");
@@ -42,7 +45,8 @@ Template.Ranking.helpers({
 		return {
 			"leagueName": leagueName,
 			"elo": elo.toFixed(3),
-			"rank": this.rank ? ++this.rank : this.rank = 1
+			"rank": this.rank ? ++this.rank : this.rank = 1,
+			"gamesPlayed": gamesPlayed
 		};
 	},
 	getName(format) {
