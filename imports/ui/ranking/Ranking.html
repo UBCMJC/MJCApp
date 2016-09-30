@@ -5,6 +5,7 @@
             <th class="rank">#</th>
             <th class="players">Players</th>
             <th class="elo">ELO</th>
+            <th class="games-played">Games Played</th>
         </tr>
         {{ #each player in (getPlayers sortBy) }}
             {{ #let info=(getInfo format player) }}
@@ -12,6 +13,7 @@
                     <td class="rank">{{ info.rank }}</td>
                     <td class="players">{{ info.leagueName }}</td>
                     <td class="elo">{{ info.elo }}</td>
+                    <td class="games-played">{{ info.gamesPlayed }}</td>
                 </tr>
             {{ /let }}
         {{ /each }}

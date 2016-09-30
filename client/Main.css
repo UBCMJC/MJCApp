@@ -61,7 +61,7 @@ tr:nth-of-type(even){
 	text-align: center;
 }
 
-.ranking .rank, .ranking .elo {
+.ranking .rank, .ranking .elo, .ranking .games-played {
 	width: 10%;
 }
 
