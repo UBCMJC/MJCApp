@@ -39,7 +39,6 @@ Template.Ranking.helpers({
 				break;
 			default:
 				console.error("Format '" + format + "' is invalid");
-				break;
 		}
 
 		return {
@@ -60,12 +59,23 @@ Template.Ranking.helpers({
 				break;
 			default:
 				console.error("Format '" + format + "' is invalid");
-				break;
 		}
 
 		return league + " " + Constants.MAHJONG_CLUB_LEAGUE;
 	},
-	getPlayers(sortBy) {
-		return Players.find({}, { "sort": sortBy });
+	getPlayers(sortBy, format) {
+		let hasPlayedGame = {};
+		switch (format) {
+			case Constants.GAME_TYPE.JAPANESE:
+				hasPlayedGame["japaneseGamesPlayed"] = { $gt: 0 };
+				break;
+			case Constants.GAME_TYPE.HONG_KONG:
+				hasPlayedGame["hongKongGamesPlayed"] = { $gt: 0 };
+				break;
+			default:
+				console.error("Format '" + format + "' is invalid");
+		}
+
+		return Players.find(hasPlayedGame, { "sort": sortBy });
 	}
 });

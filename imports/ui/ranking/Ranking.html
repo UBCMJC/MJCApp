@@ -7,7 +7,7 @@
             <th class="elo">ELO</th>
             <th class="games-played">Games Played</th>
         </tr>
-        {{ #each player in (getPlayers sortBy) }}
+        {{ #each player in (getPlayers sortBy format) }}
             {{ #let info=(getInfo format player) }}
                 <tr>
                     <td class="rank">{{ info.rank }}</td>
