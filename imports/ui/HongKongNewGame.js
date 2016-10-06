@@ -473,35 +473,35 @@ function push_dealin_hand(template) {
 	var winnerWind = NewGameUtils.playerToDirection(Session.get("round_winner"));
 	var loserWind = NewGameUtils.playerToDirection(Session.get("round_loser"));
 
- 	var eastDelta = dealin_delta(points, "east", winnerWind, loserWind);
-	var southDelta = dealin_delta(points, "south", winnerWind, loserWind);
-	var westDelta = dealin_delta(points, "west", winnerWind, loserWind);
-	var northDelta = dealin_delta(points, "north", winnerWind, loserWind);
+ 	var eastDelta = dealin_delta(points, Constants.EAST, winnerWind, loserWind);
+	var southDelta = dealin_delta(points, Constants.SOUTH, winnerWind, loserWind);
+	var westDelta = dealin_delta(points, Constants.WEST, winnerWind, loserWind);
+	var northDelta = dealin_delta(points, Constants.NORTH, winnerWind, loserWind);
 
-	if 		(winnerWind == "east") {
+	if 		(winnerWind == Constants.EAST) {
 		Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
 		Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) + points);
 	}
-	else if (winnerWind == "south") {
+	else if (winnerWind == Constants.SOUTH) {
 		Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) + 1);
 		Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) + points);
 	}
-	else if (winnerWind == "west") {
+	else if (winnerWind == Constants.WEST) {
 		Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) + 1);
 		Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) + points);
 	}
-	else if (winnerWind == "north") {
+	else if (winnerWind == Constants.NORTH) {
 		Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) + 1);
 		Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) + points);
 	}
 
-	if 		(loserWind == "east")
+	if 		(loserWind == Constants.EAST)
 		Session.set("eastPlayerLosses", Number(Session.get("eastPlayerLosses")) + 1);
-	else if (loserWind == "south")
+	else if (loserWind == Constants.SOUTH)
 		Session.set("southPlayerLosses", Number(Session.get("southPlayerLosses")) + 1);
-	else if (loserWind == "west")
+	else if (loserWind == Constants.WEST)
 		Session.set("westPlayerLosses", Number(Session.get("westPlayerLosses")) + 1);
-	else if (loserWind == "north")
+	else if (loserWind == Constants.NORTH)
 		Session.set("northPlayerLosses", Number(Session.get("northPlayerLosses")) + 1);
 
 	pushHand(template, "dealin", eastDelta, southDelta, westDelta, northDelta);
@@ -518,24 +518,24 @@ function push_selfdraw_hand(template) {
 	var points = Number(Session.get("current_points"));
 	var winnerWind = NewGameUtils.playerToDirection(Session.get("round_winner"));
 
- 	var eastDelta = selfdraw_delta(points, "east", winnerWind);
-	var southDelta = selfdraw_delta(points, "south", winnerWind);
-	var westDelta = selfdraw_delta(points, "west", winnerWind);
-	var northDelta = selfdraw_delta(points, "north", winnerWind);
+ 	var eastDelta = selfdraw_delta(points, Constants.EAST, winnerWind);
+	var southDelta = selfdraw_delta(points, Constants.SOUTH, winnerWind);
+	var westDelta = selfdraw_delta(points, Constants.WEST, winnerWind);
+	var northDelta = selfdraw_delta(points, Constants.NORTH, winnerWind);
 
-	if 		(winnerWind == "east") {
+	if 		(winnerWind == Constants.EAST) {
 		Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
 		Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) + points);
 	}
-	else if (winnerWind == "south") {
+	else if (winnerWind == Constants.SOUTH) {
 		Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) + 1);
 		Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) + points);
 	}
-	else if (winnerWind == "west") {
+	else if (winnerWind == Constants.WEST) {
 		Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) + 1);
 		Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) + points);
 	}
-	else if (winnerWind == "north") {
+	else if (winnerWind == Constants.NORTH) {
 		Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) + 1);
 		Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) + points);
 	}
@@ -557,50 +557,50 @@ function push_dealin_pao_hand(template) {
 	var paoWind = NewGameUtils.playerToDirection(Session.get("round_pao_player"));
 	var eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
 
-	if 		(winnerWind == "east") {
+	if 		(winnerWind == Constants.EAST) {
 		Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
 		Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) + points);
 	}
-	else if (winnerWind == "south") {
+	else if (winnerWind == Constants.SOUTH) {
 		Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) + 1);
 		Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) + points);
 	}
-	else if (winnerWind == "west") {
+	else if (winnerWind == Constants.WEST) {
 		Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) + 1);
 		Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) + points);
 	}
-	else if (winnerWind == "north") {
+	else if (winnerWind == Constants.NORTH) {
 		Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) + 1);
 		Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) + points);
 	}
 
-	if 		(loserWind == "east" || paoWind == "east")
+	if 		(loserWind == Constants.EAST || paoWind == Constants.EAST)
 		Session.set("eastPlayerLosses", Number(Session.get("eastPlayerLosses")) + 1);
-	else if (loserWind == "south" || paoWind == "south")
+	else if (loserWind == Constants.SOUTH || paoWind == Constants.SOUTH)
 		Session.set("southPlayerLosses", Number(Session.get("southPlayerLosses")) + 1);
-	else if (loserWind == "west" || paoWind == "west")
+	else if (loserWind == Constants.WEST || paoWind == Constants.WEST)
 		Session.set("westPlayerLosses", Number(Session.get("westPlayerLosses")) + 1);
-	else if (loserWind == "north" || paoWind == "north")
+	else if (loserWind == Constants.NORTH || paoWind == Constants.NORTH)
 		Session.set("northPlayerLosses", Number(Session.get("northPlayerLosses")) + 1);
 
 	var value = dealin_delta(points, winnerWind, winnerWind);
 
 	switch (winnerWind) {
-	case "east": eastDelta += value; break;
-	case "south": southDelta += value; break;
-	case "west": westDelta += value; break;
-	case "north": northDelta += value; break;
+	case Constants.EAST: eastDelta += value; break;
+	case Constants.SOUTH: southDelta += value; break;
+	case Constants.WEST: westDelta += value; break;
+	case Constants.NORTH: northDelta += value; break;
 	}
 
-	if 		(loserWind == "east")  eastDelta -= value / 2;
-	else if (loserWind == "south") southDelta -= value / 2;
-	else if (loserWind == "west")  westDelta -= value / 2;
-	else if (loserWind == "north") northDelta -= value / 2;
+	if 		(loserWind == Constants.EAST)  eastDelta -= value / 2;
+	else if (loserWind == Constants.SOUTH) southDelta -= value / 2;
+	else if (loserWind == Constants.WEST)  westDelta -= value / 2;
+	else if (loserWind == Constants.NORTH) northDelta -= value / 2;
 
-	if		(paoWind == "east")  eastDelta -= value / 2;
-	else if (paoWind == "south") southDelta -= value / 2;
-	else if (paoWind == "west")  westDelta -= value / 2;
-	else if (paoWind == "north") northDelta -= value / 2;
+	if		(paoWind == Constants.EAST)  eastDelta -= value / 2;
+	else if (paoWind == Constants.SOUTH) southDelta -= value / 2;
+	else if (paoWind == Constants.WEST)  westDelta -= value / 2;
+	else if (paoWind == Constants.NORTH) northDelta -= value / 2;
 
 	pushHand(template, "dealin", eastDelta, southDelta, westDelta, northDelta);
 
@@ -618,43 +618,43 @@ function push_selfdraw_pao_hand(template) {
 	var paoWind = NewGameUtils.playerToDirection(Session.get("round_pao_player"));
 	var eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
 
-	if 		(winnerWind == "east") {
+	if 		(winnerWind == Constants.EAST) {
 		Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
 		Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) + points);
 	}
-	else if (winnerWind == "south") {
+	else if (winnerWind == Constants.SOUTH) {
 		Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) + 1);
 		Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) + points);
 	}
-	else if (winnerWind == "west") {
+	else if (winnerWind == Constants.WEST) {
 		Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) + 1);
 		Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) + points);
 	}
-	else if (winnerWind == "north") {
+	else if (winnerWind == Constants.NORTH) {
 		Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) + 1);
 		Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) + points);
 	}
 
-	if 		(paoWind == "east")
+	if 		(paoWind == Constants.EAST)
 		Session.set("eastPlayerLosses", Number(Session.get("eastPlayerLosses")) + 1);
-	else if (paoWind == "south")
+	else if (paoWind == Constants.SOUTH)
 		Session.set("southPlayerLosses", Number(Session.get("southPlayerLosses")) + 1);
-	else if (paoWind == "west")
+	else if (paoWind == Constants.WEST)
 		Session.set("westPlayerLosses", Number(Session.get("westPlayerLosses")) + 1);
-	else if (paoWind == "north")
+	else if (paoWind == Constants.NORTH)
 		Session.set("northPlayerLosses", Number(Session.get("northPlayerLosses")) + 1);
 
 	var value = selfdraw_delta(points, winnerWind, winnerWind);
 
-	if 		(winnerWind == "east") 	eastDelta += value;
-	else if (winnerWind == "south") southDelta += value;
-	else if (winnerWind == "west")  westDelta += value;
-	else if (winnerWind == "north") northDelta += value;
+	if 		(winnerWind == Constants.EAST) 	eastDelta += value;
+	else if (winnerWind == Constants.SOUTH) southDelta += value;
+	else if (winnerWind == Constants.WEST)  westDelta += value;
+	else if (winnerWind == Constants.NORTH) northDelta += value;
 
-	if 		(paoWind == "east")  eastDelta -= value;
-	else if (paoWind == "south") southDelta -= value;
-	else if (paoWind == "west")  westDelta -= value;
-	else if (paoWind == "north") northDelta -= value;
+	if 		(paoWind == Constants.EAST)  eastDelta -= value;
+	else if (paoWind == Constants.SOUTH) southDelta -= value;
+	else if (paoWind == Constants.WEST)  westDelta -= value;
+	else if (paoWind == Constants.NORTH) northDelta -= value;
 
 	pushHand(template, "selfdraw", eastDelta, southDelta, westDelta, northDelta);
 
@@ -681,15 +681,15 @@ function push_restart_hand(template) {
 function push_mistake_hand(template) {
 	var loserWind = NewGameUtils.playerToDirection(Session.get("round_loser"));
 
-	var eastDelta = mistake_delta("east", loserWind);
-	var southDelta = mistake_delta("south", loserWind);
-	var westDelta = mistake_delta("west", loserWind);
-	var northDelta = mistake_delta("north", loserWind);
+	var eastDelta = mistake_delta(Constants.EAST, loserWind);
+	var southDelta = mistake_delta(Constants.SOUTH, loserWind);
+	var westDelta = mistake_delta(Constants.WEST, loserWind);
+	var northDelta = mistake_delta(Constants.NORTH, loserWind);
 
-	if 		(loserWind == "east")  Session.set("eastFuckupTotal",  Number(Session.get("eastFuckupTotal"))  + 1);
-	else if (loserWind == "south") Session.set("southFuckupTotal", Number(Session.get("southFuckupTotal")) + 1);
-	else if (loserWind == "west")  Session.set("westFuckupTotal",  Number(Session.get("westFuckupTotal"))  + 1);
-	else if (loserWind == "north") Session.set("northFuckupTotal", Number(Session.get("northFuckupTotal")) + 1);
+	if 		(loserWind == Constants.EAST)  Session.set("eastFuckupTotal",  Number(Session.get("eastFuckupTotal"))  + 1);
+	else if (loserWind == Constants.SOUTH) Session.set("southFuckupTotal", Number(Session.get("southFuckupTotal")) + 1);
+	else if (loserWind == Constants.WEST)  Session.set("westFuckupTotal",  Number(Session.get("westFuckupTotal"))  + 1);
+	else if (loserWind == Constants.NORTH) Session.set("northFuckupTotal", Number(Session.get("northFuckupTotal")) + 1);
 
 	pushHand(template, "fuckup", eastDelta, southDelta, westDelta, northDelta);
 };

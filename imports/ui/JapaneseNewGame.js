@@ -5,6 +5,7 @@ import { JapaneseHands } from '../api/GameDatabases.js';
 import { Constants } from '../api/Constants.js';
 import { EloCalculator } from '../api/EloCalculator.js';
 import { NewGameUtils } from '../api/NewGameUtils.js';
+import { PointCalculationUtils } from '../api/PointCalculationUtils';
 
 // Code to be evaluated when JapaneseNewGame template is reloaded
 Template.JapaneseNewGame.onCreated( function() {
@@ -126,16 +127,16 @@ Template.JapaneseNewGame.helpers({
 								Number(Session.get("north_score")));
 
 		if (winScore == Session.get("east_score")) {
-			if (direction == "east")
+			if (direction == Constants.EAST)
 				retval += 1000 * Number(Session.get("free_riichi_sticks"));
 		} else if (winScore == Session.get("south_score")) {
-			if (direction == "south")
+			if (direction == Constants.SOUTH)
 				retval += 1000 * Number(Session.get("free_riichi_sticks"));
 		} else if (winScore == Session.get("west_score")) {
-			if (direction == "west")
+			if (direction == Constants.WEST)
 				retval += 1000 * Number(Session.get("free_riichi_sticks"));
 		} else if (winScore == Session.get("north_score")) {
-			if (direction == "north")
+			if (direction == Constants.NORTH)
 				retval += 1000 * Number(Session.get("free_riichi_sticks"));	
 		} 
 
@@ -150,10 +151,8 @@ Template.JapaneseNewGame.helpers({
 		case Constants.DEFAULT_WEST:
 		case Constants.DEFAULT_NORTH:
 			return "?";
-			break;
 		default:
 			return Players.findOne({japaneseLeagueName: player}).japaneseElo.toFixed(2);
-			break;
 		};
 	},
 	// Return a string of the round wind for Japanese style
@@ -206,6 +205,7 @@ Template.jpn_points.helpers({
 		{ point: 26 },
 		{ point: 39 },
 		{ point: 52 },
+		{ point: 65 }
 	],
 });
 
@@ -617,7 +617,7 @@ function save_game_to_database(hands_array) {
 	};
 
 	// Initialise ELO calculator to update player ELO
-	var jpn_elo_calculator = new EloCalculator(2000, 5, [15000, 0, -5000, -10000], game, Constants.GAME_TYPE.JAPANESE);
+	var jpn_elo_calculator =  new EloCalculator(2000, 5, [15000, 0, -5000, -10000], game, Constants.GAME_TYPE.JAPANESE);
 	var east_elo_delta = jpn_elo_calculator.eloChange(east_player);
 	var south_elo_delta = jpn_elo_calculator.eloChange(south_player);
 	var west_elo_delta = jpn_elo_calculator.eloChange(west_player);
@@ -722,7 +722,7 @@ function save_game_to_database(hands_array) {
 		Players.update({_id: west_id}, {$inc: {japanesePositionSum: position}});
 
 		// Calculate east position quickly?
-		var position = 4;
+		position = 4;
 		if (Number(Session.get("north_score")) > Number(Session.get("east_score"))) position--;
 		if (Number(Session.get("north_score")) > Number(Session.get("south_score"))) position--;
 		if (Number(Session.get("north_score")) > Number(Session.get("west_score"))) position--;
@@ -742,42 +742,44 @@ function push_dealin_hand(template) {
 	var riichiSum = Session.get("free_riichi_sticks");
 	var eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
 
-	if 		(winnerWind == "east") {
+	if (winnerWind == Constants.EAST) {
 		Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
 		Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) + points);
 		Session.set("eastPlayerDoraSum", Number(Session.get("eastPlayerDoraSum")) + dora);
-		if (Session.get("east_riichi") == true) 
+		if (Session.get("east_riichi") == true) {
 			Session.set("eastPlayerRiichisWon", Number(Session.get("eastPlayerRiichisWon")) + 1);
-	}
-	else if (winnerWind == "south") {
+		}
+	} else if (winnerWind == Constants.SOUTH) {
 		Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) + 1);
 		Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) + points);
 		Session.set("southPlayerDoraSum", Number(Session.get("southPlayerDoraSum")) + dora);
-		if (Session.get("south_riichi") == true) 
+		if (Session.get("south_riichi") == true) {	
 			Session.set("southPlayerRiichisWon", Number(Session.get("southPlayerRiichisWon")) + 1);
-	}
-	else if (winnerWind == "west") {
+		}
+	} else if (winnerWind == Constants.WEST) {
 		Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) + 1);
 		Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) + points);
 		Session.set("westPlayerDoraSum", Number(Session.get("westPlayerDoraSum")) + dora);
-		if (Session.get("west_riichi") == true) 
+		if (Session.get("west_riichi") == true) {
 			Session.set("westPlayerRiichisWon", Number(Session.get("westPlayerRiichisWon")) + 1);
+		}
 	}
-	else if (winnerWind == "north") {
+	else if (winnerWind == Constants.NORTH) {
 		Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) + 1);
 		Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) + points);
 		Session.set("northPlayerDoraSum", Number(Session.get("northPlayerDoraSum")) + dora);
-		if (Session.get("north_riichi") == true) 
+		if (Session.get("north_riichi") == true) {
 			Session.set("northPlayerRiichisWon", Number(Session.get("northPlayerRiichisWon")) + 1);
+		}
 	}
 
-	if 		(loserWind == "east")
+	if (loserWind == Constants.EAST)
 		Session.set("eastPlayerLosses", Number(Session.get("eastPlayerLosses")) + 1);
-	else if (loserWind == "south")
+	else if (loserWind == Constants.SOUTH)
 		Session.set("southPlayerLosses", Number(Session.get("southPlayerLosses")) + 1);
-	else if (loserWind == "west")
+	else if (loserWind == Constants.WEST)
 		Session.set("westPlayerLosses", Number(Session.get("westPlayerLosses")) + 1);
-	else if (loserWind == "north")
+	else if (loserWind == Constants.NORTH)
 		Session.set("northPlayerLosses", Number(Session.get("northPlayerLosses")) + 1);
 
 	if (Session.get("east_riichi") == true) {
@@ -801,14 +803,12 @@ function push_dealin_hand(template) {
 		Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) + 1);
 	}
 
-	eastDelta  += dealin_delta(points, fu, "east", winnerWind, loserWind)  +
-				  rewardRiichiSticks(riichiSum, "east", winnerWind);
-	southDelta += dealin_delta(points, fu, "south", winnerWind, loserWind) +
-				  rewardRiichiSticks(riichiSum, "south", winnerWind);
-	westDelta  += dealin_delta(points, fu, "west", winnerWind, loserWind)  +
-				  rewardRiichiSticks(riichiSum, "west", winnerWind);
-	northDelta += dealin_delta(points, fu, "north", winnerWind, loserWind) +
-				  rewardRiichiSticks(riichiSum, "north", winnerWind);
+	allDelta = PointCalculationUtils.jpn.dealin_delta(points, fu, winnerWind, loserWind, riichiSum);
+
+	eastDelta  += allDelta[Constants.EAST];
+	southDelta += allDelta[Constants.SOUTH];
+	westDelta  += allDelta[Constants.WEST];
+	northDelta += allDelta[Constants.NORTH];
 
 	pushHand(template, "dealin", eastDelta, southDelta, westDelta, northDelta);
 
@@ -833,28 +833,28 @@ function push_selfdraw_hand(template) {
 	var riichiSum = Session.get("free_riichi_sticks");
 	var eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
 
-	if 		(winnerWind == "east") {
+	if (winnerWind == Constants.EAST) {
 		Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
 		Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) + points);
 		Session.set("eastPlayerDoraSum", Number(Session.get("eastPlayerDoraSum")) + dora);
 		if (Session.get("east_riichi") == true) 
 			Session.set("eastPlayerRiichisWon", Number(Session.get("eastPlayerRiichisWon")) + 1);
 	}
-	else if (winnerWind == "south") {
+	else if (winnerWind == Constants.SOUTH) {
 		Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) + 1);
 		Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) + points);
 		Session.set("southPlayerDoraSum", Number(Session.get("southPlayerDoraSum")) + dora);
 		if (Session.get("south_riichi") == true) 
 			Session.set("southPlayerRiichisWon", Number(Session.get("southPlayerRiichisWon")) + 1);
 	}
-	else if (winnerWind == "west") {
+	else if (winnerWind == Constants.WEST) {
 		Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) + 1);
 		Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) + points);
 		Session.set("westPlayerDoraSum", Number(Session.get("westPlayerDoraSum")) + dora);
 		if (Session.get("west_riichi") == true) 
 			Session.set("westPlayerRiichisWon", Number(Session.get("westPlayerRiichisWon")) + 1);
 	}
-	else if (winnerWind == "north") {
+	else if (winnerWind == Constants.NORTH) {
 		Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) + 1);
 		Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) + points);
 		Session.set("northPlayerDoraSum", Number(Session.get("northPlayerDoraSum")) + dora);
@@ -883,14 +883,12 @@ function push_selfdraw_hand(template) {
 		Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) + 1);
 	}
 
-	eastDelta  += selfdraw_delta(points, fu, "east", winnerWind) +
-				  rewardRiichiSticks(riichiSum, "east", winnerWind);
-	southDelta += selfdraw_delta(points, fu, "south", winnerWind) +
-				  rewardRiichiSticks(riichiSum, "south", winnerWind);
-	westDelta  += selfdraw_delta(points, fu, "west", winnerWind) +
-				  rewardRiichiSticks(riichiSum, "west", winnerWind);
-	northDelta += selfdraw_delta(points, fu, "north", winnerWind) +
-				  rewardRiichiSticks(riichiSum, "north", winnerWind);
+	allDeltas = PointCalculationUtils.jpn.selfdraw_delta(points, fu, winnerWind, riichiSum);
+
+	eastDelta  += allDeltas[Constants.EAST];
+	southDelta += allDeltas[Constants.SOUTH];
+	westDelta  += allDeltas[Constants.WEST];
+	northDelta += allDeltas[Constants.NORTH];
 
 	pushHand(template, "selfdraw", eastDelta, southDelta, westDelta, northDelta);
 
@@ -1002,15 +1000,18 @@ function push_restart_hand(template) {
 
 function push_mistake_hand(template) {
 	var loserWind = NewGameUtils.playerToDirection(Session.get("round_loser"));
-	var eastDelta = mistake_delta("east", loserWind);
-	var southDelta = mistake_delta("south", loserWind);
-	var westDelta = mistake_delta("west", loserWind);
-	var northDelta = mistake_delta("north", loserWind);
 
-	if 		(loserWind == "east")  Session.set("eastFuckupTotal",  Number(Session.get("eastFuckupTotal"))  + 1);
-	else if (loserWind == "south") Session.set("southFuckupTotal", Number(Session.get("southFuckupTotal")) + 1);
-	else if (loserWind == "west")  Session.set("westFuckupTotal",  Number(Session.get("westFuckupTotal"))  + 1);
-	else if (loserWind == "north") Session.set("northFuckupTotal", Number(Session.get("northFuckupTotal")) + 1);
+	let allDeltas = PointCalculationUtils.jpn.mistake_delta(loserWind);
+
+	let eastDelta = allDeltas[Constants.EAST];
+	let southDelta = allDeltas[Constants.SOUTH];
+	let westDelta = allDeltas[Constants.WEST];
+	let northDelta = allDeltas[Constants.NORTH];
+
+	if (loserWind == Constants.EAST)  Session.set("eastFuckupTotal",  Number(Session.get("eastFuckupTotal"))  + 1);
+	else if (loserWind == Constants.SOUTH) Session.set("southFuckupTotal", Number(Session.get("southFuckupTotal")) + 1);
+	else if (loserWind == Constants.WEST)  Session.set("westFuckupTotal",  Number(Session.get("westFuckupTotal"))  + 1);
+	else if (loserWind == Constants.NORTH) Session.set("northFuckupTotal", Number(Session.get("northFuckupTotal")) + 1);
 
 	pushHand(template, "fuckup", eastDelta, southDelta, westDelta, northDelta);
 
@@ -1030,28 +1031,28 @@ function push_split_pao_hand(template) {
 	var riichiSum = Session.get("free_riichi_sticks");
 	var eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
 
-	if 		(winnerWind == "east") {
+	if (winnerWind == Constants.EAST) {
 		Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
 		Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) + points);
 		Session.set("eastPlayerDoraSum", Number(Session.get("eastPlayerDoraSum")) + dora);
 		if (Session.get("east_riichi") == true) 
 			Session.set("eastPlayerRiichisWon", Number(Session.get("eastPlayerRiichisWon")) + 1);
 	}
-	else if (winnerWind == "south") {
+	else if (winnerWind == Constants.SOUTH) {
 		Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) + 1);
 		Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) + points);
 		Session.set("southPlayerDoraSum", Number(Session.get("southPlayerDoraSum")) + dora);
 		if (Session.get("south_riichi") == true) 
 			Session.set("southPlayerRiichisWon", Number(Session.get("southPlayerRiichisWon")) + 1);
 	}
-	else if (winnerWind == "west") {
+	else if (winnerWind == Constants.WEST) {
 		Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) + 1);
 		Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) + points);
 		Session.set("westPlayerDoraSum", Number(Session.get("westPlayerDoraSum")) + dora);
 		if (Session.get("west_riichi") == true) 
 			Session.set("westPlayerRiichisWon", Number(Session.get("westPlayerRiichisWon")) + 1);
 	}
-	else if (winnerWind == "north") {
+	else if (winnerWind == Constants.NORTH) {
 		Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) + 1);
 		Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) + points);
 		Session.set("northPlayerDoraSum", Number(Session.get("northPlayerDoraSum")) + dora);
@@ -1059,13 +1060,13 @@ function push_split_pao_hand(template) {
 			Session.set("northPlayerRiichisWon", Number(Session.get("northPlayerRiichisWon")) + 1);
 	}
 
-	if 		(loserWind == "east" || paoWind == "east")
+	if (loserWind == Constants.EAST || paoWind == Constants.EAST)
 		Session.set("eastPlayerLosses", Number(Session.get("eastPlayerLosses")) + 1);
-	else if (loserWind == "south" || paoWind == "south")
+	else if (loserWind == Constants.SOUTH || paoWind == Constants.SOUTH)
 		Session.set("southPlayerLosses", Number(Session.get("southPlayerLosses")) + 1);
-	else if (loserWind == "west" || paoWind == "west")
+	else if (loserWind == Constants.WEST || paoWind == Constants.WEST)
 		Session.set("westPlayerLosses", Number(Session.get("westPlayerLosses")) + 1);
-	else if (loserWind == "north" || paoWind == "north")
+	else if (loserWind == Constants.NORTH || paoWind == Constants.NORTH)
 		Session.set("northPlayerLosses", Number(Session.get("northPlayerLosses")) + 1);
 
 	if (Session.get("east_riichi") == true) {
@@ -1089,36 +1090,37 @@ function push_split_pao_hand(template) {
 		Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) + 1);
 	}
 
-	var value = dealin_delta(points, fu, winnerWind, winnerWind);
+	var value = PointCalculationUtils.jpn.dealin_delta(points, fu, winnerWind, loserWind, 0)[loserWind];
 
-	if (((value / 2 ) % 100) == 50)
+	if (((value / 2 ) % 100) == 50) {
 		value += 100;
+	}
 
 	switch (winnerWind) {
-	case "east":
-		eastDelta += value;
-		eastDelta += (riichiSum * 1000);
-		break;
-	case "south":
-		southDelta += value;
-		southDelta += (riichiSum * 1000);
-		break;
-	case "west":
-		westDelta += value;
-		westDelta += (riichiSum * 1000);
-		break;
-	case "north":
-		northDelta += value;
-		northDelta += (riichiSum * 1000);
-		break;
+		case Constants.EAST:
+			eastDelta += value;
+			eastDelta += (riichiSum * 1000);
+			break;
+		case Constants.SOUTH:
+			southDelta += value;
+			southDelta += (riichiSum * 1000);
+			break;
+		case Constants.WEST:
+			westDelta += value;
+			westDelta += (riichiSum * 1000);
+			break;
+		case Constants.NORTH:
+			northDelta += value;
+			northDelta += (riichiSum * 1000);
+			break;
 	}
 
 	Session.set("free_riichi_sticks", 0);
 
-	if (loserWind == "east" || paoWind == "east") eastDelta -= value / 2;
-	if (loserWind == "south" || paoWind == "south") southDelta -= value / 2;
-	if (loserWind == "west" || paoWind == "west") westDelta -= value / 2;
-	if (loserWind == "north" || paoWind == "north") northDelta -= value / 2;
+	if (loserWind == Constants.EAST || paoWind == Constants.EAST) eastDelta -= value / 2;
+	if (loserWind == Constants.SOUTH || paoWind == Constants.SOUTH) southDelta -= value / 2;
+	if (loserWind == Constants.WEST || paoWind == Constants.WEST) westDelta -= value / 2;
+	if (loserWind == Constants.NORTH || paoWind == Constants.NORTH) northDelta -= value / 2;
 
 	pushHand(template, "selfdraw", eastDelta, southDelta, westDelta, northDelta);
 
@@ -1154,433 +1156,6 @@ function pushHand(template, handType, eastDelta, southDelta, westDelta, northDel
 	Session.set("south_score", Number(Session.get("south_score")) + southDelta);
 	Session.set("west_score", Number(Session.get("west_score")) + westDelta);
 	Session.set("north_score", Number(Session.get("north_score")) + northDelta);
-};
-
-function dealin_delta(points, fu, playerWind, winnerWind, loserWind) {
-	var retval;
-
-	if (playerWind != winnerWind && playerWind != loserWind)
-		return 0;
-
-	if (winnerWind != NewGameUtils.roundToDealerDirection(Number(Session.get("current_round")))) {
-		switch (points) {
-		case 1:
-			switch (fu) {
-			//Issue protection against 20 and 25 other ways but return 0
-			case 20:
-			case 25: retval = 0; break;
-			case 30: retval = -1000; break;
-			case 40: retval = -1300; break;
-			case 50: retval = -1600; break;
-			case 60: retval = -2000; break;
-			case 70: retval = -2300; break;
-			case 80: retval = -2600; break;
-			case 90: retval = -2900; break;
-			case 100: retval = -3200; break;
-			case 110: retval = -3600; break;
-			}
-			break;
-		case 2:
-			switch (fu) {
-			case 20: retval = -1300; break;
-			case 25: retval = -1600; break;
-			case 30: retval = -2000; break;
-			case 40: retval = -2600; break;
-			case 50: retval = -3200; break;
-			case 60: retval = -3900; break;
-			case 70: retval = -4500; break;
-			case 80: retval = -5200; break;
-			case 90: retval = -5800; break;
-			case 100: retval = -6400; break;
-			case 110: retval = -7100; break;
-			}
-			break;
-		case 3:
-			switch (fu) {
-			case 20: retval = -2600; break;
-			case 25: retval = -3200; break;
-			case 30: retval = -3900; break;
-			case 40: retval = -5200; break;
-			case 50: retval = -6400; break;
-			case 60: retval = -7700; break;
-			default: retval = -8000; break;
-			}
-			break;
-		case 4:
-			switch (fu) {
-			case 20: retval = -5200; break;
-			case 25: retval = -6400; break;
-			case 30: retval = -7700; break;
-			default: retval = -8000; break;
-			}
-			break;
-		case 5: retval = -8000; break;
-		case 6:
-		case 7: retval = -12000; break;
-		case 8:
-		case 9:
-		case 10: retval = -16000; break;
-		case 11:
-		case 12: retval = -24000; break;
-		case 13: retval = -32000; break;
-		case 26: retval = -64000; break;
-		case 39: retval = -96000; break;
-		case 52: retval = -128000; break;
-		}
-	} else {
-		switch (points) {
-		case 1:
-			switch (fu) {
-			//Issue protection against 20 and 25 other ways
-			case 20:
-			case 25: retval = 0; break;
-			case 30: retval = -1500; break;
-			case 40: retval = -2000; break;
-			case 50: retval = -2400; break;
-			case 60: retval = -2900; break;
-			case 70: retval = -3400; break;
-			case 80: retval = -3900; break;
-			case 90: retval = -4400; break;
-			case 100: retval = -4800; break;
-			case 110: retval = -5300; break;
-			}
-			break;
-		case 2:
-			switch (fu) {
-			case 20: retval = -2000; break;
-			case 25: retval = -2400; break;
-			case 30: retval = -2900; break;
-			case 40: retval = -3900; break;
-			case 50: retval = -4800; break;
-			case 60: retval = -5800; break;
-			case 70: retval = -6800; break;
-			case 80: retval = -7700; break;
-			case 90: retval = -8700; break;
-			case 100: retval = -9600; break;
-			case 110: retval = -10600; break;
-			}
-			break;
-		case 3:
-			switch (fu) {
-			case 20: retval = -3900; break;
-			case 25: retval = -4800; break;
-			case 30: retval = -5800; break;
-			case 40: retval = -7700; break;
-			case 50: retval = -9600; break;
-			case 60: retval = -11600; break;
-			default: retval = -12000; break;
-			}
-			break;
-		case 4:
-			switch (fu) {
-			case 20: retval = -7700; break;
-			case 25: retval = -9600; break;
-			case 30: retval = -11600; break;
-			default: retval = -12000; break;
-			}
-			break;
-		case 5: retval = -12000; break;
-		case 6:
-		case 7: retval = -18000; break;
-		case 8:
-		case 9:
-		case 10: retval = -24000; break;
-		case 11:
-		case 12: retval = -36000; break;
-		case 13: retval = -48000; break;
-		case 26: retval = -96000; break;
-		case 39: retval = -144000; break;
-		case 52: retval = -192000; break;
-		}
-	}
-
-	if ( playerWind == winnerWind )
-		retval = -1 * retval + 300 * Number(Session.get("current_bonus"));
-	else
-		retval = retval - 300 * Number(Session.get("current_bonus"));
-
-	return retval;
-};
-
-function selfdraw_delta(points, fu, playerWind, winnerWind) {
-	var retval;
-	var dealerWind = NewGameUtils.roundToDealerDirection(Number(Session.get("current_round")));
-
-	if (winnerWind != dealerWind) {
-		switch (points) {
-		case 1:
-			switch (fu) {
-			// Issue protection against 20 and 25 other ways
-			case 20:
-			case 25:
-				retval = 0;
-				break;
-			case 30:
-				retval = (playerWind == dealerWind ? -500 : -300);
-				retval = (playerWind == winnerWind ? 1100 : retval);
-				break;
-			case 40:
-				retval = (playerWind == dealerWind ? -700 : -400);
-				retval = (playerWind == winnerWind ? 1500 : retval);
-				break;
-			case 50:
-				retval = (playerWind == dealerWind ? -800 : -400);
-				retval = (playerWind == winnerWind ? 1600 : retval);
-				break;
-			case 60:
-				retval = (playerWind == dealerWind ? -100 : -500);
-				retval = (playerWind == winnerWind ? 2000 : retval);
-				break;
-			case 70:
-				retval = (playerWind == dealerWind ? -1200 : -600);
-				retval = (playerWind == winnerWind ? 2400 : retval);
-				break;
-			case 80:
-				retval = (playerWind == dealerWind ? -1300 : -700);
-				retval = (playerWind == winnerWind ? 2700 : retval);
-				break;
-			case 90:
-				retval = (playerWind == dealerWind ? -1500 : -800);
-				retval = (playerWind == winnerWind ? 3100 : retval);
-				break;
-			case 100:
-				retval = (playerWind == dealerWind ? -1600 : -800);
-				retval = (playerWind == winnerWind ? 3200 : retval);
-				break;
-			case 110:
-				retval = (playerWind == dealerWind ? -1800 : -900);
-				retval = (playerWind == winnerWind ? 3600 : retval);
-				break;
-			};
-			break;
-		case 2:
-			switch (fu) {
-			case 20:
-				retval = (playerWind == dealerWind ? -700 : -400);
-				retval = (playerWind == winnerWind ? 1500 : retval);
-				break;
-			//Issue protection against selfdraw 2p25f other ways
-			case 25:
-				retval = 0;
-				break;
-			case 30:
-				retval = (playerWind == dealerWind ? -1000 : -500);
-				retval = (playerWind == winnerWind ? 2000 : retval);
-				break;
-			case 40:
-				retval = (playerWind == dealerWind ? -1300 : -700);
-				retval = (playerWind == winnerWind ? 2700 : retval);
-				break;
-			case 50:
-				retval = (playerWind == dealerWind ? -1600 : -800);
-				retval = (playerWind == winnerWind ? 3200 : retval);
-				break;
-			case 60:
-				retval = (playerWind == dealerWind ? -2000 : -1000);
-				retval = (playerWind == winnerWind ? 4000 : retval);
-				break;
-			case 70:
-				retval = (playerWind == dealerWind ? -2300 : -1200);
-				retval = (playerWind == winnerWind ? 4700 : retval);
-				break;
-			case 80:
-				retval = (playerWind == dealerWind ? -2600 : -1300);
-				retval = (playerWind == winnerWind ? 5200 : retval);
-				break;
-			case 90:
-				retval = (playerWind == dealerWind ? -2900 : -1500);
-				retval = (playerWind == winnerWind ? 5900 : retval);
-				break;
-			case 100:
-				retval = (playerWind == dealerWind ? -3200 : -1600);
-				retval = (playerWind == winnerWind ? 6400 : retval);
-				break;
-			case 110:
-				retval = (playerWind == dealerWind ? -3600 : -1800);
-				retval = (playerWind == winnerWind ? 7200 : retval);
-				break;
-			};
-			break;
-		case 3:
-			switch (fu) {
-			case 20:
-				retval = (playerWind == dealerWind ? -1300 : -700);
-				retval = (playerWind == winnerWind ? 2700 : retval);
-				break;
-			case 25:
-				retval = (playerWind == dealerWind ? -1600 : -800);
-				retval = (playerWind == winnerWind ? 3200 : retval);
-				break;
-			case 30:
-				retval = (playerWind == dealerWind ? -2000 : -1000);
-				retval = (playerWind == winnerWind ? 4000 : retval);
-				break;
-			case 40:
-				retval = (playerWind == dealerWind ? -2600 : -1300);
-				retval = (playerWind == winnerWind ? 5200 : retval);
-				break;
-			case 50:
-				retval = (playerWind == dealerWind ? -3200 : -1600);
-				retval = (playerWind == winnerWind ? 6400 : retval);
-				break;
-			case 60:
-				retval = (playerWind == dealerWind ? -3900 : -2000);
-				retval = (playerWind == winnerWind ? 7900 : retval);
-				break;
-			default:
-				retval = (playerWind == dealerWind ? -4000 : -2000);
-				retval = (playerWind == winnerWind ? 8000 : retval);
-				break;
-			};
-			break;
-		case 4:
-			switch (fu) {
-			case 20:
-				retval = (playerWind == dealerWind ? -2600 : -1300);
-				retval = (playerWind == winnerWind ? 5200 : retval);
-				break;
-			case 25:
-				retval = (playerWind == dealerWind ? -3200 : -1600);
-				retval = (playerWind == winnerWind ? 6400 : retval);
-				break;
-			case 30:
-				retval = (playerWind == dealerWind ? -3900 : -2000);
-				retval = (playerWind == winnerWind ? 7900 : retval);
-				break;
-			default:
-				retval = (playerWind == dealerWind ? -4000 : -2000);
-				retval = (playerWind == winnerWind ? 8000 : retval);
-				break;
-			};
-			break;
-		case 5:
-			retval = (playerWind == dealerWind ? -4000 : -2000);
-			retval = (playerWind == winnerWind ? 8000 : retval);
-			break;
-		case 6:
-		case 7:
-			retval = (playerWind == dealerWind ? -6000 : -3000);
-			retval = (playerWind == winnerWind ? 12000 : retval);
-			break;
-		case 8:
-		case 9:
-		case 10:
-			retval = (playerWind == dealerWind ? -8000 : -4000);
-			retval = (playerWind == winnerWind ? 16000 : retval);
-			break;
-		case 11:
-		case 12:
-			retval = (playerWind == dealerWind ? -12000 : -6000);
-			retval = (playerWind == winnerWind ? 24000 : retval);
-			break;
-		case 13:
-			retval = (playerWind == dealerWind ? -16000 : -8000);
-			retval = (playerWind == winnerWind ? 32000 : retval);
-			break;
-		case 26:
-			retval = (playerWind == dealerWind ? -32000 : -16000);
-			retval = (playerWind == winnerWind ? 64000 : retval);
-			break;
-		case 39:
-			retval = (playerWind == dealerWind ? -48000 : -24000);
-			retval = (playerWind == winnerWind ? 96000 : retval);
-			break;
-		case 52:
-			retval = (playerWind == dealerWind ? -64000 : -32000);
-			retval = (playerWind == winnerWind ? 128000 : retval);
-			break;
-		};
-	} else {
-		switch (points) {
-		case 1:
-			switch (fu) {
-			//Issue protection against 20 and 25 fu other ways but return 0
-			case 20: 
-			case 25: retval = 0; break;
-			case 30: retval = -500; break;
-			case 40: retval = -700; break;
-			case 50: retval = -800; break;
-			case 60: retval = -1000; break;
-			case 70: retval = -1200; break;
-			case 80: retval = -1300; break;
-			case 90: retval = -1500; break;
-			case 100: retval = -1600; break;
-			case 110: retval = -1800; break;
-			};
-			break;
-		case 2:
-			switch (fu) {
-			case 20: retval = -700; break;
-			//Issue protection against 2p25 selfdraw other ways but return 0
-			case 25: retval = 0; break;
-			case 30: retval = -1000; break;
-			case 40: retval = -1300; break;
-			case 50: retval = -1600; break;
-			case 60: retval = -2000; break;
-			case 70: retval = -1300; break;
-			case 80: retval = -2600; break;
-			case 90: retval = -2900; break;
-			case 100: retval = -3200; break;
-			case 110: retval = -3600; break;
-			};
-			break;
-		case 3:
-			switch (fu) {
-			case 20: retval = -1300; break;
-			case 25: retval = -1600; break;
-			case 30: retval = -2000; break;
-			case 40: retval = -2600; break;
-			case 50: retval = -3200; break;
-			case 60: retval = -3900; break;
-			default: retval = -4000; break;
-			};
-			break;
-		case 4:
-			switch (fu) {
-			case 20: retval = -2600; break;
-			case 25: retval = -3200; break;
-			case 30: retval = -3900; break;
-			default: retval = -4000; break;
-			}
-			break;
-		case 5: retval = -4000; break;
-		case 6:
-		case 7: retval = -6000; break;
-		case 8:
-		case 9:
-		case 10: retval = -8000; break;
-		case 11:
-		case 12: retval = -12000; break;
-		case 13: retval = -16000; break;
-		case 26: retval = -32000; break;
-		case 39: retval = -48000; break;
-		case 52: retval = -64000; break;
-		}
-		retval *= (playerWind == winnerWind ? -3 : 1)
-	}
-
-	if ( playerWind == winnerWind )
-		retval = retval + 300 * Number(Session.get("current_bonus"));
-	else
-		retval = retval - 100 * Number(Session.get("current_bonus"));
-
-	return retval;
-
-};
-
-function mistake_delta(player, loser) {
-	if (player == loser)
-		return -12000;
-	else
-		return 4000;
-};
-
-function rewardRiichiSticks(riichiSticks, playerWind, winnerWind) {
-	if (playerWind == winnerWind){
-		Session.set("free_riichi_sticks", 0);
-		return (riichiSticks*1000);
-	}
-	return 0;
 };
 
 function setAllGUIRiichisFalse() {
