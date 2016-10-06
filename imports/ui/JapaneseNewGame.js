@@ -665,6 +665,12 @@ function save_game_to_database(hands_array) {
 		Players.update({_id: west_id}, {$inc: {japaneseWinPointsTotal: Number(Session.get("westPlayerPointsWon"))}});
 		Players.update({_id: north_id}, {$inc: {japaneseWinPointsTotal: Number(Session.get("northPlayerPointsWon"))}});
 
+		// Update total dora
+		Players.update({_id: east_id}, {$inc: {japaneseWinDoraTotal: Number(Session.get("eastPlayerDoraSum"))}});
+		Players.update({_id: south_id}, {$inc: {japaneseWinDoraTotal: Number(Session.get("southPlayerDoraSum"))}});
+		Players.update({_id: west_id}, {$inc: {japaneseWinDoraTotal: Number(Session.get("westPlayerDoraSum"))}});
+		Players.update({_id: north_id}, {$inc: {japaneseWinDoraTotal: Number(Session.get("northPlayerDoraSum"))}});
+
 		// Save number of riichied hands won
 		Players.update({_id: east_id}, {$inc: {japaneseWinRiichiTotal: Number(Session.get("eastPlayerRiichisWon"))}});
 		Players.update({_id: south_id}, {$inc: {japaneseWinRiichiTotal: Number(Session.get("southPlayerRiichisWon"))}});
