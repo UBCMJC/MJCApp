@@ -62,19 +62,19 @@ Template.HongKongNewGame.helpers({
 
 Template.render_hand.helpers({
 	is_dealin(hand_type) {
-		return hand_type == "dealin";
+		return hand_type == Constants.DEAL_IN;
 	},
 	is_selfdraw(hand_type) {
-		return hand_type == "selfdraw";
+		return hand_type == Constants.SELF_DRAW;
 	},
 	is_nowin(hand_type) {
-		return hand_type == "nowin";
+		return hand_type == Constants.NO_WIN;
 	},
 	is_restart(hand_type) {
-		return hand_type == "restart";
+		return hand_type == Constants.RESTART;
 	},
 	is_fuckup(hand_type) {
-		return hand_type == "fuckup";
+		return hand_type == Constants.FUCK_UP;
 	},
 	displayRoundWind(round) {
 		return NewGameUtils.displayRoundWind(round, Constants.GAME_TYPE.HONG_KONG);

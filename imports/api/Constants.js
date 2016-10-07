@@ -1,5 +1,8 @@
 // A class/namespace of commonly used Constants
 export const Constants = {
+	// Title
+	MAHJONG_CLUB_LEAGUE: "Mahjong Club League",
+
 	// The starting number of points in a Hong Kong game
 	HKG_START_POINTS: 500,
 
@@ -34,7 +37,13 @@ export const Constants = {
 		// Japanese Riichi Style
 		JAPANESE: "jpn"
 	},
-	MAHJONG_CLUB_LEAGUE: "Mahjong Club League"
+
+	// Round End Conditions
+	DEAL_IN: "dealin",
+	SELF_DRAW: "selfdraw",
+	NO_WIN: "nowin",
+	RESTART: "restart",
+	FUCK_UP: "fuckup"
 };
 
 Object.keys(Constants).forEach((k) => { Template.registerHelper(k, () => Constants[k] )});
