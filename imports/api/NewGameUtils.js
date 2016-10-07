@@ -47,22 +47,22 @@ export var NewGameUtils = {
 
 		// This code could be streamlined, but let's leave it explicit
 		switch (gameType) {
-			case Constants.GAME_TYPE.HONG_KONG:
-				if (round <= 4)
-					return "東";
-				if (round > 4 && round <= 8)
-					return "南";
-				if (round > 8 && round <= 12)
-					return "西";
-				else //if (round > 12)
-					return "北";
-			case Constants.GAME_TYPE.JAPANESE:
-				if (round <= 4)
-					return "東";
-				if (round > 4 && round <= 8)
-					return "南";
-				else //if (round > 8)
-					return "西";
+		case Constants.GAME_TYPE.HONG_KONG:
+			if (round <= 4)
+				return "東";
+			if (round > 4 && round <= 8)
+				return "南";
+			if (round > 8 && round <= 12)
+				return "西";
+			else //if (round > 12)
+				return "北";
+		case Constants.GAME_TYPE.JAPANESE:
+			if (round <= 4)
+				return "東";
+			if (round > 4 && round <= 8)
+				return "南";
+			else //if (round > 8)
+				return "西";
 		};
 	},
 

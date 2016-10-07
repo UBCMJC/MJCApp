@@ -50,7 +50,7 @@ export const Constants = {
 	WEST: "west",
 	NORTH: "north",
 
-	MANGAN: 2000
+	MANGAN_BASIC_POINTS: 2000
 };
 
 Object.keys(Constants).forEach((k) => { Template.registerHelper(k, () => Constants[k] )});
