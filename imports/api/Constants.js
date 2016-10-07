@@ -10,7 +10,7 @@ export const Constants = {
 	// from noten players to tenpai ones in a Japanese game
 	JPN_TENPAI_PAYOUT: 3000,
 
-	// The required number of points of any one player to 
+	// The required number of points of any one player to
 	// end a game at the end of "South" round in a Japanese
 	// game
 	JPN_END_POINTS: 30000,

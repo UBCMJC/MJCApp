@@ -83,7 +83,7 @@ Template.jpn_split_pao.onCreated( function() {
 	setAllGUIRiichisFalse();
 });
 
-// GUI helper to show current round # 
+// GUI helper to show current round #
 // [E1,E2,E3,E4,S1,S2,S3,S4,W1,W2,W3,W4,W5,W...]
 Template.registerHelper("jpn_round_mod4", function(round) {
 	if (Number(round) > 8)
@@ -136,8 +136,8 @@ Template.JapaneseNewGame.helpers({
 				retval += 1000 * Number(Session.get("free_riichi_sticks"));
 		} else if (winScore == Session.get("north_score")) {
 			if (direction == "north")
-				retval += 1000 * Number(Session.get("free_riichi_sticks"));	
-		} 
+				retval += 1000 * Number(Session.get("free_riichi_sticks"));
+		}
 
 
 		return retval;
@@ -150,10 +150,8 @@ Template.JapaneseNewGame.helpers({
 		case Constants.DEFAULT_WEST:
 		case Constants.DEFAULT_NORTH:
 			return "?";
-			break;
 		default:
 			return Players.findOne({japaneseLeagueName: player}).japaneseElo.toFixed(2);
-			break;
 		};
 	},
 	// Return a string of the round wind for Japanese style
@@ -371,6 +369,7 @@ Template.JapaneseNewGame.events({
 						if (NewGameUtils.noIllegalJapaneseHands()) {
 							push_dealin_hand(template);
 							$( ".delete_hand_button" ).removeClass( "disabled" );
+							resetRoundStats();
 						}
 						else {
 							window.alert("Invalid points/fu entry!");
@@ -387,6 +386,7 @@ Template.JapaneseNewGame.events({
 						if (NewGameUtils.noIllegalSelfdrawJapaneseHands()) {
 							push_selfdraw_hand(template);
 							$( ".delete_hand_button" ).removeClass( "disabled" );
+							resetRoundStats();
 						}
 						else {
 							window.alert("Invalid points/fu entry!");
@@ -399,11 +399,13 @@ Template.JapaneseNewGame.events({
 				case "jpn_nowin":
 					push_nowin_hand(template);
 					$( ".delete_hand_button" ).removeClass( "disabled" );
+					resetRoundStats();
 					break;
 				// Push a restart hand -> cannot input invalid information
 				case "jpn_restart":
 					push_restart_hand(template);
 					$( ".delete_hand_button" ).removeClass( "disabled" );
+					resetRoundStats();
 					break;
 				// Push a chombo hand and ensure proper information
 				case "jpn_fuckup":
@@ -411,13 +413,13 @@ Template.JapaneseNewGame.events({
 					if (Session.get("round_loser") != Constants.NO_PERSON) {
 						push_fuckup_hand(template);
 						$( ".delete_hand_button" ).removeClass( "disabled" );
-					}
-					else 
+						resetRoundStats();
+					} else
 						window.alert("You need to fill out who chomboed!");
 					break;
 				// Push a hand where pao was split and ensure proper information
 				case "jpn_split_pao":
-					// Ensure correct input of winner, loser, and pao player 
+					// Ensure correct input of winner, loser, and pao player
 					if (Session.get("round_winner") != Constants.NO_PERSON &&
 						Session.get("round_loser") != Constants.NO_PERSON &&
 						Session.get("round_pao_player") != Constants.NO_PERSON &&
@@ -428,6 +430,7 @@ Template.JapaneseNewGame.events({
 						if (NewGameUtils.noIllegalJapaneseHands()) {
 							push_split_pao_hand(template);
 							$( ".delete_hand_button" ).removeClass( "disabled" );
+							resetRoundStats();
 						}
 						else {
 							window.alert("Invalid points/fu entry!");
@@ -447,8 +450,7 @@ Template.JapaneseNewGame.events({
 			}
 
 			// If game ending conditions are met, do not allow more hand submissions and allow game submission
-			if (NewGameUtils.japaneseGameOver())
-			{
+			if (NewGameUtils.japaneseGameOver()) {
 				$( event.target ).addClass( "disabled");
 				$( ".submit_game_button" ).removeClass( "disabled" );
 			}
@@ -541,7 +543,7 @@ Template.JapaneseNewGame.events({
 
 			Session.set("current_round", 1);
 			Session.set("current_bonus", 0);
-	
+
 			Session.set("free_riichi_sticks", 0);
 
 			Session.set("eastPlayerRiichisWon", 0);
@@ -573,6 +575,8 @@ Template.JapaneseNewGame.events({
 			Session.set("southPlayerLosses", 0);
 			Session.set("westPlayerLosses", 0);
 			Session.set("northPlayerLosses", 0);
+
+			resetRoundStats();
 
 			$( ".submit_hand_button" ).removeClass( "disabled" );
 			$( ".submit_game_button" ).addClass( "disabled" );
@@ -737,28 +741,28 @@ function push_dealin_hand(template) {
 		Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
 		Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) + points);
 		Session.set("eastPlayerDoraSum", Number(Session.get("eastPlayerDoraSum")) + dora);
-		if (Session.get("east_riichi") == true) 
+		if (Session.get("east_riichi") == true)
 			Session.set("eastPlayerRiichisWon", Number(Session.get("eastPlayerRiichisWon")) + 1);
 	}
 	else if (winnerWind == "south") {
 		Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) + 1);
 		Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) + points);
 		Session.set("southPlayerDoraSum", Number(Session.get("southPlayerDoraSum")) + dora);
-		if (Session.get("south_riichi") == true) 
+		if (Session.get("south_riichi") == true)
 			Session.set("southPlayerRiichisWon", Number(Session.get("southPlayerRiichisWon")) + 1);
 	}
 	else if (winnerWind == "west") {
 		Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) + 1);
 		Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) + points);
 		Session.set("westPlayerDoraSum", Number(Session.get("westPlayerDoraSum")) + dora);
-		if (Session.get("west_riichi") == true) 
+		if (Session.get("west_riichi") == true)
 			Session.set("westPlayerRiichisWon", Number(Session.get("westPlayerRiichisWon")) + 1);
 	}
 	else if (winnerWind == "north") {
 		Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) + 1);
 		Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) + points);
 		Session.set("northPlayerDoraSum", Number(Session.get("northPlayerDoraSum")) + dora);
-		if (Session.get("north_riichi") == true) 
+		if (Session.get("north_riichi") == true)
 			Session.set("northPlayerRiichisWon", Number(Session.get("northPlayerRiichisWon")) + 1);
 	}
 
@@ -828,13 +832,14 @@ function push_selfdraw_hand(template) {
 		Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
 		Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) + points);
 		Session.set("eastPlayerDoraSum", Number(Session.get("eastPlayerDoraSum")) + dora);
-		if (Session.get("east_riichi") == true) 
+		if (Session.get("east_riichi") == true)
 			Session.set("eastPlayerRiichisWon", Number(Session.get("eastPlayerRiichisWon")) + 1);
 	}
 	else if (winnerWind == "south") {
 		Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) + 1);
 		Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) + points);
 		Session.set("southPlayerDoraSum", Number(Session.get("southPlayerDoraSum")) + dora);
+
 		if (Session.get("south_riichi") == true) 
 			Session.set("southPlayerRiichisWon", Number(Session.get("southPlayerRiichisWon")) + 1);
 	}
@@ -842,14 +847,14 @@ function push_selfdraw_hand(template) {
 		Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) + 1);
 		Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) + points);
 		Session.set("westPlayerDoraSum", Number(Session.get("westPlayerDoraSum")) + dora);
-		if (Session.get("west_riichi") == true) 
+		if (Session.get("west_riichi") == true)
 			Session.set("westPlayerRiichisWon", Number(Session.get("westPlayerRiichisWon")) + 1);
 	}
 	else if (winnerWind == "north") {
 		Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) + 1);
 		Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) + points);
 		Session.set("northPlayerDoraSum", Number(Session.get("northPlayerDoraSum")) + dora);
-		if (Session.get("north_riichi") == true) 
+		if (Session.get("north_riichi") == true)
 			Session.set("northPlayerRiichisWon", Number(Session.get("northPlayerRiichisWon")) + 1);
 	}
 
@@ -1025,28 +1030,28 @@ function push_split_pao_hand(template) {
 		Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
 		Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) + points);
 		Session.set("eastPlayerDoraSum", Number(Session.get("eastPlayerDoraSum")) + dora);
-		if (Session.get("east_riichi") == true) 
+		if (Session.get("east_riichi") == true)
 			Session.set("eastPlayerRiichisWon", Number(Session.get("eastPlayerRiichisWon")) + 1);
 	}
 	else if (winnerWind == "south") {
 		Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) + 1);
 		Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) + points);
 		Session.set("southPlayerDoraSum", Number(Session.get("southPlayerDoraSum")) + dora);
-		if (Session.get("south_riichi") == true) 
+		if (Session.get("south_riichi") == true)
 			Session.set("southPlayerRiichisWon", Number(Session.get("southPlayerRiichisWon")) + 1);
 	}
 	else if (winnerWind == "west") {
 		Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) + 1);
 		Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) + points);
 		Session.set("westPlayerDoraSum", Number(Session.get("westPlayerDoraSum")) + dora);
-		if (Session.get("west_riichi") == true) 
+		if (Session.get("west_riichi") == true)
 			Session.set("westPlayerRiichisWon", Number(Session.get("westPlayerRiichisWon")) + 1);
 	}
 	else if (winnerWind == "north") {
 		Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) + 1);
 		Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) + points);
 		Session.set("northPlayerDoraSum", Number(Session.get("northPlayerDoraSum")) + dora);
-		if (Session.get("north_riichi") == true) 
+		if (Session.get("north_riichi") == true)
 			Session.set("northPlayerRiichisWon", Number(Session.get("northPlayerRiichisWon")) + 1);
 	}
 
@@ -1486,7 +1491,7 @@ function selfdraw_delta(points, fu, playerWind, winnerWind) {
 		case 1:
 			switch (fu) {
 			//Issue protection against 20 and 25 fu other ways but return 0
-			case 20: 
+			case 20:
 			case 25: retval = 0; break;
 			case 30: retval = -500; break;
 			case 40: retval = -700; break;
@@ -1579,6 +1584,37 @@ function setAllGUIRiichisFalse() {
 	Session.set("south_riichi", false);
 	Session.set("west_riichi", false);
 	Session.set("north_riichi", false);
+};
+
+function resetRoundStats() {
+	Session.set("current_points", 0);
+	Session.set("current_fu", 0);
+	Session.set("current_dora", 0);
+	Session.set("round_winner", Constants.NO_PERSON);
+	Session.set("round_loser", Constants.NO_PERSON);
+	Session.set("round_pao_player", Constants.NO_PERSON);
+
+	for (let k in Constants.DIRECTIONS) {
+		let wind = Constants.DIRECTIONS[k];
+		Session.set(wind + "_riichi", false);
+		Session.set(wind + "_tenpai", false);
+	}
+
+	$( ".winner_buttons button" ).removeClass( "disabled" );
+	$( ".loser_buttons button" ).removeClass( "disabled" );
+	$( ".riichi_buttons button" ).removeClass( "disabled" );
+	$( ".tenpai_buttons button" ).removeClass( "disabled" );
+	$( ".pao_buttons button" ).removeClass( "disabled" );
+
+	$( ".winner_buttons button" ).removeClass( "active" );
+	$( ".loser_buttons button" ).removeClass( "active" );
+	$( ".riichi_buttons button" ).removeClass( "active" );
+	$( ".tenpai_buttons button" ).removeClass( "active" );
+	$( ".pao_buttons button" ).removeClass( "active" );
+
+	$( "select.points" ).val(undefined);
+	$( "select.fu" ).val(undefined);
+	$( "select.dora" ).val(undefined);
 };
 
 Template.jpn_points.events({

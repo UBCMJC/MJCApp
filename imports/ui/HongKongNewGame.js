@@ -48,10 +48,8 @@ Template.HongKongNewGame.helpers({
 		case Constants.DEFAULT_WEST:
 		case Constants.DEFAULT_NORTH:
 			return "?";
-			break;
 		default:
 			return Players.findOne({hongKongLeagueName: player}).hongKongElo.toFixed(2);
-			break;
 		};
 	},
 	displayRoundWind(round) {
