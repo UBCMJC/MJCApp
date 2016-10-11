@@ -836,7 +836,7 @@ function push_selfdraw_hand(template) {
 		Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) + points);
 		Session.set("southPlayerDoraSum", Number(Session.get("southPlayerDoraSum")) + dora);
 		if (Session.get("south_riichi") == true) 
-			Session.set("southhPlayerRiichisWon", Number(Session.get("southPlayerRiichisWon")) + 1);
+			Session.set("southPlayerRiichisWon", Number(Session.get("southPlayerRiichisWon")) + 1);
 	}
 	else if (winnerWind == "west") {
 		Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) + 1);
