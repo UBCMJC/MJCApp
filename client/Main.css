@@ -57,6 +57,14 @@ tr:nth-of-type(even){
 	}
 }
 
+.dropdown-menu {
+	width: 100%;
+}
+
+.dropdown-menu > li {
+	text-align: center;
+}
+
 .ranking th, td {
 	text-align: center;
 }
