@@ -70,37 +70,64 @@ export var NewGameUtils = {
 
 	// Helper function to ensure all players are selected
 	allPlayersSelected() {
-		return (Session.get("current_east") != Constants.DEFAULT_EAST && 
-	 			Session.get("current_south") != Constants.DEFAULT_SOUTH && 
-	 			Session.get("current_west") != Constants.DEFAULT_WEST && 
+		return (Session.get("current_east") != Constants.DEFAULT_EAST &&
+	 			Session.get("current_south") != Constants.DEFAULT_SOUTH &&
+	 			Session.get("current_west") != Constants.DEFAULT_WEST &&
 	 			Session.get("current_north") != Constants.DEFAULT_NORTH);
 	},
 
 	someoneBankrupt() {
-		return (Session.get("east_score") < 0 || 
+		return (Session.get("east_score") < 0 ||
 				Session.get("south_score") < 0 ||
 				Session.get("west_score") < 0 ||
 				Session.get("north_score") < 0);
 	},
 
 	someoneAboveMinimum(minimum) {
-		return (Session.get("east_score") > minimum ||
-				Session.get("south_score") > minimum || 
-				Session.get("west_score") > minimum ||
-				Session.get("north_score") > minimum);
+		return (Session.get("east_score") >= minimum ||
+				Session.get("south_score") >= minimum ||
+				Session.get("west_score") >= minimum ||
+				Session.get("north_score") >= minimum);
+	},
+
+	getFirstPlace() {
+		let values = [];
+		let priority = {
+			east: 3,
+			south: 2,
+			west: 1,
+			north: 0
+		};
+
+		["east", "south", "west", "north"].forEach(k => {
+			values.push({ wind: k, value: this.getDirectionScore(k) })
+		});
+
+		let winner = values.reduce((a, b) => {
+			if (a.value == b.value) {
+				return priority[a["wind"]] > priority[b["wind"]] ? a : b;
+			} else {
+				return a.value > b.value ? a : b;
+			}
+		});
+
+		return winner['wind'];
 	},
 
 	japaneseGameOver() {
 		return (this.someoneBankrupt() ||
 				Session.get("current_round") > 12 ||
-				(Session.get("current_round") > 8 && 
-					this.someoneAboveMinimum(Constants.JPN_END_POINTS)));
+				(Session.get("current_round") > 8 &&
+					this.someoneAboveMinimum(Constants.JPN_END_POINTS)) ||
+				(Session.get("current_round") == 8 && Session.get("current_bonus") > 0 &&
+					this.getDirectionScore("north") >= Constants.JPN_END_POINTS &&
+						this.getFirstPlace() == "north"));
 	},
 
 	noIllegalSelfdrawJapaneseHands() {
 		var retval = this.noIllegalJapaneseHands();
 
-		retval = retval && !(Session.get("current_points") == 2 && Session.get("current_fu") == 25); 
+		retval = retval && !(Session.get("current_points") == 2 && Session.get("current_fu") == 25);
 
 		return retval;
 	},

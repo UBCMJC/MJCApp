@@ -513,70 +513,73 @@ Template.JapaneseNewGame.events({
 	},
 	//Submit a game to the database
 	'click .submit_game_button'(event, template) {
-		var r = confirm("Are you sure?");
-		if (r == true) {
-			var winScore = Math.max(Number(Session.get("east_score")),
-									Number(Session.get("south_score")),
-									Number(Session.get("west_score")),
-									Number(Session.get("north_score")));
 
-			if (winScore == Session.get("east_score"))
-				Session.set("east_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
-			else if (winScore == Session.get("south_score"))
-				Session.set("south_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
-			else if (winScore == Session.get("west_score"))
-				Session.set("west_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
-			else //if (winScore == Session.get("north_score"))
-				Session.set("north_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
+		if ( !$(event.target ).hasClass( "disabled" )) {
+			var r = confirm("Are you sure?");
+			if (r == true) {
+				var winScore = Math.max(Number(Session.get("east_score")),
+										Number(Session.get("south_score")),
+										Number(Session.get("west_score")),
+										Number(Session.get("north_score")));
 
-			save_game_to_database(template.hands.get());
+				if (winScore == Session.get("east_score"))
+					Session.set("east_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
+				else if (winScore == Session.get("south_score"))
+					Session.set("south_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
+				else if (winScore == Session.get("west_score"))
+					Session.set("west_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
+				else //if (winScore == Session.get("north_score"))
+					Session.set("north_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
 
-			//Deletes all hands to reset to empty game
-			while (template.hands.pop()) {}
+				save_game_to_database(template.hands.get());
 
-			Session.set("east_score", Constants.JPN_START_POINTS);
-			Session.set("south_score", Constants.JPN_START_POINTS);
-			Session.set("west_score", Constants.JPN_START_POINTS);
-			Session.set("north_score", Constants.JPN_START_POINTS);
+				//Deletes all hands to reset to empty game
+				while (template.hands.pop()) {}
 
-			Session.set("current_round", 1);
-			Session.set("current_bonus", 0);
-	
-			Session.set("free_riichi_sticks", 0);
+				Session.set("east_score", Constants.JPN_START_POINTS);
+				Session.set("south_score", Constants.JPN_START_POINTS);
+				Session.set("west_score", Constants.JPN_START_POINTS);
+				Session.set("north_score", Constants.JPN_START_POINTS);
 
-			Session.set("eastPlayerRiichisWon", 0);
-			Session.set("southPlayerRiichisWon", 0);
-			Session.set("westPlayerRiichisWon", 0);
-			Session.set("northPlayerRiichisWon", 0);
+				Session.set("current_round", 1);
+				Session.set("current_bonus", 0);
 
-			Session.set("eastFuckupTotal", 0);
-			Session.set("southFuckupTotal", 0);
-			Session.set("westFuckupTotal", 0);
-			Session.set("northFuckupTotal", 0);
+				Session.set("free_riichi_sticks", 0);
 
-			Session.set("eastPlayerWins", 0);
-			Session.set("southPlayerWins", 0);
-			Session.set("westPlayerWins", 0);
-			Session.set("northPlayerWins", 0);
+				Session.set("eastPlayerRiichisWon", 0);
+				Session.set("southPlayerRiichisWon", 0);
+				Session.set("westPlayerRiichisWon", 0);
+				Session.set("northPlayerRiichisWon", 0);
 
-			Session.set("eastPlayerPointsWon", 0);
-			Session.set("southPlayerPointsWon", 0);
-			Session.set("westPlayerPointsWon", 0);
-			Session.set("northPlayerPointsWon", 0);
+				Session.set("eastFuckupTotal", 0);
+				Session.set("southFuckupTotal", 0);
+				Session.set("westFuckupTotal", 0);
+				Session.set("northFuckupTotal", 0);
 
-			Session.set("eastPlayerDoraSum", 0);
-			Session.set("southPlayerDoraSum", 0);
-			Session.set("westPlayerDoraSum", 0);
-			Session.set("northPlayerDoraSum", 0);
+				Session.set("eastPlayerWins", 0);
+				Session.set("southPlayerWins", 0);
+				Session.set("westPlayerWins", 0);
+				Session.set("northPlayerWins", 0);
 
-			Session.set("eastPlayerLosses", 0);
-			Session.set("southPlayerLosses", 0);
-			Session.set("westPlayerLosses", 0);
-			Session.set("northPlayerLosses", 0);
+				Session.set("eastPlayerPointsWon", 0);
+				Session.set("southPlayerPointsWon", 0);
+				Session.set("westPlayerPointsWon", 0);
+				Session.set("northPlayerPointsWon", 0);
 
-			$( ".submit_hand_button" ).removeClass( "disabled" );
-			$( ".submit_game_button" ).addClass( "disabled" );
-			$( ".delete_hand_button" ).addClass( "disabled" );
+				Session.set("eastPlayerDoraSum", 0);
+				Session.set("southPlayerDoraSum", 0);
+				Session.set("westPlayerDoraSum", 0);
+				Session.set("northPlayerDoraSum", 0);
+
+				Session.set("eastPlayerLosses", 0);
+				Session.set("southPlayerLosses", 0);
+				Session.set("westPlayerLosses", 0);
+				Session.set("northPlayerLosses", 0);
+
+				$( ".submit_hand_button" ).removeClass( "disabled" );
+				$( ".submit_game_button" ).addClass( "disabled" );
+				$( ".delete_hand_button" ).addClass( "disabled" );
+			}
 		}
 	},
 	//Toggle between different round types
