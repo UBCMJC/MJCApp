@@ -115,13 +115,14 @@ export var NewGameUtils = {
 	},
 
 	japaneseGameOver() {
-		return (this.someoneBankrupt() ||
-				Session.get("current_round") > 12 ||
-				(Session.get("current_round") > 8 &&
-					this.someoneAboveMinimum(Constants.JPN_END_POINTS)) ||
-				(Session.get("current_round") == 8 && Session.get("current_bonus") > 0 &&
-					this.getDirectionScore("north") >= Constants.JPN_END_POINTS &&
-						this.getFirstPlace() == "north"));
+		let someoneBankrupt = this.someoneBankrupt();
+		let isNorthRound = Session.get("current_round") > 12;
+		let someoneAboveMinimum = Session.get("current_round") > 8 && this.someoneAboveMinimum(Constants.JPN_END_POINTS);
+		let dealerFirstAndAboveMinimum = Session.get("current_round") == 8 && Session.get("current_bonus") > 0 &&
+											this.getDirectionScore("north") >= Constants.JPN_END_POINTS &&
+												this.getFirstPlace() == "north";
+
+		return someoneBankrupt || isNorthRound || someoneAboveMinimum || dealerFirstAndAboveMinimum;
 	},
 
 	noIllegalSelfdrawJapaneseHands() {
