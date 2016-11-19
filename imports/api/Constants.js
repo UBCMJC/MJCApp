@@ -43,7 +43,7 @@ export const Constants = {
 	SELF_DRAW: "selfdraw",
 	NO_WIN: "nowin",
 	RESTART: "restart",
-	FUCK_UP: "fuckup"
+	MISTAKE: "fuckup"
 };
 
 Object.keys(Constants).forEach((k) => { Template.registerHelper(k, () => Constants[k] )});

@@ -54,7 +54,7 @@
 			<li data-template="restart" role="presentation">
 				<a data-toggle="pill" href="#">Reshuffle</a>
 			</li>
-			<li data-template="fuckup" role="presentation">
+			<li data-template="mistake" role="presentation">
 				<a data-toggle="pill" href="#">Mistake! (Zaa Wu 詐糊)</a>
 			</li>
 			<li data-template="dealin_pao" role="presentation">
@@ -159,7 +159,7 @@
 		<td>Reshuffle!</td>
 		{{/if}}
 
-		{{#if is_fuckup handType}}
+		{{#if is_mistake handType}}
 		<td>Fucked up!</td>
 		<td>{{eastDelta}}</td>
 		<td>{{southDelta}}</td>
@@ -206,7 +206,7 @@
 	<p>Game was restarted!</p>
 </template>
 
-<template name="fuckup">
+<template name="mistake">
 	<p>Game ruining mistake!</p>
 	{{> loser_s east=get_east south=get_south west=get_west north=get_north}}
 </template>

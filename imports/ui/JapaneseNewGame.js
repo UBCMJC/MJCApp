@@ -177,8 +177,8 @@ Template.jpn_render_hand.helpers({
 	is_restart(hand_type) {
 		return hand_type == Constants.RESTART;
 	},
-	is_fuckup(hand_type) {
-		return hand_type == Constants.FUCK_UP;
+	is_mistake(hand_type) {
+		return hand_type == Constants.MISTAKE;
 	},
 	// Return a string of the round wind for Japanese style
 	displayRoundWind(round) {
@@ -406,13 +406,13 @@ Template.JapaneseNewGame.events({
 					$( ".delete_hand_button" ).removeClass( "disabled" );
 					break;
 				// Push a chombo hand and ensure proper information
-				case "jpn_fuckup":
+				case "jpn_mistake":
 					// Ensure correct input of who chomboed
 					if (Session.get("round_loser") != Constants.NO_PERSON) {
-						push_fuckup_hand(template);
+						push_mistake_hand(template);
 						$( ".delete_hand_button" ).removeClass( "disabled" );
 					}
-					else 
+					else
 						window.alert("You need to fill out who chomboed!");
 					break;
 				// Push a hand where pao was split and ensure proper information
@@ -485,7 +485,7 @@ Template.JapaneseNewGame.events({
 					Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) - 1);
 
 				// Rollback chombo stat
-				if (del_hand.handType == "fuckup")
+				if (del_hand.handType == "mistake")
 					NewGameUtils.rollbackChomboStat(del_hand);
 
 				// Rollback hand win/loss stat
@@ -997,12 +997,12 @@ function push_restart_hand(template) {
 										north: Session.get("north_riichi")});
 };
 
-function push_fuckup_hand(template) {
+function push_mistake_hand(template) {
 	var loserWind = NewGameUtils.playerToDirection(Session.get("round_loser"));
-	var eastDelta = fuckup_delta("east", loserWind);
-	var southDelta = fuckup_delta("south", loserWind);
-	var westDelta = fuckup_delta("west", loserWind);
-	var northDelta = fuckup_delta("north", loserWind);
+	var eastDelta = mistake_delta("east", loserWind);
+	var southDelta = mistake_delta("south", loserWind);
+	var westDelta = mistake_delta("west", loserWind);
+	var northDelta = mistake_delta("north", loserWind);
 
 	if 		(loserWind == "east")  Session.set("eastFuckupTotal",  Number(Session.get("eastFuckupTotal"))  + 1);
 	else if (loserWind == "south") Session.set("southFuckupTotal", Number(Session.get("southFuckupTotal")) + 1);
@@ -1565,7 +1565,7 @@ function selfdraw_delta(points, fu, playerWind, winnerWind) {
 
 };
 
-function fuckup_delta(player, loser) {
+function mistake_delta(player, loser) {
 	if (player == loser)
 		return -12000;
 	else
