@@ -1,56 +1,66 @@
 // A class/namespace of commonly used Constants
 export const Constants = {
-	// Title
-	MAHJONG_CLUB_LEAGUE: "Mahjong Club League",
+    // Title
+    MAHJONG_CLUB_LEAGUE: "Mahjong Club League",
 
-	// The starting number of points in a Hong Kong game
-	HKG_START_POINTS: 500,
+    // The starting number of points in a Hong Kong game
+    HKG_START_POINTS: 500,
 
-	// The starting number of points in a Japanese game
-	JPN_START_POINTS: 25000,
+    // The starting number of points in a Japanese game
+    JPN_START_POINTS: 25000,
 
-	// The number of points distributed upon a tenpai round
-	// from noten players to tenpai ones in a Japanese game
-	JPN_TENPAI_PAYOUT: 3000,
+    // The number of points distributed upon a tenpai round
+    // from noten players to tenpai ones in a Japanese game
+    JPN_TENPAI_PAYOUT: 3000,
 
-	// The required number of points of any one player to 
-	// end a game at the end of "South" round in a Japanese
-	// game
-	JPN_END_POINTS: 30000,
+    // The required number of points of any one player to
+    // end a game at the end of "South" round in a Japanese
+    // game
+    JPN_END_POINTS: 30000,
 
-	// Placeholder value to establish a player select button
-	// That has no player selected
-	NO_PERSON: "no one",
+    // Base points of a mangan
+    JPN_MANGAN_BASE_POINTS: 2000,
 
-	// The default text to display for player buttons/fields
-	// When no player has been selected
-	DEFAULT_EAST: "Select East!",
-	DEFAULT_SOUTH: "Select South!",
-	DEFAULT_WEST: "Select West!",
-	DEFAULT_NORTH: "Select North!",
+    // Placeholder value to establish a player select button
+    // That has no player selected
+    NO_PERSON: "no one",
 
-	// An enum of game types for shared yet slightly altered
-	// rules.  Possibly add more if ever decided to
-	GAME_TYPE: {
-		// Hong Kong Old Style
-		HONG_KONG: "hkg",
-		// Japanese Riichi Style
-		JAPANESE: "jpn"
-	},
+    // The default text to display for player buttons/fields
+    // When no player has been selected
+    DEFAULT_EAST: "Select East!",
+    DEFAULT_SOUTH: "Select South!",
+    DEFAULT_WEST: "Select West!",
+    DEFAULT_NORTH: "Select North!",
 
-	// Round End Conditions
-	DEAL_IN: "dealin",
-	SELF_DRAW: "selfdraw",
-	NO_WIN: "nowin",
-	RESTART: "restart",
-	MISTAKE: "fuckup",
+    // An enum of game types for shared yet slightly altered
+    // rules.  Possibly add more if ever decided to
+    GAME_TYPE: {
+        // Hong Kong Old Style
+        HONG_KONG: "hkg",
+        // Japanese Riichi Style
+        JAPANESE: "jpn"
+    },
 
-	EAST: "east",
-	SOUTH: "south",
-	WEST: "west",
-	NORTH: "north",
+    // Round End Conditions
+    DEAL_IN: "dealin",
+    SELF_DRAW: "selfdraw",
+    NO_WIN: "nowin",
+    RESTART: "restart",
+    MISTAKE: "fuckup",
 
-	MANGAN_BASIC_POINTS: 2000
+    EAST: "east",
+    SOUTH: "south",
+    WEST: "west",
+    NORTH: "north",
+
+    WINDS: [EAST, SOUTH, WEST, NORTH],
+
+    PRIORITY: {
+        east: 3,
+        south: 2,
+        north: 1,
+        west: 0
+    }
 };
 
 Object.keys(Constants).forEach((k) => { Template.registerHelper(k, () => Constants[k] )});
