@@ -803,6 +803,7 @@ function push_dealin_hand(template) {
 	}
 
 	allDelta = PointCalculationUtils.jpn.dealin_delta(points, fu, winnerWind, loserWind, riichiSum);
+	Session.set("free_riichi_sticks", 0);
 
 	eastDelta  += allDelta[Constants.EAST];
 	southDelta += allDelta[Constants.SOUTH];
@@ -890,6 +891,7 @@ function push_selfdraw_hand(template) {
 	northDelta += allDeltas[Constants.NORTH];
 
 	pushHand(template, "selfdraw", eastDelta, southDelta, westDelta, northDelta);
+	Session.set("free_riichi_sticks", 0);
 
 	if (winnerWind == NewGameUtils.roundToDealerDirection(Session.get("current_round")))
 		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);

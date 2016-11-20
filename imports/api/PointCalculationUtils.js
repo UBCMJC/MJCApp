@@ -15,35 +15,20 @@ function dealin_delta(points, fu, winnerWind, loserWind, riichiSticks) {
 
 	let basicPoints;
 	let multiplier = (winnerWind != NewGameUtils.roundToDealerDirection(Number(Session.get("current_round")))) ? 4 : 6;
-	let manganPayout = multiplier * Constants.MANGAN_BASIC_POINTS;
 
 	if (points < 5) {
 		if (fu == 20 || (points == 1 && fu == 25)) {
 			return 0; // Issue Protection
 		} else {
-			basicPoints = Math.ceil((fu * Math.pow(2, 2 + points)) * multiplier /100) * 100;
+			let manganPayout = Constants.JPN_MANGAN_BASE_POINTS * multiplier;
+			basicPoints = Math.ceil((fu * Math.pow(2, 2 + points)) * multiplier / 100) * 100;
 			basicPoints = basicPoints < manganPayout ? basicPoints : manganPayout;
 		}
-	} else {
-		switch (points) {
-		case 5: basicPoints = manganPayout; break;
-		case 6:
-		case 7: basicPoints = manganPayout * 1.5; break;
-		case 8:
-		case 9:
-		case 10: basicPoints = manganPayout * 2; break;
-		case 11:
-		case 12: basicPoints = manganPayout * 3; break;
-		case 13: basicPoints = manganPayout * 4; break;
-		case 26: basicPoints = manganPayout * 4 * 2; break;
-		case 39: basicPoints = manganPayout * 4 * 3; break;
-		case 52: basicPoints = manganPayout * 4 * 4; break;
-		case 65: basicPoints = manganPayout * 4 * 5; break;
-		}
-	}
+	} else { basicPoints = manganValue(points) * multiplier };
 
-	winds[winnerWind] = basicPoints + 300 * Number(Session.get("current_bonus")) + riichiSticks * 1000;
-	winds[loserWind] = -basicPoints - 300 * Number(Session.get("current_bonus"));
+	let currentBonus = Number(Session.get("current_bonus")) * 300;
+	winds[winnerWind] = basicPoints + currentBonus + (riichiSticks * 1000);
+	winds[loserWind] = -(basicPoints + currentBonus);
 
 	Session.set("free_riichi_sticks", 0);
 	return winds;
@@ -61,47 +46,31 @@ function selfdraw_delta(points, fu, winnerWind, riichiSticks) {
 			return 0; // Issue Protection
 		} else {
 			basicPoints = fu * Math.pow(2, 2 + points);
-			basicPoints = basicPoints < Constants.MANGAN_BASIC_POINTS ? basicPoints : Constants.MANGAN_BASIC_POINTS;
+			basicPoints = basicPoints < Constants.JPN_MANGAN_BASE_POINTS ? basicPoints : Constants.JPN_MANGAN_BASE_POINTS;
 		}
-	} else {
-		switch (points) {
-		case 5: basicPoints = Constants.MANGAN_BASIC_POINTS; break;
-		case 6:
-		case 7: basicPoints = Constants.MANGAN_BASIC_POINTS * 1.5; break;
-		case 8:
-		case 9:
-		case 10: basicPoints = Constants.MANGAN_BASIC_POINTS * 2; break;
-		case 11:
-		case 12: basicPoints = Constants.MANGAN_BASIC_POINTS * 3; break;
-		case 13: basicPoints = Constants.MANGAN_BASIC_POINTS * 4; break;
-		case 26: basicPoints = Constants.MANGAN_BASIC_POINTS * 4 * 2; break;
-		case 39: basicPoints = Constants.MANGAN_BASIC_POINTS * 4 * 3; break;
-		case 52: basicPoints = Constants.MANGAN_BASIC_POINTS * 4 * 4; break;
-		case 65: basicPoints = Constants.MANGAN_BASIC_POINTS * 4 * 5; break;
-		};
-	}
+	} else { basicPoints = manganValue(points); }
 
-	let nonDealerPays = Math.ceil(basicPoints/100 * (dealerWind == winnerWind ? 2 : 1)) * 100;
-	let dealerPays = Math.ceil(basicPoints/100 * 2) * 100;
+	let nonDealerPays = Math.ceil(basicPoints / 100 * (dealerWind == winnerWind ? 2 : 1)) * 100;
+	let dealerPays = Math.ceil(basicPoints / 100 * 2) * 100;
 
-	let bonuses = Number(Session.get("current_bonus"));
+	let currentBonus = Number(Session.get("current_bonus"));
 
 	for (let w in winds) {
 		if (winnerWind != dealerWind) {
 			if (w == dealerWind) {
-				winds[w] = -dealerPays - 100 * bonuses;
+				winds[w] = -(dealerPays + currentBonus * 100);
 			} else if (w == winnerWind) {
-				winds[w] = dealerPays + 2 * nonDealerPays + 300 * bonuses + riichiSticks * 1000;
+				winds[w] = dealerPays + (nonDealerPays * 2) + (currentBonus * 300) + (riichiSticks * 1000);
 			} else {
-				winds[w] = -nonDealerPays - 100 * bonuses;
+				winds[w] = -(nonDealerPays + currentBonus * 100);
 			}
 		} else {
 			if (w == winnerWind) {
-				winds[w] = 3 * nonDealerPays + riichiSticks * 1000;
+				winds[w] = (nonDealerPays * 3) + (currentBonus * 300) + (riichiSticks * 1000);
 			} else {
-				winds[w] = -nonDealerPays;
-			}
+				winds[w] = -(nonDealerPays + (currentBonus * 100));
 		}
+			}
 	}
 
 	Session.set("free_riichi_sticks", 0);
@@ -116,3 +85,22 @@ function mistake_delta(loser) {
 
 	return winds;
 };
+
+// Calculates the total base points from han + dora values
+function manganValue(points) {
+	switch(points) {
+	case 5: return Constants.JPN_MANGAN_BASE_POINTS;
+	case 6:
+	case 7: return Constants.JPN_MANGAN_BASE_POINTS * 1.5;
+	case 8:
+	case 9:
+	case 10: return Constants.JPN_MANGAN_BASE_POINTS * 2;
+	case 11:
+	case 12: return Constants.JPN_MANGAN_BASE_POINTS * 3;
+	case 13: return Constants.JPN_MANGAN_BASE_POINTS * 4;
+	case 26: return Constants.JPN_MANGAN_BASE_POINTS * 4 * 2;
+	case 39: return Constants.JPN_MANGAN_BASE_POINTS * 4 * 3;
+	case 52: return Constants.JPN_MANGAN_BASE_POINTS * 4 * 4;
+	case 65: return Constants.JPN_MANGAN_BASE_POINTS * 4 * 5;
+	}
+}

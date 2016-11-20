@@ -53,8 +53,6 @@ export const Constants = {
     WEST: "west",
     NORTH: "north",
 
-    WINDS: [EAST, SOUTH, WEST, NORTH],
-
     PRIORITY: {
         east: 3,
         south: 2,
@@ -62,5 +60,7 @@ export const Constants = {
         west: 0
     }
 };
+
+Constants.WINDS = [Constants.EAST, Constants.SOUTH, Constants.WEST, Constants.NORTH];
 
 Object.keys(Constants).forEach((k) => { Template.registerHelper(k, () => Constants[k] )});
