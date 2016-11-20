@@ -39,6 +39,7 @@ Template.Ranking.helpers({
 			break;
 		default:
 			console.error("Format '" + format + "' is invalid");
+			break;
 		}
 
 		return {
@@ -59,6 +60,7 @@ Template.Ranking.helpers({
 			break;
 		default:
 			console.error("Format '" + format + "' is invalid");
+			break;
 		}
 
 		return league + " " + Constants.MAHJONG_CLUB_LEAGUE;
@@ -74,6 +76,7 @@ Template.Ranking.helpers({
 			break;
 		default:
 			console.error("Format '" + format + "' is invalid");
+			break;
 		}
 
 		return Players.find(hasPlayedGame, { "sort": sortBy });
