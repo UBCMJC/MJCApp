@@ -458,7 +458,7 @@ Template.JapaneseNewGame.events({
 	//Remove the last submitted hand
 	'click .delete_hand_button'(event, template) {
 		if ( !$(event.target ).hasClass( "disabled" )) {
-			var r = confirm("Are you sure?");
+			var r = confirm("Are you sure you want to delete the last hand?");
 			// Reset game to last hand state
 			if (r == true) {
 				// Deletes last hand
@@ -515,7 +515,7 @@ Template.JapaneseNewGame.events({
 	'click .submit_game_button'(event, template) {
 
 		if ( !$(event.target ).hasClass( "disabled" )) {
-			var r = confirm("Are you sure?");
+			var r = confirm("Are you sure you want to submit this game?");
 			if (r == true) {
 				var winScore = Math.max(Number(Session.get("east_score")),
 										Number(Session.get("south_score")),
