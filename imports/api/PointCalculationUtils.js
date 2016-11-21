@@ -2,11 +2,11 @@ import { Constants } from './Constants';
 import { NewGameUtils } from './NewGameUtils';
 
 export var PointCalculationUtils = {
-    jpn: {
-        dealin_delta,
-        selfdraw_delta,
-        mistake_delta
-    }
+	jpn: {
+		dealin_delta,
+		selfdraw_delta,
+		mistake_delta
+	}
 };
 
 function dealin_delta(points, fu, winnerWind, loserWind, riichiSticks) {
@@ -78,8 +78,8 @@ function selfdraw_delta(points, fu, winnerWind, riichiSticks) {
 };
 
 function mistake_delta(loser) {
-    let winds = {};
-    winds[Constants.EAST] = winds[Constants.SOUTH] = winds[Constants.WEST] = winds[Constants.NORTH] = 4000;
+	let winds = {};
+	winds[Constants.EAST] = winds[Constants.SOUTH] = winds[Constants.WEST] = winds[Constants.NORTH] = 4000;
 
 	winds[loser] = -12000;
 
