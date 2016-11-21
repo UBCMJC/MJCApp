@@ -802,7 +802,7 @@ function push_dealin_hand(template) {
 		Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) + 1);
 	}
 
-	allDelta = PointCalculationUtils.dealin_delta(points, fu, winnerWind, loserWind, riichiSum);
+	allDelta = PointCalculationUtils.jpn_dealin_delta(points, fu, winnerWind, loserWind, riichiSum);
 	Session.set("free_riichi_sticks", 0);
 
 	eastDelta  += allDelta[Constants.EAST];

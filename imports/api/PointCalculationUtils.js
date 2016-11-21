@@ -13,7 +13,7 @@ export var PointCalculationUtils = {
  * 
  * @return {Object} containing the point difference for each seat
  */
-function dealin_delta(points, fu, winnerWind, loserWind, riichiSticks) {
+function jpn_dealin_delta(points, fu, winnerWind, loserWind, riichiSticks) {
 	let winds = {};
 	winds[Constants.EAST] = winds[Constants.SOUTH] = winds[Constants.WEST] = winds[Constants.NORTH] = 0;
 
@@ -48,7 +48,7 @@ function dealin_delta(points, fu, winnerWind, loserWind, riichiSticks) {
  * 
  * @return {Object} containing the point difference for each seat
  */
-function selfdraw_delta(points, fu, winnerWind, riichiSticks) {
+function jpn_selfdraw_delta(points, fu, winnerWind, riichiSticks) {
 	let winds = {};
 	let dealerWind = NewGameUtils.roundToDealerDirection(Number(Session.get("current_round")));
 
@@ -100,7 +100,7 @@ function selfdraw_delta(points, fu, winnerWind, riichiSticks) {
  * Calculates the point difference as the result of a mistaken hand
  * @return {Object} containing the point difference for each seat
  */
-function mistake_delta(loser) {
+function jpn_mistake_delta(loser) {
 	let winds = {};
 	winds[Constants.EAST] = winds[Constants.SOUTH] = winds[Constants.WEST] = winds[Constants.NORTH] = Constants.MISTAKE_POINTS / 3;
 
