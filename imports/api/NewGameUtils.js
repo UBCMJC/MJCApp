@@ -123,12 +123,12 @@ export var NewGameUtils = {
 		let westRoundOver = Session.get("current_round") > 12;
 		// End condition where game has reached the end of south round with at least one player above minimum
 		let someoneAboveMinimum = Session.get("current_round") > 8 &&
-		                this.someoneAboveMinimum(Constants.JPN_END_POINTS);
+		                          this.someoneAboveMinimum(Constants.JPN_END_POINTS);
 		// End condition where north player reaches first place after winning on last round
 		let dealerFirstAndAboveMinimum = Session.get("current_round") == 8 &&
-		                Session.get("current_bonus") > 0 &&
-		                this.getDirectionScore("north") >= Constants.JPN_END_POINTS &&
-		                this.getFirstPlace() == "north";
+		                                 Session.get("current_bonus") > 0 &&
+		                                 this.getDirectionScore("north") >= Constants.JPN_END_POINTS &&
+		                                 this.getFirstPlace() == "north";
 		return someoneBankrupt || westRoundOver || someoneAboveMinimum || dealerFirstAndAboveMinimum;
 	},
 
