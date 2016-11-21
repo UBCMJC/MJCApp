@@ -262,7 +262,7 @@ Template.HongKongNewGame.events({
 	//Remove the last submitted hand
 	'click .delete_hand_button'(event, template) {
 		if ( !$( event.target ).hasClass( "disabled" )) {
-			var r = confirm("Are you sure?");
+			var r = confirm("Are you sure you want to delete the last hand?");
 			if (r == true) {
 				var del_hand = Template.instance().hands.pop();
 
@@ -299,7 +299,7 @@ Template.HongKongNewGame.events({
 	},
 	//Submit a game to the database
 	'click .submit_game_button'(event, template) {
-		var r = confirm("Are you sure?");
+		var r = confirm("Are you sure you want to submit this game?");
 		if (r == true) {
 			save_game_to_database(template.hands.get());
 
