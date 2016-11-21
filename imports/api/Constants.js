@@ -21,6 +21,15 @@ export const Constants = {
 	// Base points of a mangan
 	JPN_MANGAN_BASE_POINTS: 2000,
 
+	// Points for every bonus round
+	BONUS_POINTS: 300,
+
+	// Points for every riichi stick
+	RIICHI_POINTS: 1000,
+
+	// Points paid for a mistake
+	MISTAKE_POINTS: 12000,
+
 	// Placeholder value to establish a player select button
 	// That has no player selected
 	NO_PERSON: "no one",

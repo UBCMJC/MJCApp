@@ -802,7 +802,7 @@ function push_dealin_hand(template) {
 		Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) + 1);
 	}
 
-	allDelta = PointCalculationUtils.jpn.dealin_delta(points, fu, winnerWind, loserWind, riichiSum);
+	allDelta = PointCalculationUtils.dealin_delta(points, fu, winnerWind, loserWind, riichiSum);
 	Session.set("free_riichi_sticks", 0);
 
 	eastDelta  += allDelta[Constants.EAST];
@@ -883,7 +883,7 @@ function push_selfdraw_hand(template) {
 		Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) + 1);
 	}
 
-	allDeltas = PointCalculationUtils.jpn.selfdraw_delta(points, fu, winnerWind, riichiSum);
+	allDeltas = PointCalculationUtils.jpn_selfdraw_delta(points, fu, winnerWind, riichiSum);
 
 	eastDelta  += allDeltas[Constants.EAST];
 	southDelta += allDeltas[Constants.SOUTH];
@@ -1002,7 +1002,7 @@ function push_restart_hand(template) {
 function push_mistake_hand(template) {
 	var loserWind = NewGameUtils.playerToDirection(Session.get("round_loser"));
 
-	let allDeltas = PointCalculationUtils.jpn.mistake_delta(loserWind);
+	let allDeltas = PointCalculationUtils.jpn_mistake_delta(loserWind);
 
 	let eastDelta = allDeltas[Constants.EAST];
 	let southDelta = allDeltas[Constants.SOUTH];
@@ -1091,7 +1091,7 @@ function push_split_pao_hand(template) {
 		Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) + 1);
 	}
 
-	var value = PointCalculationUtils.jpn.dealin_delta(points, fu, winnerWind, loserWind, 0)[loserWind];
+	var value = PointCalculationUtils.jpn_dealin_delta(points, fu, winnerWind, loserWind, 0)[loserWind];
 
 	if (((value / 2 ) % 100) == 50) {
 		value += 100;
