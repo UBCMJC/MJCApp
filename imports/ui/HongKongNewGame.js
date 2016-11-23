@@ -41,6 +41,43 @@ Template.HongKongNewGame.helpers({
 	get_player_score_final(direction) {
 		return NewGameUtils.getDirectionScore(direction);
 	},
+	// Show what a player's Elo change will look like if game is ended now
+	get_expected_elo_change(direction) {
+
+		let eastPlayer  = Session.get("current_east");
+		let southPlayer = Session.get("current_south");
+		let westPlayer  = Session.get("current_west");
+		let northPlayer = Session.get("current_north");
+
+		if (eastPlayer  == Constants.DEFAULT_EAST ||
+		    southPlayer == Constants.DEFAULT_SOUTH ||
+		    westPlayer  == Constants.DEFAULT_WEST ||
+		    northPlayer == Constants.DEFAULT_NORTH) {
+			return "N/A";
+        }
+
+		let game = {
+			timestamp: Date.now(),
+			east_player: eastPlayer,
+			south_player: southPlayer,
+			west_player: westPlayer,
+			north_player: northPlayer,
+			east_score: (Number(Session.get("east_score"))),
+			south_score: (Number(Session.get("south_score"))),
+			west_score: (Number(Session.get("west_score"))),
+			north_score: (Number(Session.get("north_score"))),
+			all_hands: Template.instance().hands.get(),
+		};
+
+		let hkEloCalculator = new EloCalculator(2000, 5, [100, 50, -50, -100], game, Constants.GAME_TYPE.HONG_KONG);
+
+		switch (direction) {
+		case "east":  return hkEloCalculator.eloChange(eastPlayer).toFixed(2);
+		case "south": return hkEloCalculator.eloChange(southPlayer).toFixed(2);
+		case "west":  return hkEloCalculator.eloChange(westPlayer).toFixed(2);
+		case "north": return hkEloCalculator.eloChange(northPlayer).toFixed(2);
+		};
+	},
 	get_hk_elo(player) {
 		switch (player) {
 		case Constants.DEFAULT_EAST:
