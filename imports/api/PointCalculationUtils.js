@@ -13,11 +13,11 @@ export var PointCalculationUtils = {
  * Calculates the change in points as a result of a deal-in hand
  * Uses the formula from https://en.wikipedia.org/wiki/Japanese_Mahjong_scoring_rules
  *
- * @param {number} points - the total number of han + dora
- * @param {number} fu - the fu value of the hand
+ * @param {Number} points - the total number of han + dora
+ * @param {Number} fu - the fu value of the hand
  * @param {string} winnerWind - the winning seat wind
  * @param {string} loserWind - the losing seat wind
- * @param {number} riichiSticks - the total number of thrown riichi sticks
+ * @param {Number} riichiSticks - the total number of thrown riichi sticks
  * @return {Object} containing the point difference for each seat
  */
 function jpn_dealin_delta(points, fu, winnerWind, loserWind, riichiSticks) {
@@ -54,10 +54,10 @@ function jpn_dealin_delta(points, fu, winnerWind, loserWind, riichiSticks) {
  * Calculates the change in points as a result of a self-drawn hand
  * Uses the formula from https://en.wikipedia.org/wiki/Japanese_Mahjong_scoring_rules
  *
- * @param {number} points - the total number of han + dora
- * @param {number} fu - the fu value of the hand
+ * @param {Number} points - the total number of han + dora
+ * @param {Number} fu - the fu value of the hand
  * @param {string} winnerWind - the winning seat wind
- * @param {number} riichiSticks - the total number of thrown riichi sticks
+ * @param {Number} riichiSticks - the total number of thrown riichi sticks
  * @return {Object} containing the point difference for each seat
  */
 function jpn_selfdraw_delta(points, fu, winnerWind, riichiSticks) {
@@ -125,8 +125,8 @@ function jpn_mistake_delta(loser) {
 
 /**
  * Calculates the total base points from han + dora values for high value hands
- * @param {number} points - total points from han + dora
- * @returns {number} representing number of base points as the result of a certain point threshold
+ * @param {Number} points - total points from han + dora
+ * @returns {Number} representing number of base points as the result of a certain point threshold
  */
 function manganValue(points) {
 	switch(points) {

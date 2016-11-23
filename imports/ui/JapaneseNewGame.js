@@ -1091,7 +1091,7 @@ function push_split_pao_hand(template) {
 		Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) + 1);
 	}
 
-	var value = PointCalculationUtils.jpn.dealin_delta(points, fu, winnerWind, loserWind, 0)[loserWind];
+	var value = PointCalculationUtils.jpn.dealin_delta(points, fu, winnerWind, loserWind, 0)[winnerWind];
 
 	if (((value / 2 ) % 100) == 50) {
 		value += 100;
