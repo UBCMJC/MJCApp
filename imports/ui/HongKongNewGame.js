@@ -6,6 +6,8 @@ import { Constants } from '../api/Constants.js';
 import { EloCalculator } from '../api/EloCalculator.js';
 import { NewGameUtils } from '../api/NewGameUtils.js';
 
+import './HongKongNewGame.html';
+
 Template.HongKongNewGame.onCreated( function() {
 	this.hand_type = new ReactiveVar( "dealin" );
 	this.hands = new ReactiveArray();
