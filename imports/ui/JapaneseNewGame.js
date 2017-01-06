@@ -6,6 +6,8 @@ import { Constants } from '../api/Constants.js';
 import { EloCalculator } from '../api/EloCalculator.js';
 import { NewGameUtils } from '../api/NewGameUtils.js';
 
+import './JapaneseNewGame.html';
+
 // Code to be evaluated when JapaneseNewGame template is reloaded
 Template.JapaneseNewGame.onCreated( function() {
 	// Meteor: Template type to show for choosing hand submission
