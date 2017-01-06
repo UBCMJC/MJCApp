@@ -36,10 +36,10 @@ export var NewGameUtils = {
 		Session.set("westPlayerPointsWon", 0);
 		Session.set("northPlayerPointsWon", 0);
 
-		Session.set("eastFuckupTotal", 0);
-		Session.set("southFuckupTotal", 0);
-		Session.set("westFuckupTotal", 0);
-		Session.set("northFuckupTotal", 0);
+		Session.set("eastMistakeTotal", 0);
+		Session.set("southMistakeTotal", 0);
+		Session.set("westMistakeTotal", 0);
+		Session.set("northMistakeTotal", 0);
 	},
 
 	// UX: Convert a round and gametype into the correct round wind
@@ -161,13 +161,13 @@ export var NewGameUtils = {
 
 	rollbackChomboStat(lastHand) {
 		if 		(Number(lastHand.eastDelta) < 0)
-			Session.set("eastFuckupTotal", Number(Session.get("eastFuckupTotal")) - 1);
+			Session.set("eastMistakeTotal", Number(Session.get("eastMistakeTotal")) - 1);
 		else if (Number(lastHand.southDelta) < 0)
-			Session.set("southFuckupTotal", Number(Session.get("southFuckupTotal")) - 1);
+			Session.set("southMistakeTotal", Number(Session.get("southMistakeTotal")) - 1);
 		else if (Number(lastHand.westDelta) < 0)
-			Session.set("westFuckupTotal", Number(Session.get("westFuckupTotal")) - 1);
+			Session.set("westMistakeTotal", Number(Session.get("westMistakeTotal")) - 1);
 		else if (Number(lastHand.northDelta) < 0)
-			Session.set("northFuckupTotal", Number(Session.get("northFuckupTotal")) - 1);
+			Session.set("northMistakeTotal", Number(Session.get("northMistakeTotal")) - 1);
 	},
 
 	rollbackHandWinStat(lastHand) {
