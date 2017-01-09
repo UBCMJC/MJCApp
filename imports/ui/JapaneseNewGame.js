@@ -590,10 +590,10 @@ Template.JapaneseNewGame.events({
 				Session.set("westPlayerRiichisWon", 0);
 				Session.set("northPlayerRiichisWon", 0);
 
-				Session.set("eastFuckupTotal", 0);
-				Session.set("southFuckupTotal", 0);
-				Session.set("westFuckupTotal", 0);
-				Session.set("northFuckupTotal", 0);
+				Session.set("eastMistakeTotal", 0);
+				Session.set("southMistakeTotal", 0);
+				Session.set("westMistakeTotal", 0);
+				Session.set("northMistakeTotal", 0);
 
 				Session.set("eastPlayerWins", 0);
 				Session.set("southPlayerWins", 0);
@@ -691,10 +691,10 @@ function save_game_to_database(hands_array) {
 			Players.update({_id: north_id}, {$inc: {japaneseBankruptTotal: 1}});
 
 		// Save chombo counts
-		Players.update({_id: east_id}, {$inc: {japaneseChomboTotal: Number(Session.get("eastFuckupTotal"))}});
-		Players.update({_id: south_id}, {$inc: {japaneseChomboTotal: Number(Session.get("southFuckupTotal"))}});
-		Players.update({_id: west_id}, {$inc: {japaneseChomboTotal: Number(Session.get("westFuckupTotal"))}});
-		Players.update({_id: north_id}, {$inc: {japaneseChomboTotal: Number(Session.get("northFuckupTotal"))}});
+		Players.update({_id: east_id}, {$inc: {japaneseChomboTotal: Number(Session.get("eastMistakeTotal"))}});
+		Players.update({_id: south_id}, {$inc: {japaneseChomboTotal: Number(Session.get("southMistakeTotal"))}});
+		Players.update({_id: west_id}, {$inc: {japaneseChomboTotal: Number(Session.get("westMistakeTotal"))}});
+		Players.update({_id: north_id}, {$inc: {japaneseChomboTotal: Number(Session.get("northMistakeTotal"))}});
 
 		// Update riichi count
 		Players.update({_id: east_id}, {$inc: {japaneseRiichiTotal: Number(Session.get("east_riichi_sum"))}});
@@ -1106,12 +1106,12 @@ function push_mistake_hand(template) {
 	var westDelta = mistake_delta("west", loserWind);
 	var northDelta = mistake_delta("north", loserWind);
 
-	if 		(loserWind == "east")  Session.set("eastFuckupTotal",  Number(Session.get("eastFuckupTotal"))  + 1);
-	else if (loserWind == "south") Session.set("southFuckupTotal", Number(Session.get("southFuckupTotal")) + 1);
-	else if (loserWind == "west")  Session.set("westFuckupTotal",  Number(Session.get("westFuckupTotal"))  + 1);
-	else if (loserWind == "north") Session.set("northFuckupTotal", Number(Session.get("northFuckupTotal")) + 1);
+	if 		(loserWind == "east")  Session.set("eastMistakeTotal",  Number(Session.get("eastMistakeTotal"))  + 1);
+	else if (loserWind == "south") Session.set("southMistakeTotal", Number(Session.get("southMistakeTotal")) + 1);
+	else if (loserWind == "west")  Session.set("westMistakeTotal",  Number(Session.get("westMistakeTotal"))  + 1);
+	else if (loserWind == "north") Session.set("northMistakeTotal", Number(Session.get("northMistakeTotal")) + 1);
 
-	pushHand(template, "fuckup", eastDelta, southDelta, westDelta, northDelta);
+	pushHand(template, "mistake", eastDelta, southDelta, westDelta, northDelta);
 
 	template.riichi_round_history.push({east: false,
 										south: false,
