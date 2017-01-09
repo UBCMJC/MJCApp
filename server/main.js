@@ -22,6 +22,10 @@ Meteor.startup(() => {
   			hongKongWinPointsTotal: 0, //added
   			hongKongChomboTotal: 0, //added
   			hongKongBankruptTotal: 0, //added
+			hongKongFirstPlaceSum: 0, //added
+			hongKongSecondPlaceSum: 0, //added
+			hongKongThirdPlaceSum: 0, //added
+			hongKongFourthPlaceSum: 0, //added
 
   			japaneseLeagueName: "JPN_DELETE_ME",
   			japaneseElo: 0, //added
@@ -36,6 +40,10 @@ Meteor.startup(() => {
   			japaneseWinRiichiTotal: 0, //added
   			japaneseChomboTotal: 0, //added
   			japaneseBankruptTotal: 0, //added
+			japaneseFirstPlaceSum: 0, //added
+			japaneseSecondPlaceSum: 0, //added
+			japaneseThirdPlaceSum: 0, //added
+			japaneseFourthPlaceSum: 0, //added
   		});
 	}
 });
