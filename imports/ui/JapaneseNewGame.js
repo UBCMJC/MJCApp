@@ -172,7 +172,7 @@ Template.JapaneseNewGame.helpers({
 			all_hands: Template.instance().hands.get(),
 		};
 
-		let jpnEloCalculator = new EloCalculator(2000, 5, [15000, 0, -5000, -10000], game, Constants.GAME_TYPE.JAPANESE);
+		let jpnEloCalculator = new EloCalculator(2000, 5, [15000, 5000, -5000, -15000], game, Constants.GAME_TYPE.JAPANESE);
 
 		switch (direction) {
 		case "east":  return jpnEloCalculator.eloChange(eastPlayer).toFixed(2);
