@@ -616,8 +616,8 @@ Template.JapaneseNewGame.events({
 				Session.set("southPlayerLosses", 0);
 				Session.set("westPlayerLosses", 0);
 				Session.set("northPlayerLosses", 0);
-        
-        resetRoundStats();
+
+				resetRoundStats();
 
 				$( ".submit_hand_button" ).removeClass( "disabled" );
 				$( ".submit_game_button" ).addClass( "disabled" );
@@ -948,7 +948,7 @@ function push_selfdraw_hand(template) {
 		Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) + points);
 		Session.set("southPlayerDoraSum", Number(Session.get("southPlayerDoraSum")) + dora);
 
-		if (Session.get("south_riichi") == true) 
+		if (Session.get("south_riichi") == true)
 			Session.set("southPlayerRiichisWon", Number(Session.get("southPlayerRiichisWon")) + 1);
 	}
 	else if (winnerWind == "west") {
