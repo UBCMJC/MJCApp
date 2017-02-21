@@ -189,10 +189,8 @@ Template.JapaneseNewGame.helpers({
 		case Constants.DEFAULT_WEST:
 		case Constants.DEFAULT_NORTH:
 			return "?";
-			break;
 		default:
 			return Players.findOne({japaneseLeagueName: player}).japaneseElo.toFixed(2);
-			break;
 		};
 	},
 	// Return a string of the round wind for Japanese style
@@ -393,7 +391,6 @@ Template.JapaneseNewGame.events({
 
 		if ( !$( event.target ).hasClass( "disabled")) {
 
-
 			//Do nothing if we don't have players yet
 			if (NewGameUtils.allPlayersSelected()) {
 				// Save what the free riichi stick number is in case we delete this hand
@@ -410,6 +407,7 @@ Template.JapaneseNewGame.events({
 						if (NewGameUtils.noIllegalJapaneseHands()) {
 							push_dealin_hand(template);
 							$( ".delete_hand_button" ).removeClass( "disabled" );
+							resetRoundStats();
 						}
 						else {
 							window.alert("Invalid points/fu entry!");
@@ -426,6 +424,7 @@ Template.JapaneseNewGame.events({
 						if (NewGameUtils.noIllegalSelfdrawJapaneseHands()) {
 							push_selfdraw_hand(template);
 							$( ".delete_hand_button" ).removeClass( "disabled" );
+							resetRoundStats();
 						}
 						else {
 							window.alert("Invalid points/fu entry!");
@@ -438,11 +437,13 @@ Template.JapaneseNewGame.events({
 				case "jpn_nowin":
 					push_nowin_hand(template);
 					$( ".delete_hand_button" ).removeClass( "disabled" );
+					resetRoundStats();
 					break;
 				// Push a restart hand -> cannot input invalid information
 				case "jpn_restart":
 					push_restart_hand(template);
 					$( ".delete_hand_button" ).removeClass( "disabled" );
+					resetRoundStats();
 					break;
 				// Push a chombo hand and ensure proper information
 				case "jpn_mistake":
@@ -450,9 +451,11 @@ Template.JapaneseNewGame.events({
 					if (Session.get("round_loser") != Constants.NO_PERSON) {
 						push_mistake_hand(template);
 						$( ".delete_hand_button" ).removeClass( "disabled" );
-					}
-					else
+						resetRoundStats();
+					} else {
 						window.alert("You need to fill out who chomboed!");
+					}
+
 					break;
 				// Push a hand where pao was split and ensure proper information
 				case "jpn_split_pao":
@@ -467,6 +470,7 @@ Template.JapaneseNewGame.events({
 						if (NewGameUtils.noIllegalJapaneseHands()) {
 							push_split_pao_hand(template);
 							$( ".delete_hand_button" ).removeClass( "disabled" );
+							resetRoundStats();
 						}
 						else {
 							window.alert("Invalid points/fu entry!");
@@ -486,8 +490,7 @@ Template.JapaneseNewGame.events({
 			}
 
 			// If game ending conditions are met, do not allow more hand submissions and allow game submission
-			if (NewGameUtils.japaneseGameOver())
-			{
+			if (NewGameUtils.japaneseGameOver()) {
 				$( event.target ).addClass( "disabled");
 				$( ".submit_game_button" ).removeClass( "disabled" );
 			}
@@ -552,7 +555,6 @@ Template.JapaneseNewGame.events({
 	},
 	//Submit a game to the database
 	'click .submit_game_button'(event, template) {
-
 		if ( !$(event.target ).hasClass( "disabled" )) {
 			var r = confirm("Are you sure you want to submit this game?");
 			if (r == true) {
@@ -614,6 +616,8 @@ Template.JapaneseNewGame.events({
 				Session.set("southPlayerLosses", 0);
 				Session.set("westPlayerLosses", 0);
 				Session.set("northPlayerLosses", 0);
+
+				resetRoundStats();
 
 				$( ".submit_hand_button" ).removeClass( "disabled" );
 				$( ".submit_game_button" ).addClass( "disabled" );
@@ -943,6 +947,7 @@ function push_selfdraw_hand(template) {
 		Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) + 1);
 		Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) + points);
 		Session.set("southPlayerDoraSum", Number(Session.get("southPlayerDoraSum")) + dora);
+
 		if (Session.get("south_riichi") == true)
 			Session.set("southPlayerRiichisWon", Number(Session.get("southPlayerRiichisWon")) + 1);
 	}
@@ -1687,6 +1692,36 @@ function setAllGUIRiichisFalse() {
 	Session.set("south_riichi", false);
 	Session.set("west_riichi", false);
 	Session.set("north_riichi", false);
+};
+
+function resetRoundStats() {
+	Session.set("current_points", 0);
+	Session.set("current_fu", 0);
+	Session.set("current_dora", 0);
+	Session.set("round_winner", Constants.NO_PERSON);
+	Session.set("round_loser", Constants.NO_PERSON);
+	Session.set("round_pao_player", Constants.NO_PERSON);
+
+	for (let wind of ["east", "south", "west", "north"]) {
+		Session.set(wind + "_riichi", false);
+		Session.set(wind + "_tenpai", false);
+	}
+
+	$( ".winner_buttons button" ).removeClass( "disabled" );
+	$( ".loser_buttons button" ).removeClass( "disabled" );
+	$( ".riichi_buttons button" ).removeClass( "disabled" );
+	$( ".tenpai_buttons button" ).removeClass( "disabled" );
+	$( ".pao_buttons button" ).removeClass( "disabled" );
+
+	$( ".winner_buttons button" ).removeClass( "active" );
+	$( ".loser_buttons button" ).removeClass( "active" );
+	$( ".riichi_buttons button" ).removeClass( "active" );
+	$( ".tenpai_buttons button" ).removeClass( "active" );
+	$( ".pao_buttons button" ).removeClass( "active" );
+
+	$( "select.points" ).val(undefined);
+	$( "select.fu" ).val(undefined);
+	$( "select.dora" ).val(undefined);
 };
 
 Template.jpn_points.events({
