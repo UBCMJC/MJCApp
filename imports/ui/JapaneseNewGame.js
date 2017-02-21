@@ -1702,8 +1702,7 @@ function resetRoundStats() {
 	Session.set("round_loser", Constants.NO_PERSON);
 	Session.set("round_pao_player", Constants.NO_PERSON);
 
-	for (let k in ["east", "south", "west", "north"]) {
-		let wind = ["east", "south", "west", "north"][k];
+	for (let wind of ["east", "south", "west", "north"]) {
 		Session.set(wind + "_riichi", false);
 		Session.set(wind + "_tenpai", false);
 	}
