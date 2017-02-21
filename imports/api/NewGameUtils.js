@@ -56,15 +56,13 @@ export var NewGameUtils = {
 				return "西";
 			else //if (round > 12)
 				return "北";
-			break;
 		case Constants.GAME_TYPE.JAPANESE:
 			if (round <= 4)
 				return "東";
 			if (round > 4 && round <= 8)
 				return "南";
 			else //if (round > 8)
-				return "西";;
-			break;
+				return "西";
 		};
 	},
 
@@ -98,18 +96,14 @@ export var NewGameUtils = {
 	getFirstPlace() {
 		let values = [];
 		// For ties, prioritise players in seating order
-		let priority = { east: 3,
-		                 south: 2,
-		                 west: 1,
-		                 north: 0 };
 
-		["east", "south", "west", "north"].forEach(k => {
+		Constants.WINDS.forEach(k => {
 			values.push({ wind: k, value: this.getDirectionScore(k) })
 		});
 
 		let winner = values.reduce((a, b) => {
 			if (a.value == b.value) {
-				return priority[a["wind"]] > priority[b["wind"]] ? a : b;
+				return Constants.PRIORITY[a["wind"]] > Constants.PRIORITY[b["wind"]] ? a : b;
 			} else {
 				return a.value > b.value ? a : b;
 			}
@@ -135,7 +129,6 @@ export var NewGameUtils = {
 		                                 Session.get("current_bonus") > 0 &&
 		                                 this.getDirectionScore("north") >= Constants.JPN_END_POINTS &&
 		                                 this.getFirstPlace() == "north";
-
 		return someoneBankrupt || westRoundOver || someoneAboveMinimum || dealerFirstAndAboveMinimum;
 	},
 
@@ -229,29 +222,29 @@ export var NewGameUtils = {
 
 	getDirectionScore(direction) {
 		switch (direction) {
-		case "east":
+		case Constants.EAST:
 			return Number(Session.get("east_score"));
-		case "south":
+		case Constants.SOUTH:
 			return Number(Session.get("south_score"));
-		case "west":
+		case Constants.WEST:
 			return Number(Session.get("west_score"));
-		case "north":
+		case Constants.NORTH:
 			return Number(Session.get("north_score"));
 		}
 	},
 
 	playerToDirection(player) {
-		if (player == Session.get("current_east")) return "east";
-		if (player == Session.get("current_south")) return "south";
-		if (player == Session.get("current_west")) return "west";
-		if (player == Session.get("current_north")) return "north";
+		if (player == Session.get("current_east")) return Constants.EAST;
+		if (player == Session.get("current_south")) return Constants.SOUTH;
+		if (player == Session.get("current_west")) return Constants.WEST;
+		if (player == Session.get("current_north")) return Constants.NORTH;
 	},
 
 	roundToDealerDirection(round) {
-		if (round % 4 == 1) return "east";
-		if (round % 4 == 2) return "south";
-		if (round % 4 == 3) return "west";
-		if (round % 4 == 0) return "north";
+		if (round % 4 == 1) return Constants.EAST;
+		if (round % 4 == 2) return Constants.SOUTH;
+		if (round % 4 == 3) return Constants.WEST;
+		if (round % 4 == 0) return Constants.NORTH;
 	},
 };
 

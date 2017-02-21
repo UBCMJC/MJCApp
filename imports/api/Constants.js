@@ -18,6 +18,18 @@ export const Constants = {
 	// game
 	JPN_END_POINTS: 30000,
 
+	// Base points of a mangan
+	JPN_MANGAN_BASE_POINTS: 2000,
+
+	// Points for every bonus round
+	JPN_BONUS_POINTS: 300,
+
+	// Points for every riichi stick
+	JPN_RIICHI_POINTS: 1000,
+
+	// Points paid for a mistake
+	JPN_MISTAKE_POINTS: 12000,
+
 	// Placeholder value to establish a player select button
 	// That has no player selected
 	NO_PERSON: "no one",
@@ -43,7 +55,21 @@ export const Constants = {
 	SELF_DRAW: "selfdraw",
 	NO_WIN: "nowin",
 	RESTART: "restart",
-	MISTAKE: "mistake"
+	MISTAKE: "mistake",
+
+	EAST: "east",
+	SOUTH: "south",
+	WEST: "west",
+	NORTH: "north",
+
+	PRIORITY: {
+		east: 3,
+		south: 2,
+		north: 1,
+		west: 0
+	}
 };
+
+Constants.WINDS = [Constants.EAST, Constants.SOUTH, Constants.WEST, Constants.NORTH];
 
 Object.keys(Constants).forEach((k) => { Template.registerHelper(k, () => Constants[k] )});
