@@ -453,9 +453,10 @@ Template.JapaneseNewGame.events({
 						push_mistake_hand(template);
 						$( ".delete_hand_button" ).removeClass( "disabled" );
 						resetRoundStats();
-					} else
-
+					} else {
 						window.alert("You need to fill out who chomboed!");
+					}
+
 					break;
 				// Push a hand where pao was split and ensure proper information
 				case "jpn_split_pao":
