@@ -7,7 +7,9 @@
             <th class="elo">ELO</th>
             <th class="games-played">Games Played</th>
         </tr>
-        {{ #each player in (getPlayers sortBy) }}
+        <!-- The following lines get the format argument from the templates JapaneseRanking or HongKongRanking -->
+        {{ #each player in (getPlayers sortBy format) }}
+            <!-- Retrieves an info object to display information shown on the ranking list -->
             {{ #let info=(getInfo format player) }}
                 <tr>
                     <td class="rank">{{ info.rank }}</td>

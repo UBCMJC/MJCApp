@@ -6,6 +6,8 @@ import { Constants } from '../api/Constants.js';
 import { EloCalculator } from '../api/EloCalculator.js';
 import { NewGameUtils } from '../api/NewGameUtils.js';
 
+import './JapaneseNewGame.html';
+
 // Code to be evaluated when JapaneseNewGame template is reloaded
 Template.JapaneseNewGame.onCreated( function() {
 	// Meteor: Template type to show for choosing hand submission
@@ -142,6 +144,43 @@ Template.JapaneseNewGame.helpers({
 
 		return retval;
 	},
+	// Show what a player's Elo change will look like if game is ended now
+	get_expected_elo_change(direction) {
+
+		let eastPlayer  = Session.get("current_east");
+		let southPlayer = Session.get("current_south");
+		let westPlayer  = Session.get("current_west");
+		let northPlayer = Session.get("current_north");
+
+		if (eastPlayer  == Constants.DEFAULT_EAST ||
+		    southPlayer == Constants.DEFAULT_SOUTH ||
+		    westPlayer  == Constants.DEFAULT_WEST ||
+		    northPlayer == Constants.DEFAULT_NORTH) {
+			return "N/A";
+		}
+
+		let game = {
+			timestamp: Date.now(),
+			east_player: eastPlayer,
+			south_player: southPlayer,
+			west_player: westPlayer,
+			north_player: northPlayer,
+			east_score: (Number(Session.get("east_score"))),
+			south_score: (Number(Session.get("south_score"))),
+			west_score: (Number(Session.get("west_score"))),
+			north_score: (Number(Session.get("north_score"))),
+			all_hands: Template.instance().hands.get(),
+		};
+
+		let jpnEloCalculator = new EloCalculator(2000, 5, [15000, 5000, -5000, -15000], game, Constants.GAME_TYPE.JAPANESE);
+
+		switch (direction) {
+		case "east":  return jpnEloCalculator.eloChange(eastPlayer).toFixed(2);
+		case "south": return jpnEloCalculator.eloChange(southPlayer).toFixed(2);
+		case "west":  return jpnEloCalculator.eloChange(westPlayer).toFixed(2);
+		case "north": return jpnEloCalculator.eloChange(northPlayer).toFixed(2);
+		};
+	},
 	// Show a player's ELO
 	get_jpn_elo(player) {
 		switch (player) {
@@ -164,19 +203,19 @@ Template.JapaneseNewGame.helpers({
 Template.jpn_render_hand.helpers({
 	// Boolean expressions to help with rendering hands
 	is_dealin(hand_type) {
-		return hand_type == "dealin";
+		return hand_type == Constants.DEAL_IN;
 	},
 	is_selfdraw(hand_type) {
-		return hand_type == "selfdraw";
+		return hand_type == Constants.SELF_DRAW;
 	},
 	is_nowin(hand_type) {
-		return hand_type == "nowin";
+		return hand_type == Constants.NO_WIN;
 	},
 	is_restart(hand_type) {
-		return hand_type == "restart";
+		return hand_type == Constants.RESTART;
 	},
-	is_fuckup(hand_type) {
-		return hand_type == "fuckup";
+	is_mistake(hand_type) {
+		return hand_type == Constants.MISTAKE;
 	},
 	// Return a string of the round wind for Japanese style
 	displayRoundWind(round) {
@@ -408,13 +447,14 @@ Template.JapaneseNewGame.events({
 					resetRoundStats();
 					break;
 				// Push a chombo hand and ensure proper information
-				case "jpn_fuckup":
+				case "jpn_mistake":
 					// Ensure correct input of who chomboed
 					if (Session.get("round_loser") != Constants.NO_PERSON) {
-						push_fuckup_hand(template);
+						push_mistake_hand(template);
 						$( ".delete_hand_button" ).removeClass( "disabled" );
 						resetRoundStats();
 					} else
+
 						window.alert("You need to fill out who chomboed!");
 					break;
 				// Push a hand where pao was split and ensure proper information
@@ -460,7 +500,7 @@ Template.JapaneseNewGame.events({
 	//Remove the last submitted hand
 	'click .delete_hand_button'(event, template) {
 		if ( !$(event.target ).hasClass( "disabled" )) {
-			var r = confirm("Are you sure?");
+			var r = confirm("Are you sure you want to delete the last hand?");
 			// Reset game to last hand state
 			if (r == true) {
 				// Deletes last hand
@@ -487,7 +527,7 @@ Template.JapaneseNewGame.events({
 					Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) - 1);
 
 				// Rollback chombo stat
-				if (del_hand.handType == "fuckup")
+				if (del_hand.handType == "mistake")
 					NewGameUtils.rollbackChomboStat(del_hand);
 
 				// Rollback hand win/loss stat
@@ -515,72 +555,74 @@ Template.JapaneseNewGame.events({
 	},
 	//Submit a game to the database
 	'click .submit_game_button'(event, template) {
-		var r = confirm("Are you sure?");
-		if (r == true) {
-			var winScore = Math.max(Number(Session.get("east_score")),
-									Number(Session.get("south_score")),
-									Number(Session.get("west_score")),
-									Number(Session.get("north_score")));
+		if ( !$(event.target ).hasClass( "disabled" )) {
+			var r = confirm("Are you sure you want to submit this game?");
+			if (r == true) {
+				var winScore = Math.max(Number(Session.get("east_score")),
+										Number(Session.get("south_score")),
+										Number(Session.get("west_score")),
+										Number(Session.get("north_score")));
 
-			if (winScore == Session.get("east_score"))
-				Session.set("east_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
-			else if (winScore == Session.get("south_score"))
-				Session.set("south_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
-			else if (winScore == Session.get("west_score"))
-				Session.set("west_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
-			else //if (winScore == Session.get("north_score"))
-				Session.set("north_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
+				if (winScore == Session.get("east_score"))
+					Session.set("east_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
+				else if (winScore == Session.get("south_score"))
+					Session.set("south_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
+				else if (winScore == Session.get("west_score"))
+					Session.set("west_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
+				else //if (winScore == Session.get("north_score"))
+					Session.set("north_score", winScore + 1000 * Number(Session.get("free_riichi_sticks")));
 
-			save_game_to_database(template.hands.get());
+				save_game_to_database(template.hands.get());
 
-			//Deletes all hands to reset to empty game
-			while (template.hands.pop()) {}
+				//Deletes all hands to reset to empty game
+				while (template.hands.pop()) {}
 
-			Session.set("east_score", Constants.JPN_START_POINTS);
-			Session.set("south_score", Constants.JPN_START_POINTS);
-			Session.set("west_score", Constants.JPN_START_POINTS);
-			Session.set("north_score", Constants.JPN_START_POINTS);
+				Session.set("east_score", Constants.JPN_START_POINTS);
+				Session.set("south_score", Constants.JPN_START_POINTS);
+				Session.set("west_score", Constants.JPN_START_POINTS);
+				Session.set("north_score", Constants.JPN_START_POINTS);
 
-			Session.set("current_round", 1);
-			Session.set("current_bonus", 0);
+				Session.set("current_round", 1);
+				Session.set("current_bonus", 0);
 
-			Session.set("free_riichi_sticks", 0);
+				Session.set("free_riichi_sticks", 0);
 
-			Session.set("eastPlayerRiichisWon", 0);
-			Session.set("southPlayerRiichisWon", 0);
-			Session.set("westPlayerRiichisWon", 0);
-			Session.set("northPlayerRiichisWon", 0);
+				Session.set("eastPlayerRiichisWon", 0);
+				Session.set("southPlayerRiichisWon", 0);
+				Session.set("westPlayerRiichisWon", 0);
+				Session.set("northPlayerRiichisWon", 0);
 
-			Session.set("eastFuckupTotal", 0);
-			Session.set("southFuckupTotal", 0);
-			Session.set("westFuckupTotal", 0);
-			Session.set("northFuckupTotal", 0);
+				Session.set("eastMistakeTotal", 0);
+				Session.set("southMistakeTotal", 0);
+				Session.set("westMistakeTotal", 0);
+				Session.set("northMistakeTotal", 0);
 
-			Session.set("eastPlayerWins", 0);
-			Session.set("southPlayerWins", 0);
-			Session.set("westPlayerWins", 0);
-			Session.set("northPlayerWins", 0);
+				Session.set("eastPlayerWins", 0);
+				Session.set("southPlayerWins", 0);
+				Session.set("westPlayerWins", 0);
+				Session.set("northPlayerWins", 0);
 
-			Session.set("eastPlayerPointsWon", 0);
-			Session.set("southPlayerPointsWon", 0);
-			Session.set("westPlayerPointsWon", 0);
-			Session.set("northPlayerPointsWon", 0);
+				Session.set("eastPlayerPointsWon", 0);
+				Session.set("southPlayerPointsWon", 0);
+				Session.set("westPlayerPointsWon", 0);
+				Session.set("northPlayerPointsWon", 0);
 
-			Session.set("eastPlayerDoraSum", 0);
-			Session.set("southPlayerDoraSum", 0);
-			Session.set("westPlayerDoraSum", 0);
-			Session.set("northPlayerDoraSum", 0);
+				Session.set("eastPlayerDoraSum", 0);
+				Session.set("southPlayerDoraSum", 0);
+				Session.set("westPlayerDoraSum", 0);
+				Session.set("northPlayerDoraSum", 0);
 
-			Session.set("eastPlayerLosses", 0);
-			Session.set("southPlayerLosses", 0);
-			Session.set("westPlayerLosses", 0);
-			Session.set("northPlayerLosses", 0);
+				Session.set("eastPlayerLosses", 0);
+				Session.set("southPlayerLosses", 0);
+				Session.set("westPlayerLosses", 0);
+				Session.set("northPlayerLosses", 0);
+        
+        resetRoundStats();
 
-			resetRoundStats();
-
-			$( ".submit_hand_button" ).removeClass( "disabled" );
-			$( ".submit_game_button" ).addClass( "disabled" );
-			$( ".delete_hand_button" ).addClass( "disabled" );
+				$( ".submit_hand_button" ).removeClass( "disabled" );
+				$( ".submit_game_button" ).addClass( "disabled" );
+				$( ".delete_hand_button" ).addClass( "disabled" );
+			}
 		}
 	},
 	//Toggle between different round types
@@ -653,10 +695,10 @@ function save_game_to_database(hands_array) {
 			Players.update({_id: north_id}, {$inc: {japaneseBankruptTotal: 1}});
 
 		// Save chombo counts
-		Players.update({_id: east_id}, {$inc: {japaneseChomboTotal: Number(Session.get("eastFuckupTotal"))}});
-		Players.update({_id: south_id}, {$inc: {japaneseChomboTotal: Number(Session.get("southFuckupTotal"))}});
-		Players.update({_id: west_id}, {$inc: {japaneseChomboTotal: Number(Session.get("westFuckupTotal"))}});
-		Players.update({_id: north_id}, {$inc: {japaneseChomboTotal: Number(Session.get("northFuckupTotal"))}});
+		Players.update({_id: east_id}, {$inc: {japaneseChomboTotal: Number(Session.get("eastMistakeTotal"))}});
+		Players.update({_id: south_id}, {$inc: {japaneseChomboTotal: Number(Session.get("southMistakeTotal"))}});
+		Players.update({_id: west_id}, {$inc: {japaneseChomboTotal: Number(Session.get("westMistakeTotal"))}});
+		Players.update({_id: north_id}, {$inc: {japaneseChomboTotal: Number(Session.get("northMistakeTotal"))}});
 
 		// Update riichi count
 		Players.update({_id: east_id}, {$inc: {japaneseRiichiTotal: Number(Session.get("east_riichi_sum"))}});
@@ -682,6 +724,12 @@ function save_game_to_database(hands_array) {
 		Players.update({_id: west_id}, {$inc: {japaneseWinPointsTotal: Number(Session.get("westPlayerPointsWon"))}});
 		Players.update({_id: north_id}, {$inc: {japaneseWinPointsTotal: Number(Session.get("northPlayerPointsWon"))}});
 
+		// Update total dora
+		Players.update({_id: east_id}, {$inc: {japaneseWinDoraTotal: Number(Session.get("eastPlayerDoraSum"))}});
+		Players.update({_id: south_id}, {$inc: {japaneseWinDoraTotal: Number(Session.get("southPlayerDoraSum"))}});
+		Players.update({_id: west_id}, {$inc: {japaneseWinDoraTotal: Number(Session.get("westPlayerDoraSum"))}});
+		Players.update({_id: north_id}, {$inc: {japaneseWinDoraTotal: Number(Session.get("northPlayerDoraSum"))}});
+
 		// Save number of riichied hands won
 		Players.update({_id: east_id}, {$inc: {japaneseWinRiichiTotal: Number(Session.get("eastPlayerRiichisWon"))}});
 		Players.update({_id: south_id}, {$inc: {japaneseWinRiichiTotal: Number(Session.get("southPlayerRiichisWon"))}});
@@ -702,26 +750,86 @@ function save_game_to_database(hands_array) {
 		if (Number(Session.get("east_score")) >= Number(Session.get("north_score"))) position--;
 		Players.update({_id: east_id}, {$inc: {japanesePositionSum: position}});
 
-		// Calculate east position quickly?
+		switch (position) {
+		case 1:
+			Players.update({_id: east_id}, {$inc: {japaneseFirstPlaceSum: 1}});
+			break;
+		case 2:
+			Players.update({_id: east_id}, {$inc: {japaneseSecondPlaceSum: 1}});
+			break;
+		case 3:
+			Players.update({_id: east_id}, {$inc: {japaneseThirdPlaceSum: 1}});
+			break;
+		case 4:
+			Players.update({_id: east_id}, {$inc: {japaneseFourthPlaceSum: 1}});
+			break;
+		}
+
+		// Calculate south position quickly?
 		position = 4;
 		if (Number(Session.get("south_score")) > Number(Session.get("east_score"))) position--;
 		if (Number(Session.get("south_score")) >= Number(Session.get("west_score"))) position--;
 		if (Number(Session.get("south_score")) >= Number(Session.get("north_score"))) position--;
 		Players.update({_id: south_id}, {$inc: {japanesePositionSum: position}});
 
-		// Calculate east position quickly?
+		switch (position) {
+		case 1:
+			Players.update({_id: south_id}, {$inc: {japaneseFirstPlaceSum: 1}});
+			break;
+		case 2:
+			Players.update({_id: south_id}, {$inc: {japaneseSecondPlaceSum: 1}});
+			break;
+		case 3:
+			Players.update({_id: south_id}, {$inc: {japaneseThirdPlaceSum: 1}});
+			break;
+		case 4:
+			Players.update({_id: south_id}, {$inc: {japaneseFourthPlaceSum: 1}});
+			break;
+		}
+
+		// Calculate west position quickly?
 		position = 4;
 		if (Number(Session.get("west_score")) > Number(Session.get("east_score"))) position--;
 		if (Number(Session.get("west_score")) > Number(Session.get("south_score"))) position--;
 		if (Number(Session.get("west_score")) >= Number(Session.get("north_score"))) position--;
 		Players.update({_id: west_id}, {$inc: {japanesePositionSum: position}});
 
-		// Calculate east position quickly?
+		switch (position) {
+		case 1:
+			Players.update({_id: west_id}, {$inc: {japaneseFirstPlaceSum: 1}});
+			break;
+		case 2:
+			Players.update({_id: west_id}, {$inc: {japaneseSecondPlaceSum: 1}});
+			break;
+		case 3:
+			Players.update({_id: west_id}, {$inc: {japaneseThirdPlaceSum: 1}});
+			break;
+		case 4:
+			Players.update({_id: west_id}, {$inc: {japaneseFourthPlaceSum: 1}});
+			break;
+		}
+
+		// Calculate north position quickly?
 		var position = 4;
 		if (Number(Session.get("north_score")) > Number(Session.get("east_score"))) position--;
 		if (Number(Session.get("north_score")) > Number(Session.get("south_score"))) position--;
 		if (Number(Session.get("north_score")) > Number(Session.get("west_score"))) position--;
 		Players.update({_id: north_id}, {$inc: {japanesePositionSum: position}});
+
+		switch (position) {
+		case 1:
+			Players.update({_id: north_id}, {$inc: {japaneseFirstPlaceSum: 1}});
+			break;
+		case 2:
+			Players.update({_id: north_id}, {$inc: {japaneseSecondPlaceSum: 1}});
+			break;
+		case 3:
+			Players.update({_id: north_id}, {$inc: {japaneseThirdPlaceSum: 1}});
+			break;
+		case 4:
+			Players.update({_id: north_id}, {$inc: {japaneseFourthPlaceSum: 1}});
+			break;
+		}
 
 		//Save game to database
 		JapaneseHands.insert(game);
@@ -996,19 +1104,19 @@ function push_restart_hand(template) {
 										north: Session.get("north_riichi")});
 };
 
-function push_fuckup_hand(template) {
+function push_mistake_hand(template) {
 	var loserWind = NewGameUtils.playerToDirection(Session.get("round_loser"));
-	var eastDelta = fuckup_delta("east", loserWind);
-	var southDelta = fuckup_delta("south", loserWind);
-	var westDelta = fuckup_delta("west", loserWind);
-	var northDelta = fuckup_delta("north", loserWind);
+	var eastDelta = mistake_delta("east", loserWind);
+	var southDelta = mistake_delta("south", loserWind);
+	var westDelta = mistake_delta("west", loserWind);
+	var northDelta = mistake_delta("north", loserWind);
 
-	if 		(loserWind == "east")  Session.set("eastFuckupTotal",  Number(Session.get("eastFuckupTotal"))  + 1);
-	else if (loserWind == "south") Session.set("southFuckupTotal", Number(Session.get("southFuckupTotal")) + 1);
-	else if (loserWind == "west")  Session.set("westFuckupTotal",  Number(Session.get("westFuckupTotal"))  + 1);
-	else if (loserWind == "north") Session.set("northFuckupTotal", Number(Session.get("northFuckupTotal")) + 1);
+	if 		(loserWind == "east")  Session.set("eastMistakeTotal",  Number(Session.get("eastMistakeTotal"))  + 1);
+	else if (loserWind == "south") Session.set("southMistakeTotal", Number(Session.get("southMistakeTotal")) + 1);
+	else if (loserWind == "west")  Session.set("westMistakeTotal",  Number(Session.get("westMistakeTotal"))  + 1);
+	else if (loserWind == "north") Session.set("northMistakeTotal", Number(Session.get("northMistakeTotal")) + 1);
 
-	pushHand(template, "fuckup", eastDelta, southDelta, westDelta, northDelta);
+	pushHand(template, "mistake", eastDelta, southDelta, westDelta, northDelta);
 
 	template.riichi_round_history.push({east: false,
 										south: false,
@@ -1564,7 +1672,7 @@ function selfdraw_delta(points, fu, playerWind, winnerWind) {
 
 };
 
-function fuckup_delta(player, loser) {
+function mistake_delta(player, loser) {
 	if (player == loser)
 		return -12000;
 	else

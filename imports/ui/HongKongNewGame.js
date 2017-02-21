@@ -6,6 +6,8 @@ import { Constants } from '../api/Constants.js';
 import { EloCalculator } from '../api/EloCalculator.js';
 import { NewGameUtils } from '../api/NewGameUtils.js';
 
+import './HongKongNewGame.html';
+
 Template.HongKongNewGame.onCreated( function() {
 	this.hand_type = new ReactiveVar( "dealin" );
 	this.hands = new ReactiveArray();
@@ -41,6 +43,43 @@ Template.HongKongNewGame.helpers({
 	get_player_score_final(direction) {
 		return NewGameUtils.getDirectionScore(direction);
 	},
+	// Show what a player's Elo change will look like if game is ended now
+	get_expected_elo_change(direction) {
+
+		let eastPlayer  = Session.get("current_east");
+		let southPlayer = Session.get("current_south");
+		let westPlayer  = Session.get("current_west");
+		let northPlayer = Session.get("current_north");
+
+		if (eastPlayer  == Constants.DEFAULT_EAST ||
+		    southPlayer == Constants.DEFAULT_SOUTH ||
+		    westPlayer  == Constants.DEFAULT_WEST ||
+		    northPlayer == Constants.DEFAULT_NORTH) {
+			return "N/A";
+        }
+
+		let game = {
+			timestamp: Date.now(),
+			east_player: eastPlayer,
+			south_player: southPlayer,
+			west_player: westPlayer,
+			north_player: northPlayer,
+			east_score: (Number(Session.get("east_score"))),
+			south_score: (Number(Session.get("south_score"))),
+			west_score: (Number(Session.get("west_score"))),
+			north_score: (Number(Session.get("north_score"))),
+			all_hands: Template.instance().hands.get(),
+		};
+
+		let hkEloCalculator = new EloCalculator(2000, 5, [100, 50, -50, -100], game, Constants.GAME_TYPE.HONG_KONG);
+
+		switch (direction) {
+		case "east":  return hkEloCalculator.eloChange(eastPlayer).toFixed(2);
+		case "south": return hkEloCalculator.eloChange(southPlayer).toFixed(2);
+		case "west":  return hkEloCalculator.eloChange(westPlayer).toFixed(2);
+		case "north": return hkEloCalculator.eloChange(northPlayer).toFixed(2);
+		};
+	},
 	get_hk_elo(player) {
 		switch (player) {
 		case Constants.DEFAULT_EAST:
@@ -60,19 +99,19 @@ Template.HongKongNewGame.helpers({
 
 Template.render_hand.helpers({
 	is_dealin(hand_type) {
-		return hand_type == "dealin";
+		return hand_type == Constants.DEAL_IN;
 	},
 	is_selfdraw(hand_type) {
-		return hand_type == "selfdraw";
+		return hand_type == Constants.SELF_DRAW;
 	},
 	is_nowin(hand_type) {
-		return hand_type == "nowin";
+		return hand_type == Constants.NO_WIN;
 	},
 	is_restart(hand_type) {
-		return hand_type == "restart";
+		return hand_type == Constants.RESTART;
 	},
-	is_fuckup(hand_type) {
-		return hand_type == "fuckup";
+	is_mistake(hand_type) {
+		return hand_type == Constants.MISTAKE;
 	},
 	displayRoundWind(round) {
 		return NewGameUtils.displayRoundWind(round, Constants.GAME_TYPE.HONG_KONG);
@@ -198,11 +237,12 @@ Template.HongKongNewGame.events({
 					$( ".delete_hand_button" ).removeClass( "disabled" );
 					break;
 
-				case "fuckup":
+				case "mistake":
 					if (Session.get("round_loser") != Constants.NO_PERSON) {
-						push_fuckup_hand(template);
+						push_mistake_hand(template);
 						$( ".delete_hand_button" ).removeClass( "disabled" );
 					}
+
 					else
 						window.alert("You need to fill out who made the mistake!");
 					break;
@@ -258,9 +298,8 @@ Template.HongKongNewGame.events({
 	},
 	//Remove the last submitted hand
 	'click .delete_hand_button'(event, template) {
-
 		if ( !$( event.target ).hasClass( "disabled" )) {
-			var r = confirm("Are you sure?");
+			var r = confirm("Are you sure you want to delete the last hand?");
 			if (r == true) {
 				var del_hand = Template.instance().hands.pop();
 
@@ -272,7 +311,7 @@ Template.HongKongNewGame.events({
 				Session.set("current_round", del_hand.round);
 
 				// Rollback chombo stat
-				if (del_hand.handType == "fuckup")
+				if (del_hand.handType == "mistake")
 					NewGameUtils.rollbackChomboStat(del_hand);
 
 				// Rollback hand stats for wins/losses
@@ -297,7 +336,7 @@ Template.HongKongNewGame.events({
 	},
 	//Submit a game to the database
 	'click .submit_game_button'(event, template) {
-		var r = confirm("Are you sure?");
+		var r = confirm("Are you sure you want to submit this game?");
 		if (r == true) {
 			save_game_to_database(template.hands.get());
 
@@ -311,10 +350,10 @@ Template.HongKongNewGame.events({
 			Session.set("current_round", 1);
 			Session.set("current_bonus", 0);
 
-			Session.set("eastFuckupTotal", 0);
-			Session.set("southFuckupTotal", 0);
-			Session.set("westFuckupTotal", 0);
-			Session.set("northFuckupTotal", 0);
+			Session.set("eastMistakeTotal", 0);
+			Session.set("southMistakeTotal", 0);
+			Session.set("westMistakeTotal", 0);
+			Session.set("northMistakeTotal", 0);
 
 			Session.set("eastPlayerWins", 0);
 			Session.set("southPlayerWins", 0);
@@ -403,10 +442,10 @@ function save_game_to_database(hands_array) {
 			Players.update({_id: north_id}, {$inc: {hongKongBankruptTotal: 1}});
 
 		// Save chombo counts
-		Players.update({_id: east_id}, {$inc: {hongKongChomboTotal: Number(Session.get("eastFuckupTotal"))}});
-		Players.update({_id: south_id}, {$inc: {hongKongChomboTotal: Number(Session.get("southFuckupTotal"))}});
-		Players.update({_id: west_id}, {$inc: {hongKongChomboTotal: Number(Session.get("westFuckupTotal"))}});
-		Players.update({_id: north_id}, {$inc: {hongKongChomboTotal: Number(Session.get("northFuckupTotal"))}});
+		Players.update({_id: east_id}, {$inc: {hongKongChomboTotal: Number(Session.get("eastMistakeTotal"))}});
+		Players.update({_id: south_id}, {$inc: {hongKongChomboTotal: Number(Session.get("southMistakeTotal"))}});
+		Players.update({_id: west_id}, {$inc: {hongKongChomboTotal: Number(Session.get("westMistakeTotal"))}});
+		Players.update({_id: north_id}, {$inc: {hongKongChomboTotal: Number(Session.get("northMistakeTotal"))}});
 
 		// Save number of hands (includes chombos, do we want this?)
 		Players.update({_id: east_id}, {$inc: {hongKongHandsTotal: hands_array.length}});
@@ -440,26 +479,86 @@ function save_game_to_database(hands_array) {
 		if (Number(Session.get("east_score")) >= Number(Session.get("north_score"))) position--;
 		Players.update({_id: east_id}, {$inc: {hongKongPositionSum: position}});
 
-		// Calculate east position quickly?
+		switch (position) {
+		case 1:
+			Players.update({_id: east_id}, {$inc: {hongKongFirstPlaceSum: 1}});
+			break;
+		case 2:
+			Players.update({_id: east_id}, {$inc: {hongKongSecondPlaceSum: 1}});
+			break;
+		case 3:
+			Players.update({_id: east_id}, {$inc: {hongKongThirdPlaceSum: 1}});
+			break;
+		case 4:
+			Players.update({_id: east_id}, {$inc: {hongKongFourthPlaceSum: 1}});
+			break;
+		}
+
+		// Calculate south position quickly?
 		position = 4;
 		if (Number(Session.get("south_score")) > Number(Session.get("east_score"))) position--;
 		if (Number(Session.get("south_score")) >= Number(Session.get("west_score"))) position--;
 		if (Number(Session.get("south_score")) >= Number(Session.get("north_score"))) position--;
 		Players.update({_id: south_id}, {$inc: {hongKongPositionSum: position}});
 
-		// Calculate east position quickly?
+		switch (position) {
+		case 1:
+			Players.update({_id: south_id}, {$inc: {hongKongFirstPlaceSum: 1}});
+			break;
+		case 2:
+			Players.update({_id: south_id}, {$inc: {hongKongSecondPlaceSum: 1}});
+			break;
+		case 3:
+			Players.update({_id: south_id}, {$inc: {hongKongThirdPlaceSum: 1}});
+			break;
+		case 4:
+			Players.update({_id: south_id}, {$inc: {hongKongFourthPlaceSum: 1}});
+			break;
+		}
+
+		// Calculate west position quickly?
 		position = 4;
 		if (Number(Session.get("west_score")) > Number(Session.get("east_score"))) position--;
 		if (Number(Session.get("west_score")) > Number(Session.get("south_score"))) position--;
 		if (Number(Session.get("west_score")) >= Number(Session.get("north_score"))) position--;
 		Players.update({_id: west_id}, {$inc: {hongKongPositionSum: position}});
 
-		// Calculate east position quickly?
+		switch (position) {
+		case 1:
+			Players.update({_id: west_id}, {$inc: {hongKongFirstPlaceSum: 1}});
+			break;
+		case 2:
+			Players.update({_id: west_id}, {$inc: {hongKongSecondPlaceSum: 1}});
+			break;
+		case 3:
+			Players.update({_id: west_id}, {$inc: {hongKongThirdPlaceSum: 1}});
+			break;
+		case 4:
+			Players.update({_id: west_id}, {$inc: {hongKongFourthPlaceSum: 1}});
+			break;
+		}
+
+		// Calculate north position quickly?
 		var position = 4;
 		if (Number(Session.get("north_score")) > Number(Session.get("east_score"))) position--;
 		if (Number(Session.get("north_score")) > Number(Session.get("south_score"))) position--;
 		if (Number(Session.get("north_score")) > Number(Session.get("west_score"))) position--;
 		Players.update({_id: north_id}, {$inc: {hongKongPositionSum: position}});
+
+		switch (position) {
+		case 1:
+			Players.update({_id: north_id}, {$inc: {hongKongFirstPlaceSum: 1}});
+			break;
+		case 2:
+			Players.update({_id: north_id}, {$inc: {hongKongSecondPlaceSum: 1}});
+			break;
+		case 3:
+			Players.update({_id: north_id}, {$inc: {hongKongThirdPlaceSum: 1}});
+			break;
+		case 4:
+			Players.update({_id: north_id}, {$inc: {hongKongFourthPlaceSum: 1}});
+			break;
+		}
 
 		//Save game to database
 		HongKongHands.insert(game);
@@ -676,20 +775,20 @@ function push_restart_hand(template) {
 	Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 };
 
-function push_fuckup_hand(template) {
+function push_mistake_hand(template) {
 	var loserWind = NewGameUtils.playerToDirection(Session.get("round_loser"));
 
-	var eastDelta = fuckup_delta("east", loserWind);
-	var southDelta = fuckup_delta("south", loserWind);
-	var westDelta = fuckup_delta("west", loserWind);
-	var northDelta = fuckup_delta("north", loserWind);
+	var eastDelta = mistake_delta("east", loserWind);
+	var southDelta = mistake_delta("south", loserWind);
+	var westDelta = mistake_delta("west", loserWind);
+	var northDelta = mistake_delta("north", loserWind);
 
-	if 		(loserWind == "east")  Session.set("eastFuckupTotal",  Number(Session.get("eastFuckupTotal"))  + 1);
-	else if (loserWind == "south") Session.set("southFuckupTotal", Number(Session.get("southFuckupTotal")) + 1);
-	else if (loserWind == "west")  Session.set("westFuckupTotal",  Number(Session.get("westFuckupTotal"))  + 1);
-	else if (loserWind == "north") Session.set("northFuckupTotal", Number(Session.get("northFuckupTotal")) + 1);
+	if 		(loserWind == "east")  Session.set("eastMistakeTotal",  Number(Session.get("eastMistakeTotal"))  + 1);
+	else if (loserWind == "south") Session.set("southMistakeTotal", Number(Session.get("southMistakeTotal")) + 1);
+	else if (loserWind == "west")  Session.set("westMistakeTotal",  Number(Session.get("westMistakeTotal"))  + 1);
+	else if (loserWind == "north") Session.set("northMistakeTotal", Number(Session.get("northMistakeTotal")) + 1);
 
-	pushHand(template, "fuckup", eastDelta, southDelta, westDelta, northDelta);
+	pushHand(template, "mistake", eastDelta, southDelta, westDelta, northDelta);
 };
 
 function pushHand(template, handType, eastDelta, southDelta, westDelta, northDelta) {
@@ -751,7 +850,7 @@ function selfdraw_delta(points, playerWind, winnerWind) {
 	return retval;
 };
 
-function fuckup_delta(playerWind, loserWind) {
+function mistake_delta(playerWind, loserWind) {
 	if (playerWind == loserWind) return -192;
 	else return 64;
 };

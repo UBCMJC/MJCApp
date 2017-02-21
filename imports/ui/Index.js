@@ -1,3 +1,12 @@
+// Orphaned html files
+import './About.html';
+import './Home.html';
+import './Index.html';
+
+import './HongKongNewGame.js';
+import './JapaneseNewGame.js';
+import './ranking/Ranking.js';
+
 Template.Index.onCreated( function() {
 	this.currentTab = new ReactiveVar( "Home" );
 });

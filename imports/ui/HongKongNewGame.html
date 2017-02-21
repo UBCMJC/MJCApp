@@ -54,7 +54,7 @@
 			<li data-template="restart" role="presentation">
 				<a data-toggle="pill" href="#">Reshuffle</a>
 			</li>
-			<li data-template="fuckup" role="presentation">
+			<li data-template="mistake" role="presentation">
 				<a data-toggle="pill" href="#">Mistake! (Zaa Wu 詐糊)</a>
 			</li>
 			<li data-template="dealin_pao" role="presentation">
@@ -120,6 +120,13 @@
 			<td>{{get_player_score_final "west"}}</td>
 			<td>{{get_player_score_final "north"}}</td>
 		</tr>
+		<tr>
+			<th colspan="3">ELO change:</th>
+			<td>{{get_expected_elo_change "east"}}</td>
+			<td>{{get_expected_elo_change "south"}}</td>
+			<td>{{get_expected_elo_change "west"}}</td>
+			<td>{{get_expected_elo_change "north"}}</td>
+		</tr>
 		</table>
 
 		<input type="button" value="Delete last Hand" class="btn btn-primary btn-block delete_hand_button disabled">
@@ -159,7 +166,7 @@
 		<td>Reshuffle!</td>
 		{{/if}}
 
-		{{#if is_fuckup handType}}
+		{{#if is_mistake handType}}
 		<td>Fucked up!</td>
 		<td>{{eastDelta}}</td>
 		<td>{{southDelta}}</td>
@@ -206,7 +213,7 @@
 	<p>Game was restarted!</p>
 </template>
 
-<template name="fuckup">
+<template name="mistake">
 	<p>Game ruining mistake!</p>
 	{{> loser_s east=get_east south=get_south west=get_west north=get_north}}
 </template>

@@ -36,10 +36,10 @@ export var NewGameUtils = {
 		Session.set("westPlayerPointsWon", 0);
 		Session.set("northPlayerPointsWon", 0);
 
-		Session.set("eastFuckupTotal", 0);
-		Session.set("southFuckupTotal", 0);
-		Session.set("westFuckupTotal", 0);
-		Session.set("northFuckupTotal", 0);
+		Session.set("eastMistakeTotal", 0);
+		Session.set("southMistakeTotal", 0);
+		Session.set("westMistakeTotal", 0);
+		Session.set("northMistakeTotal", 0);
 	},
 
 	// UX: Convert a round and gametype into the correct round wind
@@ -70,37 +70,79 @@ export var NewGameUtils = {
 
 	// Helper function to ensure all players are selected
 	allPlayersSelected() {
-		return (Session.get("current_east") != Constants.DEFAULT_EAST && 
-	 			Session.get("current_south") != Constants.DEFAULT_SOUTH && 
-	 			Session.get("current_west") != Constants.DEFAULT_WEST && 
-	 			Session.get("current_north") != Constants.DEFAULT_NORTH);
+		return (Session.get("current_east") != Constants.DEFAULT_EAST &&
+		        Session.get("current_south") != Constants.DEFAULT_SOUTH &&
+		        Session.get("current_west") != Constants.DEFAULT_WEST &&
+		        Session.get("current_north") != Constants.DEFAULT_NORTH);
 	},
 
 	someoneBankrupt() {
-		return (Session.get("east_score") < 0 || 
-				Session.get("south_score") < 0 ||
-				Session.get("west_score") < 0 ||
-				Session.get("north_score") < 0);
+		return (Session.get("east_score") < 0 ||
+		        Session.get("south_score") < 0 ||
+		        Session.get("west_score") < 0 ||
+		        Session.get("north_score") < 0);
 	},
 
 	someoneAboveMinimum(minimum) {
-		return (Session.get("east_score") > minimum ||
-				Session.get("south_score") > minimum || 
-				Session.get("west_score") > minimum ||
-				Session.get("north_score") > minimum);
+		return (Session.get("east_score") >= minimum ||
+		        Session.get("south_score") >= minimum ||
+		        Session.get("west_score") >= minimum ||
+		        Session.get("north_score") >= minimum);
 	},
 
+	/**
+	 * Return the position of the player in first place
+	 * TODO: Is this general to all versions of mahjong?
+	 * @return {String} One of ["east", "south", "west", "north"]
+	 */
+	getFirstPlace() {
+		let values = [];
+		// For ties, prioritise players in seating order
+		let priority = { east: 3,
+		                 south: 2,
+		                 west: 1,
+		                 north: 0 };
+
+		["east", "south", "west", "north"].forEach(k => {
+			values.push({ wind: k, value: this.getDirectionScore(k) })
+		});
+
+		let winner = values.reduce((a, b) => {
+			if (a.value == b.value) {
+				return priority[a["wind"]] > priority[b["wind"]] ? a : b;
+			} else {
+				return a.value > b.value ? a : b;
+			}
+		});
+
+		return winner['wind'];
+	},
+
+	/**
+	 * Determine if the game ending conditions for a Japanese mahjong game are met
+	 * @return {Boolean} True if game is over, false if not
+	 */
 	japaneseGameOver() {
-		return (this.someoneBankrupt() ||
-				Session.get("current_round") > 12 ||
-				(Session.get("current_round") > 8 && 
-					this.someoneAboveMinimum(Constants.JPN_END_POINTS)));
+		// End condition where someone has below zero points
+		let someoneBankrupt = this.someoneBankrupt();
+		// End condition where game has reached the end of west round without at least one player above minimum
+		let westRoundOver = Session.get("current_round") > 12;
+		// End condition where game has reached the end of south round with at least one player above minimum
+		let someoneAboveMinimum = Session.get("current_round") > 8 &&
+		                          this.someoneAboveMinimum(Constants.JPN_END_POINTS);
+		// End condition where north player reaches first place after winning on last round
+		let dealerFirstAndAboveMinimum = Session.get("current_round") == 8 &&
+		                                 Session.get("current_bonus") > 0 &&
+		                                 this.getDirectionScore("north") >= Constants.JPN_END_POINTS &&
+		                                 this.getFirstPlace() == "north";
+
+		return someoneBankrupt || westRoundOver || someoneAboveMinimum || dealerFirstAndAboveMinimum;
 	},
 
 	noIllegalSelfdrawJapaneseHands() {
 		var retval = this.noIllegalJapaneseHands();
 
-		retval = retval && !(Session.get("current_points") == 2 && Session.get("current_fu") == 25); 
+		retval = retval && !(Session.get("current_points") == 2 && Session.get("current_fu") == 25);
 
 		return retval;
 	},
@@ -119,13 +161,13 @@ export var NewGameUtils = {
 
 	rollbackChomboStat(lastHand) {
 		if 		(Number(lastHand.eastDelta) < 0)
-			Session.set("eastFuckupTotal", Number(Session.get("eastFuckupTotal")) - 1);
+			Session.set("eastMistakeTotal", Number(Session.get("eastMistakeTotal")) - 1);
 		else if (Number(lastHand.southDelta) < 0)
-			Session.set("southFuckupTotal", Number(Session.get("southFuckupTotal")) - 1);
+			Session.set("southMistakeTotal", Number(Session.get("southMistakeTotal")) - 1);
 		else if (Number(lastHand.westDelta) < 0)
-			Session.set("westFuckupTotal", Number(Session.get("westFuckupTotal")) - 1);
+			Session.set("westMistakeTotal", Number(Session.get("westMistakeTotal")) - 1);
 		else if (Number(lastHand.northDelta) < 0)
-			Session.set("northFuckupTotal", Number(Session.get("northFuckupTotal")) - 1);
+			Session.set("northMistakeTotal", Number(Session.get("northMistakeTotal")) - 1);
 	},
 
 	rollbackHandWinStat(lastHand) {

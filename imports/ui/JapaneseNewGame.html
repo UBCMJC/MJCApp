@@ -54,7 +54,7 @@
 				<li data-template="jpn_restart" role="presentation">
 					<a data-toggle="pill" href="#">Reshuffle</a>
 				</li>
-				<li data-template="jpn_fuckup" role="presentation">
+				<li data-template="jpn_mistake" role="presentation">
 					<a data-toggle="pill" href="#">Mistake! (Chombo チョンボ)</a>
 				</li>
 				<li data-template="jpn_split_pao" role="presentation">
@@ -117,6 +117,13 @@
 			<td>{{get_player_score_final "west"}}</td>
 			<td>{{get_player_score_final "north"}}</td>
 		</tr>
+		<tr>
+		    <th colspan="4">ELO change:</th>
+		    <td>{{get_expected_elo_change "east"}}</td>
+		    <td>{{get_expected_elo_change "south"}}</td>
+		    <td>{{get_expected_elo_change "west"}}</td>
+		    <td>{{get_expected_elo_change "north"}}</td>
+		</tr>
 		</table>
 
 		<input type="button" value="Delete last Hand" class="btn btn-primary btn-block delete_hand_button disabled">
@@ -167,7 +174,7 @@
 		<td>{{northDelta}}</td>
 		{{/if}}
 
-		{{#if is_fuckup handType}}
+		{{#if is_mistake handType}}
 		<td colspan="3">Fucked up!</td>
 		<td>{{eastDelta}}</td>
 		<td>{{southDelta}}</td>
@@ -223,7 +230,7 @@
 	{{> jpn_riichi_s east=get_east south=get_south west=get_west north=get_north}}
 </template>
 
-<template name="jpn_fuckup">
+<template name="jpn_mistake">
 	<p>Game ruining mistake!</p>
 	{{> jpn_loser_s east=get_east south=get_south west=get_west north=get_north}}
 </template>
