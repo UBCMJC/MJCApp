@@ -391,7 +391,6 @@ Template.JapaneseNewGame.events({
 
 		if ( !$( event.target ).hasClass( "disabled")) {
 
-
 			//Do nothing if we don't have players yet
 			if (NewGameUtils.allPlayersSelected()) {
 				// Save what the free riichi stick number is in case we delete this hand
@@ -1703,8 +1702,8 @@ function resetRoundStats() {
 	Session.set("round_loser", Constants.NO_PERSON);
 	Session.set("round_pao_player", Constants.NO_PERSON);
 
-	for (let k in Constants.DIRECTIONS) {
-		let wind = Constants.DIRECTIONS[k];
+	for (let k in ["east", "south", "west", "north"]) {
+		let wind = ["east", "south", "west", "north"][k];
 		Session.set(wind + "_riichi", false);
 		Session.set(wind + "_tenpai", false);
 	}
