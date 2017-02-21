@@ -172,7 +172,11 @@ Template.JapaneseNewGame.helpers({
 			all_hands: Template.instance().hands.get(),
 		};
 
-		let jpnEloCalculator = new EloCalculator(2000, 5, [15000, 5000, -5000, -15000], game, Constants.GAME_TYPE.JAPANESE);
+		let jpnEloCalculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
+		                                         Constants.ELO_CALCULATOR_EXP,
+		                                         Constants.JPN_SCORE_ADJUSTMENT,
+		                                         game,
+		                                         Constants.GAME_TYPE.JAPANESE);
 
 		switch (direction) {
 		case "east":  return jpnEloCalculator.eloChange(eastPlayer).toFixed(2);
@@ -656,7 +660,11 @@ function save_game_to_database(hands_array) {
 	};
 
 	// Initialise ELO calculator to update player ELO
-	var jpn_elo_calculator = new EloCalculator(2000, 5, [15000, 0, -5000, -10000], game, Constants.GAME_TYPE.JAPANESE);
+	var jpn_elo_calculator = new EloCalculator(ELO_CALCULATOR_N,
+	                                           ELO_CALCULATOR_EXP,
+	                                           JPN_SCORE_ADJUSTMENT,
+	                                           game,
+	                                           Constants.GAME_TYPE.JAPANESE);
 	var east_elo_delta = jpn_elo_calculator.eloChange(east_player);
 	var south_elo_delta = jpn_elo_calculator.eloChange(south_player);
 	var west_elo_delta = jpn_elo_calculator.eloChange(west_player);
