@@ -87,10 +87,8 @@ Template.HongKongNewGame.helpers({
 		case Constants.DEFAULT_WEST:
 		case Constants.DEFAULT_NORTH:
 			return "?";
-			break;
 		default:
 			return Players.findOne({hongKongLeagueName: player}).hongKongElo.toFixed(2);
-			break;
 		};
 	},
 	displayRoundWind(round) {
@@ -207,6 +205,7 @@ Template.HongKongNewGame.events({
 						Session.get("round_winner") != Session.get("round_loser")) {
 						if (Session.get("current_points") != 0) {
 							push_dealin_hand(template);
+							resetRoundStats();
 							$( ".delete_hand_button" ).removeClass( "disabled" );
 						} else {
 							window.alert("Invalid points entry!");
@@ -220,6 +219,7 @@ Template.HongKongNewGame.events({
 					if (Session.get("round_winner") != Constants.NO_PERSON) {
 						if (Session.get("current_points") != 0) {
 							push_selfdraw_hand(template);
+							resetRoundStats();
 							$( ".delete_hand_button" ).removeClass( "disabled" );
 						} else {
 							window.alert("Invalid points entry!");
@@ -231,17 +231,20 @@ Template.HongKongNewGame.events({
 
 				case "nowin":
 					push_nowin_hand(template);
+					resetRoundStats();
 					$( ".delete_hand_button" ).removeClass( "disabled" );
 					break;
 
 				case "restart":
 					push_restart_hand(template);
+					resetRoundStats();
 					$( ".delete_hand_button" ).removeClass( "disabled" );
 					break;
 
 				case "mistake":
 					if (Session.get("round_loser") != Constants.NO_PERSON) {
 						push_mistake_hand(template);
+						resetRoundStats();
 						$( ".delete_hand_button" ).removeClass( "disabled" );
 					}
 
@@ -257,6 +260,7 @@ Template.HongKongNewGame.events({
 						Session.get("round_pao_player") != Session.get("round_winner")) {
 						if (Session.get("current_points") != 0) {
 							push_dealin_pao_hand(template);
+							resetRoundStats();
 							$( ".delete_hand_button" ).removeClass( "disabled" );
 						} else {
 							window.alert("Invalid points entry!");
@@ -272,6 +276,7 @@ Template.HongKongNewGame.events({
 						Session.get("round_winner")	!= Session.get("round_pao_player")) {
 						if (Session.get("current_points") != 0) {
 							push_selfdraw_pao_hand(template);
+							resetRoundStats();
 							$( ".delete_hand_button" ).removeClass( "disabled" );
 						} else {
 							window.alert("Invalid points entry!");
@@ -863,3 +868,20 @@ Template.points.events({
 		Session.set("current_points", event.target.value);
 	}
 });
+
+function resetRoundStats() {
+	Session.set("current_points", 0);
+	Session.set("round_winner", Constants.NO_PERSON);
+	Session.set("round_loser", Constants.NO_PERSON);
+	Session.set("round_pao_player", Constants.NO_PERSON);
+
+	$( ".winner_buttons button" ).removeClass("disabled");
+	$( ".loser_buttons button" ).removeClass("disabled");
+	$( ".pao_buttons button" ).removeClass("disabled");
+
+	$( ".winner_buttons button" ).removeClass("active");
+	$( ".loser_buttons button" ).removeClass("active");
+	$( ".pao_buttons button" ).removeClass("active");
+
+	$( "select.points" ).val(undefined);
+}
