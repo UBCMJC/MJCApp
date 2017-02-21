@@ -55,7 +55,7 @@ export const Constants = {
 	SELF_DRAW: "selfdraw",
 	NO_WIN: "nowin",
 	RESTART: "restart",
-	MISTAKE: "fuckup",
+	MISTAKE: "mistake",
 
 	EAST: "east",
 	SOUTH: "south",
