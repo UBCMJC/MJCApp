@@ -71,7 +71,11 @@ Template.HongKongNewGame.helpers({
 			all_hands: Template.instance().hands.get(),
 		};
 
-		let hkEloCalculator = new EloCalculator(2000, 5, [100, 50, -50, -100], game, Constants.GAME_TYPE.HONG_KONG);
+		let hkEloCalculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
+		                                        Constants.ELO_CALCULATOR_EXP,
+		                                        Constants.HKG_SCORE_ADJUSTMENT,
+		                                        game,
+		                                        Constants.GAME_TYPE.HONG_KONG);
 
 		switch (direction) {
 		case "east":  return hkEloCalculator.eloChange(eastPlayer).toFixed(2);
@@ -414,7 +418,11 @@ function save_game_to_database(hands_array) {
 	};
 
 
-	var hk_elo_calculator = new EloCalculator(2000, 5, [100, 50, -50, -100], game, Constants.GAME_TYPE.HONG_KONG);
+	var hk_elo_calculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
+	                                          Constants.ELO_CALCULATOR_EXP,
+	                                          Constants.HKG_SCORE_ADJUSTMENT,
+	                                          game,
+	                                          Constants.GAME_TYPE.HONG_KONG);
 	var east_elo_delta = hk_elo_calculator.eloChange(east_player);
 	var south_elo_delta = hk_elo_calculator.eloChange(south_player);
 	var west_elo_delta = hk_elo_calculator.eloChange(west_player);
