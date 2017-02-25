@@ -664,9 +664,9 @@ function save_game_to_database(hands_array) {
 	};
 
 	// Initialise ELO calculator to update player ELO
-	var jpn_elo_calculator = new EloCalculator(ELO_CALCULATOR_N,
-	                                           ELO_CALCULATOR_EXP,
-	                                           JPN_SCORE_ADJUSTMENT,
+	var jpn_elo_calculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
+	                                           Constants.ELO_CALCULATOR_EXP,
+	                                           Constants.JPN_SCORE_ADJUSTMENT,
 	                                           game,
 	                                           Constants.GAME_TYPE.JAPANESE);
 	var east_elo_delta = jpn_elo_calculator.eloChange(east_player);
