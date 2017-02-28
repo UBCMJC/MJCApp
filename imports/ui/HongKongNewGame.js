@@ -486,95 +486,15 @@ function save_game_to_database(hands_array) {
 		Players.update({_id: west_id}, {$inc: {hongKongHandsLose: Number(Session.get("westPlayerLosses"))}});
 		Players.update({_id: north_id}, {$inc: {hongKongHandsLose: Number(Session.get("northPlayerLosses"))}});
 
-		// Calculate positions
-		// Calculate east position quickly?
-		position = 4;
-		if (Number(Session.get("east_score")) >= Number(Session.get("south_score"))) position--;
-		if (Number(Session.get("east_score")) >= Number(Session.get("west_score"))) position--;
-		if (Number(Session.get("east_score")) >= Number(Session.get("north_score"))) position--;
-		Players.update({_id: east_id}, {$inc: {hongKongPositionSum: position}});
+		// Calculates all positions quickly
+		let positions = ["east", "south", "west", "north"].map((wind) => ({ wind, score: Session.get(wind + "_score") })).sort((a, b) => a.score < b.score);
+		let idMappings = { east: east_id, south: south_id, west: west_id, north: north_id };
 
-		switch (position) {
-		case 1:
-			Players.update({_id: east_id}, {$inc: {hongKongFirstPlaceSum: 1}});
-			break;
-		case 2:
-			Players.update({_id: east_id}, {$inc: {hongKongSecondPlaceSum: 1}});
-			break;
-		case 3:
-			Players.update({_id: east_id}, {$inc: {hongKongThirdPlaceSum: 1}});
-			break;
-		case 4:
-			Players.update({_id: east_id}, {$inc: {hongKongFourthPlaceSum: 1}});
-			break;
-		}
-
-		// Calculate south position quickly?
-		position = 4;
-		if (Number(Session.get("south_score")) > Number(Session.get("east_score"))) position--;
-		if (Number(Session.get("south_score")) >= Number(Session.get("west_score"))) position--;
-		if (Number(Session.get("south_score")) >= Number(Session.get("north_score"))) position--;
-		Players.update({_id: south_id}, {$inc: {hongKongPositionSum: position}});
-
-		switch (position) {
-		case 1:
-			Players.update({_id: south_id}, {$inc: {hongKongFirstPlaceSum: 1}});
-			break;
-		case 2:
-			Players.update({_id: south_id}, {$inc: {hongKongSecondPlaceSum: 1}});
-			break;
-		case 3:
-			Players.update({_id: south_id}, {$inc: {hongKongThirdPlaceSum: 1}});
-			break;
-		case 4:
-			Players.update({_id: south_id}, {$inc: {hongKongFourthPlaceSum: 1}});
-			break;
-		}
-
-		// Calculate west position quickly?
-		position = 4;
-		if (Number(Session.get("west_score")) > Number(Session.get("east_score"))) position--;
-		if (Number(Session.get("west_score")) > Number(Session.get("south_score"))) position--;
-		if (Number(Session.get("west_score")) >= Number(Session.get("north_score"))) position--;
-		Players.update({_id: west_id}, {$inc: {hongKongPositionSum: position}});
-
-		switch (position) {
-		case 1:
-			Players.update({_id: west_id}, {$inc: {hongKongFirstPlaceSum: 1}});
-			break;
-		case 2:
-			Players.update({_id: west_id}, {$inc: {hongKongSecondPlaceSum: 1}});
-			break;
-		case 3:
-			Players.update({_id: west_id}, {$inc: {hongKongThirdPlaceSum: 1}});
-			break;
-		case 4:
-			Players.update({_id: west_id}, {$inc: {hongKongFourthPlaceSum: 1}});
-			break;
-		}
-
-		// Calculate north position quickly?
-		var position = 4;
-		if (Number(Session.get("north_score")) > Number(Session.get("east_score"))) position--;
-		if (Number(Session.get("north_score")) > Number(Session.get("south_score"))) position--;
-		if (Number(Session.get("north_score")) > Number(Session.get("west_score"))) position--;
-		Players.update({_id: north_id}, {$inc: {hongKongPositionSum: position}});
-
-		switch (position) {
-		case 1:
-			Players.update({_id: north_id}, {$inc: {hongKongFirstPlaceSum: 1}});
-			break;
-		case 2:
-			Players.update({_id: north_id}, {$inc: {hongKongSecondPlaceSum: 1}});
-			break;
-		case 3:
-			Players.update({_id: north_id}, {$inc: {hongKongThirdPlaceSum: 1}});
-			break;
-		case 4:
-			Players.update({_id: north_id}, {$inc: {hongKongFourthPlaceSum: 1}});
-			break;
-		}
-
+		Players.update({ _id: idMappings[positions[0].wind] }, { $inc: { hongKongFirstPlaceSum: 1 }});
+		Players.update({ _id: idMappings[positions[1].wind] }, { $inc: { hongKongSecondPlaceSum: 1 }});
+		Players.update({ _id: idMappings[positions[2].wind] }, { $inc: { hongKongThirdPlaceSum: 1 }});
+		Players.update({ _id: idMappings[positions[3].wind] }, { $inc: { hongKongFourthPlaceSum: 1 }});
+ 
 		//Save game to database
 		HongKongHands.insert(game);
 	}
