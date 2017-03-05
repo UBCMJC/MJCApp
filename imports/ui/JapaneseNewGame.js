@@ -1,10 +1,10 @@
 //Databases
-import { Players } from '../api/Players.js';
-import { JapaneseHands } from '../api/GameDatabases.js';
+import Players from '../api/Players';
+import { JapaneseHands } from '../api/GameDatabases';
 
-import { Constants } from '../api/Constants.js';
-import { EloCalculator } from '../api/EloCalculator.js';
-import { NewGameUtils } from '../api/NewGameUtils.js';
+import Constants from '../api/Constants';
+import { EloCalculator } from '../api/EloCalculator';
+import NewGameUtils from '../api/utils/NewGameUtils';
 
 import './JapaneseNewGame.html';
 

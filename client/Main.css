@@ -76,3 +76,7 @@ tr:nth-of-type(even){
 .ranking .players {
 	width: 25%;
 }
+
+.statistics-title {
+	text-align: center;
+}

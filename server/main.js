@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
-import { Players } from '../imports/api/Players.js';
-import { HongKongHands } from '../imports/api/GameDatabases.js'
+import Players from '../imports/api/Players';
+import { HongKongHands } from '../imports/api/GameDatabases'
 
 Meteor.startup(() => {
   // code to run on server at startup

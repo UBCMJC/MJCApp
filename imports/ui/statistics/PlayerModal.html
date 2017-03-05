@@ -1,0 +1,38 @@
+<template name="PlayerModal">
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title">Player Statistics</h3>
+                </div>
+                <div class="modal-body">
+                    <h4 class="statistics-title">{{ player.name }} - Rank {{ player.rank }}</h4>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Win rate: {{ player.winRate }}</td>
+                                <td>Deal-in rate: {{ player.dealin }}</td>
+                            </tr>
+                            <tr>
+                                <td>Average position: {{ player.averagePosition }}</td>
+                                <td>Average hand size: {{ player.averageHandSize }}</td>
+                            </tr>
+                            <tr>
+                                <td>Fly rate: {{ player.flyRate }}</td>
+                                <td>Chombos: {{ player.chombo }}</td>
+                            </tr>
+                            <tr>
+                                <td>Riichi rate: {{ player.riichis }}</td>
+                                <td>Riichi win rate: {{ player.riichiWinRate }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

@@ -1,5 +1,5 @@
 // A class/namespace of commonly used Constants
-export const Constants = {
+const Constants = {
 	// Title
 	MAHJONG_CLUB_LEAGUE: "Mahjong Club League",
 
@@ -25,8 +25,8 @@ export const Constants = {
 	// Score adjustment for Hong Kong ending scores
 	// Calculated as analogous to Japanese system
 	HKG_SCORE_ADJUSTMENT: [
-		 100,
-		 50,
+		100,
+		50,
 		-50,
 		-100
 	],
@@ -38,8 +38,8 @@ export const Constants = {
 	// 3rd = 3rd - 30,000 + 0 = -5,000
 	// 4th = 4th - 30,000 - 10,000 = -15,000
 	JPN_SCORE_ADJUSTMENT: [
-		 15000,
-		 5000,
+		15000,
+		5000,
 		-5000,
 		-15000
 	],
@@ -72,4 +72,17 @@ export const Constants = {
 	MISTAKE: "mistake"
 };
 
-Object.keys(Constants).forEach((k) => { Template.registerHelper(k, () => Constants[k] )});
+export default Constants;
+
+function registerConstants(object, prefix) {
+	for (let key in object) {
+		let value = object[key];
+		if (value instanceof Object && !Array.isArray(value)) {
+			registerConstants(value, prefix + key + ".");
+		} else {
+			Template.registerHelper(prefix + key, () => value);
+		}
+	}
+}
+
+registerConstants(Constants, "");

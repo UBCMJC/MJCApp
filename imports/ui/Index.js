@@ -3,9 +3,9 @@ import './About.html';
 import './Home.html';
 import './Index.html';
 
-import './HongKongNewGame.js';
-import './JapaneseNewGame.js';
-import './ranking/Ranking.js';
+import './HongKongNewGame';
+import './JapaneseNewGame';
+import './ranking/Ranking';
 
 Template.Index.onCreated( function() {
 	this.currentTab = new ReactiveVar( "Home" );

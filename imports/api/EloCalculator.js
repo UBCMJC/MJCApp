@@ -1,6 +1,5 @@
-import { Players } from './Players.js';
-
-import { Constants } from './Constants.js';
+import Players from './Players';
+import GameTypeUtils from './utils/GameTypeUtils';
 
 export class EloCalculator {
 	constructor (n, exp, placingAdjustments, game, gameType) {
@@ -137,11 +136,6 @@ export class EloCalculator {
 
 	// Return a player's ELO
 	getPlayerElo (player) {
-		switch (this.gameType) {
-		case Constants.GAME_TYPE.HONG_KONG:
-			return Number(Players.findOne({hongKongLeagueName: player}).hongKongElo);
-		case Constants.GAME_TYPE.JAPANESE:
-			return Number(Players.findOne({japaneseLeagueName: player}).japaneseElo);
-		}
+		return Number(GameTypeUtils.getPlayer(this.gameType, player).elo);
 	}
 };

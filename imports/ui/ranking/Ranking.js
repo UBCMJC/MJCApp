@@ -1,72 +1,33 @@
-import { Players } from '../../api/Players.js';
-import { Constants } from '../../api/Constants.js';
+import GameTypeUtils from '../../api/utils/GameTypeUtils';
 
-import './HongKongRanking.html';
-import './JapaneseRanking.html';
+import '../statistics/PlayerModal';
+import './HongKongRanking';
+import './JapaneseRanking';
 import './Ranking.html';
-
-Template.registerHelper('toObj', (args) => {
-		return args.hash;
-});
 
 Template.Ranking.helpers({
 	getInfo(format, player) {
-		let leagueName;
-		let elo;
-		let gamesPlayed;
-		switch (format) {
-		case Constants.GAME_TYPE.JAPANESE:
-			leagueName = player.japaneseLeagueName;
-			elo = player.japaneseElo;
-			gamesPlayed = player.japaneseGamesPlayed;
-			break;
-		case Constants.GAME_TYPE.HONG_KONG:
-			leagueName = player.hongKongLeagueName;
-			elo = player.hongKongElo;
-			gamesPlayed = player.hongKongGamesPlayed;
-			break;
-		default:
-			console.error("Format '" + format + "' is invalid");
-			break;
-		}
-
+		player["elo"] = player["elo"].toFixed(3);
 		return {
-			"leagueName": leagueName,
-			"elo": elo.toFixed(3),
-			"rank": this.rank ? ++this.rank : this.rank = 1,
-			"gamesPlayed": gamesPlayed
+			...player,
+			rank: this.rank ? ++this.rank : this.rank = 1
 		};
 	},
+
 	getName(format) {
-		let league;
-		switch (format) {
-		case Constants.GAME_TYPE.JAPANESE:
-			league = "Japanese";
-			break;
-		case Constants.GAME_TYPE.HONG_KONG:
-			league = "Hong Kong";
-			break;
-		default:
-			console.error("Format '" + format + "' is invalid");
-			break;
-		}
-
-		return league + " " + Constants.MAHJONG_CLUB_LEAGUE;
+		return GameTypeUtils.formatName(format);
 	},
-	getPlayers(sortBy, format) {
-		let hasPlayedGame = {};
-		switch (format) {
-		case Constants.GAME_TYPE.JAPANESE:
-			hasPlayedGame["japaneseGamesPlayed"] = { $gt: 0 };
-			break;
-		case Constants.GAME_TYPE.HONG_KONG:
-			hasPlayedGame["hongKongGamesPlayed"] = { $gt: 0 };
-			break;
-		default:
-			console.error("Format '" + format + "' is invalid");
-			break;
-		}
 
-		return Players.find(hasPlayedGame, { "sort": sortBy });
+	getPlayers(format, sort) {
+		return GameTypeUtils.getPlayers(format, sort);
+	}
+});
+
+Template.Ranking.events({
+	'click .player': (event) => {
+		event.preventDefault();
+
+		Session.set("statisticsID", event.currentTarget.dataset["player"]);
+		$("#modal").modal('show');
 	}
 });
