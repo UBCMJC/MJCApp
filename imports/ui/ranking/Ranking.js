@@ -26,8 +26,9 @@ Template.Ranking.helpers({
 Template.Ranking.events({
 	'click .player': (event) => {
 		event.preventDefault();
+		let statistics = GameTypeUtils.getPlayer(Template.currentData()['format'], { _id: event.currentTarget.dataset["player"] });
 
-		Session.set("statisticsID", event.currentTarget.dataset["player"]);
+		Session.set("selectedStatistics", statistics);
 		$("#modal").modal('show');
 	}
 });

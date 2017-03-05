@@ -77,6 +77,10 @@ tr:nth-of-type(even){
 	width: 25%;
 }
 
+.ranking .player {
+	line-height: 4rem;
+}
+
 .statistics-title {
 	text-align: center;
 }

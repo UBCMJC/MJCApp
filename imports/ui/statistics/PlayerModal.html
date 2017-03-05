@@ -4,30 +4,34 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Player Statistics</h3>
+                    <h2 class="modal-title">Player Statistics</h2>
                 </div>
                 <div class="modal-body">
-                    <h4 class="statistics-title">{{ player.name }} - Rank {{ player.rank }}</h4>
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <td>Win rate: {{ player.winRate }}</td>
-                                <td>Deal-in rate: {{ player.dealin }}</td>
-                            </tr>
-                            <tr>
-                                <td>Average position: {{ player.averagePosition }}</td>
-                                <td>Average hand size: {{ player.averageHandSize }}</td>
-                            </tr>
-                            <tr>
-                                <td>Fly rate: {{ player.flyRate }}</td>
-                                <td>Chombos: {{ player.chombo }}</td>
-                            </tr>
-                            <tr>
-                                <td>Riichi rate: {{ player.riichis }}</td>
-                                <td>Riichi win rate: {{ player.riichiWinRate }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    {{ #let player=getPlayerInfo }}
+                        <h3 class="statistics-title">{{ player.name }}</h3>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>Win rate: {{ player.winRate }}%</td>
+                                    <td>Deal-in rate: {{ player.dealin }}%</td>
+                                </tr>
+                                <tr>
+                                    <td>Average position: {{ player.averagePosition }}</td>
+                                    <td>Average hand size: {{ player.averageHandSize }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Fly rate: {{ player.flyRate }}%</td>
+                                    <td>Chombos: {{ player.chombo }}</td>
+                                </tr>
+                                {{ #if player.riichis }}
+                                    <tr>
+                                        <td>Riichi rate: {{ player.riichis }}%</td>
+                                        <td>Riichi win rate: {{ player.riichiWinRate }}%</td>
+                                    </tr>
+                                {{ /if }}
+                            </tbody>
+                        </table>
+                    {{ /let }}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
