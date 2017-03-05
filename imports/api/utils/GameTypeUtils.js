@@ -42,7 +42,6 @@ function standardizePlayerStatistics(format, player) {
         formatPlayer["leagueName"] = player["japaneseLeagueName"];
         formatPlayer["elo"] = player["japaneseElo"];
         formatPlayer["gamesPlayed"] = player["japaneseGamesPlayed"];
-        formatPlayer["positionSum"] = player["japanesePositionSum"];
         formatPlayer["handsWin"] = player["japaneseHandsWin"];
         formatPlayer["handsLose"] = player["japaneseHandsLose"];
         formatPlayer["handsTotal"] = player["japaneseHandsTotal"];
@@ -62,7 +61,6 @@ function standardizePlayerStatistics(format, player) {
         formatPlayer["leagueName"] = player["hongKongLeagueName"];
         formatPlayer["elo"] = player["hongKongElo"];
         formatPlayer["gamesPlayed"] = player["hongKongGamesPlayed"];
-        formatPlayer["positionSum"] = player["hongKongPositionSum"];
         formatPlayer["handsWin"] = player["hongKongHandsWin"];
         formatPlayer["handsLose"] = player["hongKongHandsLose"];
         formatPlayer["handsTotal"] = player["hongKongHandsTotal"];
