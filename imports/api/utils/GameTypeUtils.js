@@ -9,7 +9,7 @@ export default {
         case Constants.GAME_TYPE.HONG_KONG:
             return "Hong Kong";
         default:
-            err(format);
+            logInvalidFormat(format);
             return "Unknown";
         }
     },
@@ -28,7 +28,7 @@ export default {
             hasPlayedGames["hongKongGamesPlayed"] = { $gt: 0 };
             break;
         default:
-            err(format);
+            logInvalidFormat(format);
         }
 
         return Players.find(hasPlayedGames, { sort }).map((player) => standardizePlayerStatistics(format, player));
@@ -74,7 +74,7 @@ function standardizePlayerStatistics(format, player) {
         break;
 
     default:
-        err(format);
+        logInvalidFormat(format);
         formatPlayer = player;
     }
 
@@ -82,4 +82,4 @@ function standardizePlayerStatistics(format, player) {
     return formatPlayer;
 }
 
-function err(format) { console.log("Format '" + format + "' is invalid") }
+function logInvalidFormat(format) { console.log("Format '" + format + "' is invalid") }

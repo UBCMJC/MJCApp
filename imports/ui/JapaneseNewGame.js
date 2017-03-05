@@ -3,7 +3,7 @@ import Players from '../api/Players';
 import { JapaneseHands } from '../api/GameDatabases';
 
 import Constants from '../api/Constants';
-import { EloCalculator } from '../api/EloCalculator';
+import EloCalculator from '../api/EloCalculator';
 import NewGameUtils from '../api/utils/NewGameUtils';
 
 import './JapaneseNewGame.html';

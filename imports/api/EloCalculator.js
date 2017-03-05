@@ -2,7 +2,7 @@ import Players from './Players';
 import Constants from './Constants';
 import GameTypeUtils from './utils/GameTypeUtils';
 
-export class EloCalculator {
+export default class EloCalculator {
 	constructor (n, exp, placingAdjustments, game, gameType) {
 		this.n = n;
 		this.exp = exp;
