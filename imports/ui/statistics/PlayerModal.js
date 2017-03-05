@@ -19,7 +19,7 @@ Template.PlayerModal.helpers({
 
             if (player.riichiTotal !== undefined && player.winRiichiTotal !== undefined) {
                 info.riichis = (player.riichiTotal / player.handsTotal * 100).toFixed(1);
-                info.riichiWinRate = (player.winRiichiTotal / player.riichiTotal * 100).toFixed(1);
+                info.riichiWinRate = (player.riichiTotal ? (player.winRiichiTotal / player.riichiTotal * 100) : 0).toFixed(1);
             }
 
             return info;
