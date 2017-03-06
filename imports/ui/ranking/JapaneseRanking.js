@@ -5,7 +5,9 @@ Template.JapaneseRanking.helpers({
 	getContext() {
 		return {
 			format: Constants.GAME_TYPE.JAPANESE,
-			japaneseElo: -1
+			sort: {
+				japaneseElo: -1
+			}
 		};
 	}
 });
