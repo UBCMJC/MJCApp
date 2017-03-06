@@ -5,7 +5,9 @@ Template.HongKongRanking.helpers({
 	getContext() {
 		return {
 			format: Constants.GAME_TYPE.HONG_KONG,
-			hongKongElo: -1
+			sort: {
+				hongKongElo: -1
+			}
 		};
 	}
 })
