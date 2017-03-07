@@ -197,6 +197,10 @@ Template.JapaneseNewGame.helpers({
 			return Players.findOne({japaneseLeagueName: player}).japaneseElo.toFixed(2);
 		};
 	},
+	get_previous_elo(wind) {
+		var previousElo = Session.get("lastElo");
+		return previousElo ? previousElo[wind].toFixed(2) : '';
+	},
 	// Return a string of the round wind for Japanese style
 	displayRoundWind(round) {
 		return NewGameUtils.displayRoundWind(round, Constants.GAME_TYPE.JAPANESE);
@@ -673,6 +677,17 @@ function save_game_to_database(hands_array) {
 	var south_elo_delta = jpn_elo_calculator.eloChange(south_player);
 	var west_elo_delta = jpn_elo_calculator.eloChange(west_player);
 	var north_elo_delta = jpn_elo_calculator.eloChange(north_player);
+
+	Session.set("lastElo", {
+		east: east_elo_delta,
+		south: south_elo_delta,
+		west: west_elo_delta,
+		north: north_elo_delta
+	});
+
+	Meteor.setTimeout(() => {
+		Session.set("lastElo", undefined);
+	}, 15000);
 
 	var east_id = Players.findOne({japaneseLeagueName: east_player}, {})._id;
 	var south_id = Players.findOne({japaneseLeagueName: south_player}, {})._id;
