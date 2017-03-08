@@ -2,6 +2,10 @@ import { Meteor } from 'meteor/meteor';
 
 import Players from '../imports/api/Players';
 
+// We need to instantiate the collections server-side. Maintain this import, even though
+// we don't use it at all
+import '../imports/api/GameDatabases';
+
 Meteor.startup(() => {
 	// code to run on server at startup
 	// Temporary template player for first run
