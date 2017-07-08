@@ -11,16 +11,14 @@
         <!-- The following lines get the format argument from the templates JapaneseRanking or HongKongRanking -->
         {{ #each player in (getPlayers format sort) }}
             <!-- Retrieves an info object to display information shown on the ranking list -->
-            {{ #let info=(getInfo format player) }}
-                <tr class="player"
-                    data-player="{{ info.id }}"
-                    data-format="{{ format }}">
-                    <td class="rank">{{ info.rank }}</td>
-                    <td class="players">{{ info.leagueName }}</td>
-                    <td class="elo">{{ info.elo }}</td>
-                    <td class="games-played">{{ info.gamesPlayed }}</td>
-                </tr>
-            {{ /let }}
+            <tr class="player"
+                data-player="{{ player.id }}"
+                data-format="{{ format }}">
+                <td class="rank">{{ player.rank }}</td>
+                <td class="players">{{ player.leagueName }}</td>
+                <td class="elo">{{ player.elo }}</td>
+                <td class="games-played">{{ player.gamesPlayed }}</td>
+            </tr>
         {{ /each }}
     </table>
 </template>

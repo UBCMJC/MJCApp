@@ -6,20 +6,16 @@ import './JapaneseRanking';
 import './Ranking.html';
 
 Template.Ranking.helpers({
-	getInfo(format, player) {
-		player["elo"] = player["elo"].toFixed(3);
-		return {
-			...player,
-			rank: this.rank ? ++this.rank : this.rank = 1
-		};
-	},
-
 	getName(format) {
 		return GameTypeUtils.formatName(format);
 	},
 
 	getPlayers(format, sort) {
-		return GameTypeUtils.getPlayers(format, sort);
+		return GameTypeUtils.getPlayers(format, sort).map((p, i) => ({
+			...p,
+			elo: p.elo.toFixed(3),
+			rank: i + 1
+		}));
 	}
 });
 
