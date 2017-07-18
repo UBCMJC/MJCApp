@@ -10,7 +10,6 @@
         </tr>
         <!-- The following lines get the format argument from the templates JapaneseRanking or HongKongRanking -->
         {{ #each player in (getPlayers format sort) }}
-            <!-- Retrieves an info object to display information shown on the ranking list -->
             <tr class="player"
                 data-player="{{ player.id }}"
                 data-format="{{ format }}">
