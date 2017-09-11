@@ -13,7 +13,7 @@ export class EloCalculator {
 
 	// PUBLIC: Return ELO delta for a player
 	eloChange (player) {
-		var index, k;
+		var index, k = 100;
 		if (player == this.game.east_player)
 			index = 0;
 		else if (player == this.game.south_player)
@@ -28,16 +28,18 @@ export class EloCalculator {
 
 		var playerElo = this.getPlayerElo(player);
 
-		if (playerElo < 1300)
-			k = 140;
-		else if (playerElo < 1500)
-			k = 120;
-		else if (playerElo < 1600)
-			k = 100;
-		else if (playerElo < 1700)
-			k = 80;
-		else
-			k = 60;
+		/* Commenting out k at the request of Casper
+			if (playerElo < 1300)
+				k = 140;
+			else if (playerElo < 1500)
+				k = 120;
+			else if (playerElo < 1600)
+				k = 100;
+			else if (playerElo < 1700)
+				k = 80;
+			else
+				k = 60;
+		*/
 
 		return (k * (adjustedScores[index] - expectedScores[index]));
 	}
