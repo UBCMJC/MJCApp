@@ -494,7 +494,7 @@ function save_game_to_database(hands_array) {
 		Players.update({ _id: idMappings[positions[1].wind] }, { $inc: { hongKongSecondPlaceSum: 1 }});
 		Players.update({ _id: idMappings[positions[2].wind] }, { $inc: { hongKongThirdPlaceSum: 1 }});
 		Players.update({ _id: idMappings[positions[3].wind] }, { $inc: { hongKongFourthPlaceSum: 1 }});
- 
+
 		//Save game to database
 		HongKongHands.insert(game);
 	}
