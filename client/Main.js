@@ -1,1 +1,2 @@
-import '../imports/ui/Body';
+BlazeLayout.setRoot('body');
+import '../imports/ui/Base';

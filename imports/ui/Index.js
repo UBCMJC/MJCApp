@@ -1,9 +1,10 @@
-import './About.html';
-import './Home.html';
+// Orphaned html files
+import './static/About.html';
+import './static/Home.html';
 import './Index.html';
 
-import './HongKongNewGame';
-import './JapaneseNewGame';
+import './games/HongKongNewGame';
+import './games/JapaneseNewGame';
 import './ranking/Ranking';
 
 Template.Index.onCreated( function() {
