@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 import Players from '../imports/api/Players';
+import Admin from '../imports/api/Admin';
 
 // We need to instantiate the collections server-side. Maintain this import, even though
 // we don't use it at all

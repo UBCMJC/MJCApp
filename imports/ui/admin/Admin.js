@@ -4,9 +4,15 @@ import { Meteor } from 'meteor/meteor';
 import Players from '../../api/Players';
 import Admin from '../../api/Admin';
 
+Template.Admin.onCreated(function() {
+    this.admin = new ReactiveVar("Login");
+});
+
 Template.Admin.events({
-    'change .token'(event) {
-        Session.set("admin", !!Admin.findOne({ token: event.target.value }));
+    'submit #token'(event, template) {
+        event.preventDefault();
+        var exists = !!Admin.findOne({ token: $("#token").serializeArray()[0].value });
+        template.admin.set(exists ? "AddPlayer" : "Login");
     },
 
     'submit .new-player'(event) {
@@ -50,12 +56,12 @@ Template.Admin.events({
             japaneseFourthPlaceSum: 0, //added
         });
 
-        target.name.value = '';
-        target.hongKongName.value = '';
-        target.japaneseName.value = '';
+        name.value = '';
+        hongKongName.value = '';
+        japaneseName.value = '';
     }
 });
 
 Template.Admin.helpers({
-    isAdmin() { return Session.get("admin"); }
+    admin() { return Template.instance().admin.get(); }
 });
