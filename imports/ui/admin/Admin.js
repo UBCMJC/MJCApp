@@ -16,7 +16,7 @@ Template.Admin.events({
         Players.insert({
             name: name.value,
             hongKongLeagueName: hongKongName.value,
-            hongKongElo: 0, //added
+            hongKongElo: 1500, //added
             hongKongGamesPlayed: 0, //added
             hongKongPositionSum: 0, //added
             hongKongHandsWin: 0, //added
@@ -31,7 +31,7 @@ Template.Admin.events({
             hongKongFourthPlaceSum: 0, //added
 
             japaneseLeagueName: japaneseName.value,
-            japaneseElo: 0, //added
+            japaneseElo: 1500, //added
             japaneseGamesPlayed: 0, //added
             japanesePositionSum: 0, //added
             japaneseHandsWin: 0, //added
