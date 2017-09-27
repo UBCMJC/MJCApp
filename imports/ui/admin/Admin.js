@@ -1,7 +1,8 @@
 import './Admin.html';
-import { Players } from '../../api/Players';
 import { Meteor } from 'meteor/meteor';
-import { Admin } from '../../api/Admin';
+
+import Players from '../../api/Players';
+import Admin from '../../api/Admin';
 
 Template.Admin.events({
     'change .token'(event) {
