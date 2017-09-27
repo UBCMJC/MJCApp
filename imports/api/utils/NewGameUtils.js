@@ -1,6 +1,6 @@
-import { Constants } from '../api/Constants.js';
+import Constants from '../Constants';
 
-export var NewGameUtils = {
+export default {
 
 	resetGameValues(defaultScore) {
 		Session.set("current_east", Constants.DEFAULT_EAST);

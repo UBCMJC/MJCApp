@@ -76,3 +76,11 @@ tr:nth-of-type(even){
 .ranking .players {
 	width: 25%;
 }
+
+.ranking .player {
+	line-height: 4rem;
+}
+
+.statistics-title {
+	text-align: center;
+}
