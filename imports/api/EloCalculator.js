@@ -13,7 +13,7 @@ export default class EloCalculator {
 
 	// PUBLIC: Return ELO delta for a player
 	eloChange (player) {
-		var index, k;
+		let index, gamesPlayed;
 		if (player == this.game.east_player)
 			index = 0;
 		else if (player == this.game.south_player)
@@ -23,21 +23,28 @@ export default class EloCalculator {
 		else //if (player == this.game.north_player)
 			index = 3;
 
-		var expectedScores = this.expectedScores();
-		var adjustedScores = this.adjustedScores();
+		const expectedScores = this.expectedScores();
+		const adjustedScores = this.adjustedScores();
 
-		var playerElo = this.getPlayerElo(player);
+		const playerElo = this.getPlayerElo(player);
 
-		if (playerElo < 1300)
-			k = 140;
-		else if (playerElo < 1500)
-			k = 120;
-		else if (playerElo < 1600)
-			k = 100;
-		else if (playerElo < 1700)
-			k = 80;
-		else
-			k = 60;
+		switch(this.gameType) {
+		case Constants.GAME_TYPE.HONG_KONG:
+			gamesPlayed = Number(Players.findOne({ hongKongLeagueName: player }).hongKongGamesPlayed);
+			break;
+		case Constants.GAME_TYPE.JAPANESE:
+			gamesPlayed = Number(Players.findOne({ japaneseLeagueName: player }).japaneseGamesPlayed)
+			break;
+		}
+
+		/**
+		 * The k-value is a multiplier to add more weight initially when no games have been played
+		 *
+		 * First 10 games: -1 each game
+		 * Next 10 games: -2 each game
+		 * After: stops decreasing; levels at 70
+		 */
+		const k = 100 - Math.min(gamesPlayed, 10) - Math.min(Math.max(gamesPlayed - 10, 0), 10) * 2;
 
 		return (k * (adjustedScores[index] - expectedScores[index]));
 	}
