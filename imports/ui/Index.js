@@ -1,4 +1,3 @@
-// Orphaned html files
 import './static/About.html';
 import './static/Home.html';
 import './Index.html';

@@ -17,35 +17,35 @@ Meteor.startup(() => {
 			name: "DELETE_ME_" + i,
 
 			hongKongLeagueName: "HK_DELETE_ME_" + i,
-			hongKongElo: 0, //added
-			hongKongGamesPlayed: 0, //added
-			hongKongHandsWin: 0, //added
-			hongKongHandsLose: 0, //added
-			hongKongHandsTotal: 0, //added
-			hongKongWinPointsTotal: 0, //added
-			hongKongChomboTotal: 0, //added
-			hongKongBankruptTotal: 0, //added
-			hongKongFirstPlaceSum: 0, //added
-			hongKongSecondPlaceSum: 0, //added
-			hongKongThirdPlaceSum: 0, //added
-			hongKongFourthPlaceSum: 0, //added
+			hongKongElo: 0,
+			hongKongGamesPlayed: 0,
+			hongKongHandsWin: 0,
+			hongKongHandsLose: 0,
+			hongKongHandsTotal: 0,
+			hongKongWinPointsTotal: 0,
+			hongKongChomboTotal: 0,
+			hongKongBankruptTotal: 0,
+			hongKongFirstPlaceSum: 0,
+			hongKongSecondPlaceSum: 0,
+			hongKongThirdPlaceSum: 0,
+			hongKongFourthPlaceSum: 0,
 
 			japaneseLeagueName: "JPN_DELETE_ME_" + i,
-			japaneseElo: 0, //added
-			japaneseGamesPlayed: 0, //added
-			japaneseHandsWin: 0, //added
-			japaneseHandsLose: 0, //added
-			japaneseHandsTotal: 0, //added
-			japaneseWinPointsTotal: 0, //added
-			japaneseWinDoraTotal: 0, //added
-			japaneseRiichiTotal: 0, //added
-			japaneseWinRiichiTotal: 0, //added
-			japaneseChomboTotal: 0, //added
-			japaneseBankruptTotal: 0, //added
-			japaneseFirstPlaceSum: 0, //added
-			japaneseSecondPlaceSum: 0, //added
-			japaneseThirdPlaceSum: 0, //added
-			japaneseFourthPlaceSum: 0, //added
+			japaneseElo: 0,
+			japaneseGamesPlayed: 0,
+			japaneseHandsWin: 0,
+			japaneseHandsLose: 0,
+			japaneseHandsTotal: 0,
+			japaneseWinPointsTotal: 0,
+			japaneseWinDoraTotal: 0,
+			japaneseRiichiTotal: 0,
+			japaneseWinRiichiTotal: 0,
+			japaneseChomboTotal: 0,
+			japaneseBankruptTotal: 0,
+			japaneseFirstPlaceSum: 0,
+			japaneseSecondPlaceSum: 0,
+			japaneseThirdPlaceSum: 0,
+			japaneseFourthPlaceSum: 0,
 			});
 		}
 	}
