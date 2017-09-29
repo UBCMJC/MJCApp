@@ -9,6 +9,10 @@ Template.Admin.onCreated(function() {
 });
 
 Template.Admin.events({
+    'click #logout'(event, template) {
+        template.admin.set("Login");
+    },
+
     'submit #token'(event, template) {
         event.preventDefault();
         var exists = !!Admin.findOne({ token: $("#token").serializeArray()[0].value });
