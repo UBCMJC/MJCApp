@@ -69,3 +69,7 @@ Template.Admin.events({
 Template.Admin.helpers({
     admin() { return Template.instance().admin.get(); }
 });
+
+Template.AddPlayer.helpers({
+    players() { return Players.find({}); }
+})

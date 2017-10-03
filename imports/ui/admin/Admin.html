@@ -12,7 +12,7 @@
                 <input required type="password" class="form-control" name="token">
             </div>
         </div>
-        <button type="submit" style="width: 25%" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </template>
 
@@ -41,6 +41,27 @@
                 <input required id="japaneseName" name="japaneseName" class="form-control" placeholder="Japanese League Name...">
             </div>
         </div>
-        <button type="submit" style="width: 25%" class="btn btn-primary">Add</button>
+        <button type="submit" class="btn btn-primary">Add Player</button>
     </form>
+    <br>
+    <div class="names">
+        <table style="width: 50%" class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Japanese</th>
+                    <th>Hong Kong</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ #each player in (players) }}
+                <tr>
+                    <td>{{ player.name}}</td>
+                    <td>{{ player.japaneseLeagueName}}</td>
+                    <td>{{ player.hongKongLeagueName}}</td>
+                </tr>
+                {{ /each }}
+            </tbody>
+        </table>
+    </div>
 </template>
