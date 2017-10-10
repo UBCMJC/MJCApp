@@ -22,7 +22,7 @@ Template.Admin.events({
     'submit .new-player'(event) {
         event.preventDefault();
         
-        if (confirm("The user with the above information will be added to the database.")) {
+        if (confirm("Are you sure you want to add this user?")) {
             const { name, hongKongName, japaneseName } = event.target;
 
             Players.insert({
