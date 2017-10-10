@@ -247,6 +247,7 @@ Template.jpn_points.helpers({
 		{ point: 26 },
 		{ point: 39 },
 		{ point: 52 },
+		{ point: 65 },
 	],
 });
 
@@ -1258,6 +1259,7 @@ function dealin_delta(points, fu, playerWind, winnerWind, loserWind) {
 		case 26: retval = -64000; break;
 		case 39: retval = -96000; break;
 		case 52: retval = -128000; break;
+		case 65: retval = -160000; break;
 		}
 	} else {
 		switch (points) {
@@ -1323,6 +1325,7 @@ function dealin_delta(points, fu, playerWind, winnerWind, loserWind) {
 		case 26: retval = -96000; break;
 		case 39: retval = -144000; break;
 		case 52: retval = -192000; break;
+		case 65: retval = -240000; break;
 		}
 	}
 
@@ -1521,6 +1524,10 @@ function selfdraw_delta(points, fu, playerWind, winnerWind) {
 			retval = (playerWind == dealerWind ? -64000 : -32000);
 			retval = (playerWind == winnerWind ? 128000 : retval);
 			break;
+		case 65:
+			retval = (playerWind == dealerWind ? -80000 : -40000);
+			retval = (playerWind == winnerWind ? 160000 : retval);
+			break;
 		};
 	} else {
 		switch (points) {
@@ -1587,6 +1594,7 @@ function selfdraw_delta(points, fu, playerWind, winnerWind) {
 		case 26: retval = -32000; break;
 		case 39: retval = -48000; break;
 		case 52: retval = -64000; break;
+		case 65: retval = -80000; break;
 		}
 		retval *= (playerWind == winnerWind ? -3 : 1)
 	}
