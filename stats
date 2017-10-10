@@ -1,0 +1,14 @@
+deal in rate - lose/hands
+average hand size points_total/hands_won
+dora dora_total/hands_won
+average position positions/hands
+chombo
+fly
+riichi riichis/hands_played
+riichi_win % riichi_wins/riichis
+win rate
+
+stretch ==
+self-draw vs deal-in
+true points / winning hand + round up
+

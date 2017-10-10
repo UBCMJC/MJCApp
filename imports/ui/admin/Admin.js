@@ -21,7 +21,6 @@ Template.Admin.events({
 
     'submit .new-player'(event) {
         event.preventDefault();
-        
         if (confirm("Are you sure you want to add this user?")) {
             const { name, hongKongName, japaneseName } = event.target;
 
@@ -74,4 +73,4 @@ Template.Admin.helpers({
 
 Template.AddPlayer.helpers({
     players() { return Players.find({}); }
-})
+});
