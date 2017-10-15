@@ -57,8 +57,8 @@
 				<li data-template="jpn_mistake" role="presentation">
 					<a data-toggle="pill" href="#">Mistake! (Chombo チョンボ)</a>
 				</li>
-				<li data-template="jpn_split_pao" role="presentation">
-					<a data-toggle="pill" href="#">Split pao</a>
+				<li data-template="jpn_dealin_pao" role="presentation">
+					<a data-toggle="pill" href="#">Deal in pao</a>
 				</li>
 			</u1>
 		</div>
@@ -98,31 +98,31 @@
 		</tr>
 		<tr>
 			<th colspan="4">Transaction total:</th>
-			<td>{{get_player_delta "east"}}</td>
-			<td>{{get_player_delta "south"}}</td>
-			<td>{{get_player_delta "west"}}</td>
-			<td>{{get_player_delta "north"}}</td>
+			<td>{{get_player_delta EAST}}</td>
+			<td>{{get_player_delta SOUTH}}</td>
+			<td>{{get_player_delta WEST}}</td>
+			<td>{{get_player_delta NORTH}}</td>
 		</tr>
 		<tr>
 			<th colspan="4">Current score:</th>
-			<td>{{get_player_score "east"}}</td>
-			<td>{{get_player_score "south"}}</td>
-			<td>{{get_player_score "west"}}</td>
-			<td>{{get_player_score "north"}}</td>
+			<td>{{get_player_score EAST}}</td>
+			<td>{{get_player_score SOUTH}}</td>
+			<td>{{get_player_score WEST}}</td>
+			<td>{{get_player_score NORTH}}</td>
 		</tr>
 		<tr>
 			<th colspan="4">End score:</th>
-			<td>{{get_player_score_final "east"}}</td>
-			<td>{{get_player_score_final "south"}}</td>
-			<td>{{get_player_score_final "west"}}</td>
-			<td>{{get_player_score_final "north"}}</td>
+			<td>{{get_player_score_final EAST}}</td>
+			<td>{{get_player_score_final SOUTH}}</td>
+			<td>{{get_player_score_final WEST}}</td>
+			<td>{{get_player_score_final NORTH}}</td>
 		</tr>
 		<tr>
 		    <th colspan="4">ELO change:</th>
-		    <td>{{get_expected_elo_change "east"}}</td>
-		    <td>{{get_expected_elo_change "south"}}</td>
-		    <td>{{get_expected_elo_change "west"}}</td>
-		    <td>{{get_expected_elo_change "north"}}</td>
+		    <td>{{get_expected_elo_change EAST}}</td>
+		    <td>{{get_expected_elo_change SOUTH}}</td>
+		    <td>{{get_expected_elo_change WEST}}</td>
+		    <td>{{get_expected_elo_change NORTH}}</td>
 		</tr>
 		</table>
 
@@ -235,8 +235,8 @@
 	{{> jpn_loser_s east=get_east south=get_south west=get_west north=get_north}}
 </template>
 
-<template name="jpn_split_pao">
-	<p>Dealin pao penalty!</p>
+<template name="jpn_dealin_pao">
+	<p>Deal in pao penalty!</p>
 	{{> jpn_winner_s east=get_east south=get_south west=get_west north=get_north}}
 	{{> jpn_loser_s east=get_east south=get_south west=get_west north=get_north}}
 	{{> jpn_pao_s east=get_east south=get_south west=get_west north=get_north}}

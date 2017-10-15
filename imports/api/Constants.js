@@ -6,6 +6,9 @@ const Constants = {
 	// The starting number of points in a Hong Kong game
 	HKG_START_POINTS: 500,
 
+	// Points paid out for a mistake in a Hong Kong game
+	HKG_MISTAKE_POINTS: 192,
+
 	// The starting number of points in a Japanese game
 	JPN_START_POINTS: 25000,
 
@@ -17,6 +20,19 @@ const Constants = {
 	// end a game at the end of "South" round in a Japanese
 	// game
 	JPN_END_POINTS: 30000,
+
+	// Base points for a "mangan" hand in a Japanese game
+	JPN_MANGAN_BASE_POINTS: 2000,
+
+	// Points added for every bonus round in a Japanese game
+	JPN_BONUS_POINTS: 300,
+
+	// Points added or deducted for a riichi stick in a
+	// Japanese game
+	JPN_RIICHI_POINTS: 1000,
+
+	// Points paid out for a mistake in a Japanese game
+	JPN_MISTAKE_POINTS: 12000,
 
 	// Constants for defining the ELO calculation operation
 	ELO_CALCULATOR_N: 2000,
@@ -69,8 +85,42 @@ const Constants = {
 	SELF_DRAW: "selfdraw",
 	NO_WIN: "nowin",
 	RESTART: "restart",
-	MISTAKE: "mistake"
+	MISTAKE: "mistake",
+
+	// Direction Constants
+	EAST: "east",
+	SOUTH: "south",
+	WEST: "west",
+	NORTH: "north",
+
+	// Hong Kong HTML forms
+	// Be careful as some of these are hardcoded in HTML!
+	HKG_DEAL_IN: "hkg_dealin",
+	HKG_SELF_DRAW: "hkg_selfdraw",
+	HKG_NO_WIN: "hkg_nowin",
+	HKG_RESTART: "hkg_restart",
+	HKG_MISTAKE: "hkg_mistake",
+	HKG_DEAL_IN_PAO: "hkg_dealin_pao",
+	HKG_SELF_DRAW_PAO: "hkg_selfdraw_pao",
+
+	// Japanese HTML forms
+	// Be careful as some of these are hardcoded in HTML!
+	JPN_DEAL_IN: "jpn_dealin",
+	JPN_SELF_DRAW: "jpn_selfdraw",
+	JPN_NO_WIN: "jpn_nowin",
+	JPN_RESTART: "jpn_restart",
+	JPN_MISTAKE: "jpn_mistake",
+	JPN_DEAL_IN_PAO: "jpn_dealin_pao",
+
+	PRIORITY: {
+		east: 3,
+		south: 2,
+		west: 1,
+		north: 0,
+	}
 };
+
+Constants.WINDS = [Constants.EAST, Constants.SOUTH, Constants.WEST, Constants.NORTH];
 
 export default Constants;
 

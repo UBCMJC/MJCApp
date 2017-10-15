@@ -42,25 +42,25 @@
 		</div>
 		<div class="nav-block">
 		<u1 class="nav nav-pills nav-justified">
-			<li data-template="dealin" role="presentation" class="active">
+			<li data-template="hkg_dealin" role="presentation" class="active">
 				<a data-toggle="pill" href="#">Deal in (Sik Wu 食糊)</a>
 			</li>
-			<li data-template="selfdraw" role="presentation">
+			<li data-template="hkg_selfdraw" role="presentation">
 				<a data-toggle="pill" href="#">Self draw (Zi Mo 自摸)</a>
 			</li>
-			<li data-template="nowin" role="presentation">
+			<li data-template="hkg_nowin" role="presentation">
 				<a data-toggle="pill" href="#">Deck out (Lau Guk 流局)</a>
 			</li>
-			<li data-template="restart" role="presentation">
+			<li data-template="hkg_restart" role="presentation">
 				<a data-toggle="pill" href="#">Reshuffle</a>
 			</li>
-			<li data-template="mistake" role="presentation">
+			<li data-template="hkg_mistake" role="presentation">
 				<a data-toggle="pill" href="#">Mistake! (Zaa Wu 詐糊)</a>
 			</li>
-			<li data-template="dealin_pao" role="presentation">
+			<li data-template="hkg_dealin_pao" role="presentation">
 				<a data-toggle="pill" href="#">Dealin pao</a>
 			</li>
-			<li data-template="selfdraw_pao" role="presentation">
+			<li data-template="hkg_selfdraw_pao" role="presentation">
 				<a data-toggle="pill" href="#">Selfdraw pao</a>
 			</li>
 		</u1>
@@ -101,31 +101,31 @@
 		</tr>
 		<tr>
 			<th colspan="3">Transaction total:</th>
-			<td>{{get_player_delta "east"}}</td>
-			<td>{{get_player_delta "south"}}</td>
-			<td>{{get_player_delta "west"}}</td>
-			<td>{{get_player_delta "north"}}</td>
+			<td>{{get_player_delta EAST}}</td>
+			<td>{{get_player_delta SOUTH}}</td>
+			<td>{{get_player_delta WEST}}</td>
+			<td>{{get_player_delta NORTH}}</td>
 		</tr>
 		<tr>
 			<th colspan="3">Current score:</th>
-			<td>{{get_player_score "east"}}</td>
-			<td>{{get_player_score "south"}}</td>
-			<td>{{get_player_score "west"}}</td>
-			<td>{{get_player_score "north"}}</td>
+			<td>{{get_player_score EAST}}</td>
+			<td>{{get_player_score SOUTH}}</td>
+			<td>{{get_player_score WEST}}</td>
+			<td>{{get_player_score NORTH}}</td>
 		</tr>
 		<tr>
 			<th colspan="3">End score:</th>
-			<td>{{get_player_score_final "east"}}</td>
-			<td>{{get_player_score_final "south"}}</td>
-			<td>{{get_player_score_final "west"}}</td>
-			<td>{{get_player_score_final "north"}}</td>
+			<td>{{get_player_score_final EAST}}</td>
+			<td>{{get_player_score_final SOUTH}}</td>
+			<td>{{get_player_score_final WEST}}</td>
+			<td>{{get_player_score_final NORTH}}</td>
 		</tr>
 		<tr>
 			<th colspan="3">ELO change:</th>
-			<td>{{get_expected_elo_change "east"}}</td>
-			<td>{{get_expected_elo_change "south"}}</td>
-			<td>{{get_expected_elo_change "west"}}</td>
-			<td>{{get_expected_elo_change "north"}}</td>
+			<td>{{get_expected_elo_change EAST}}</td>
+			<td>{{get_expected_elo_change SOUTH}}</td>
+			<td>{{get_expected_elo_change WEST}}</td>
+			<td>{{get_expected_elo_change NORTH}}</td>
 		</tr>
 		</table>
 
@@ -192,33 +192,33 @@
 	<option value={{hongKongLeagueName}} class="north player_select">{{hongKongLeagueName}}</option>
 </template>
 
-<template name="dealin">
+<template name="hkg_dealin">
 	<p>Someone dealt in the winning tile!</p>
 	{{> winner_s east=get_east south=get_south west=get_west north=get_north}}
 	{{> loser_s east=get_east south=get_south west=get_west north=get_north}}
 	{{> points}}
 </template>
 
-<template name="selfdraw">
+<template name="hkg_selfdraw">
 	<p>Someone drew their winning tile on their own!</p>
 	{{> winner_s east=get_east south=get_south west=get_west north=get_north}}
 	{{> points}}
 </template>
 
-<template name="nowin">
+<template name="hkg_nowin">
 	<p>Wall ran out of tiles!</p>
 </template>
 
-<template name="restart">
+<template name="hkg_restart">
 	<p>Game was restarted!</p>
 </template>
 
-<template name="mistake">
+<template name="hkg_mistake">
 	<p>Game ruining mistake!</p>
 	{{> loser_s east=get_east south=get_south west=get_west north=get_north}}
 </template>
 
-<template name="dealin_pao">
+<template name="hkg_dealin_pao">
 	<p>Someone dealt in while someone was under pao</p>
 	{{> winner_s east=get_east south=get_south west=get_west north=get_north}}
 	{{> loser_s east=get_east south=get_south west=get_west north=get_north}}
@@ -226,7 +226,7 @@
 	{{> points}}
 </template>
 
-<template name="selfdraw_pao">
+<template name="hkg_selfdraw_pao">
 	<p>Someone self drew while someone was under pao or someone under pao dealt in!</p>
 	{{> winner_s east=get_east south=get_south west=get_west north=get_north}}
 	{{> pao_s east=get_east south=get_south west=get_west north=get_north}}
