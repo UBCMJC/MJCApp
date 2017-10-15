@@ -1,10 +1,10 @@
 //Databases
-import Players from '../api/Players';
-import { HongKongHands } from '../api/GameDatabases';
+import Players from '../../api/Players';
+import { HongKongHands } from '../../api/GameDatabases';
 
-import Constants from '../api/Constants';
-import EloCalculator from '../api/EloCalculator';
-import NewGameUtils from '../api/utils/NewGameUtils';
+import Constants from '../../api/Constants';
+import EloCalculator from '../../api/EloCalculator';
+import NewGameUtils from '../../api/utils/NewGameUtils';
 
 import './HongKongNewGame.html';
 

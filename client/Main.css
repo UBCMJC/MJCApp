@@ -1,5 +1,3 @@
-/* CSS declarations go here */
-
 .container {
 	max-width: 1080px;
 	margin: 0 auto;
@@ -42,12 +40,14 @@ tr:nth-of-type(even){
 	.player-block{
 		max-width: 75%;
 	}
-.nav-justified > li > a {
-    margin-bottom: 4px;
-}
-.nav-justified > li {
-    display: block;
-    width: 100%;
+
+	.nav-justified > li > a {
+		margin-bottom: 4px;
+	}
+
+	.nav-justified > li {
+		display: block;
+		width: 100%;
     }
 }
 
@@ -82,5 +82,9 @@ tr:nth-of-type(even){
 }
 
 .statistics-title {
+	text-align: center;
+}
+
+.names th, td {
 	text-align: center;
 }

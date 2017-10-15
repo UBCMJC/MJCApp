@@ -1,4 +1,6 @@
 import { Template } from 'meteor/templating';
 
-import './Body.html';
+import './Base.html';
 import './Index';
+import './admin/Admin';
+
