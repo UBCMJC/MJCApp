@@ -4,11 +4,18 @@ import { Meteor } from 'meteor/meteor';
 import Players from '../../api/Players';
 import Admin from '../../api/Admin';
 
+import HistoryUtils from '../../api/utils/HistoryUtils';
+
 Template.Admin.onCreated(function() {
     this.admin = new ReactiveVar("Login");
 });
 
 Template.Admin.events({
+    'click #calcElo'(event, tamplate) {
+	HistoryUtils.regenerateJapaneseEloStat();
+	HistoryUtils.regenerateHongKongEloStat();
+    },
+    
     'click #logout'(event, template) {
         template.admin.set("Login");
     },
