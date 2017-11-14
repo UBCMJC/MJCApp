@@ -396,12 +396,13 @@ Template.JapaneseNewGame.events({
 
 		if ( !$( event.target ).hasClass( "disabled")) {
 
+			const handType = template.hand_type.get();
 			//Do nothing if we don't have players yet
 			if (NewGameUtils.allPlayersSelected()) {
 				// Save what the free riichi stick number is in case we delete this hand
 				template.riichi_sum_history.push(Session.get("free_riichi_sticks"));
 
-				switch(template.hand_type.get()) {
+				switch(handType) {
 				// Push a deal in hand and ensure proper information
 				case Constants.JPN_DEAL_IN:
 					// Ensure correct input of who won and who lost
@@ -486,7 +487,7 @@ Template.JapaneseNewGame.events({
 					break;
 				// No other hands should be possible!
 				default:
-					console.log(template.hand_type);
+					console.log(handType);
 					break;
 				};
 			}
@@ -495,7 +496,7 @@ Template.JapaneseNewGame.events({
 			}
 
 			// If game ending conditions are met, do not allow more hand submissions and allow game submission
-			if (NewGameUtils.japaneseGameOver()) {
+			if (NewGameUtils.japaneseGameOver(handType)) {
 				$( event.target ).addClass( "disabled");
 				$( ".submit_game_button" ).removeClass( "disabled" );
 			}
