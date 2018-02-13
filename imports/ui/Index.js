@@ -2,6 +2,7 @@ import './static/About.html';
 import './static/Home.html';
 import './Index.html';
 
+import './current-games/CurrentGames';
 import './record-game/RecordHongKongGame';
 import './record-game/RecordJapaneseGame';
 import './ranking/Ranking';
