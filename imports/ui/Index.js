@@ -22,7 +22,7 @@ Template.Index.events({
 		// but maintain their clickiness
 		var currentTab = $( event.target ).closest( "li" );
 
-		if (currentTab.data("template") === null)
+		if (currentTab.data("template") === undefined)
 			return;
 
 		currentTab.addClass( "active" );
