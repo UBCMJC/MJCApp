@@ -2,5 +2,107 @@
   <h2>Current Games</h2>
   <section class="container">
 	<p>We can put games here!</p>
+
+	{{#each games}}
+	  {{> game_display}}
+	{{/each}}
   </section>
+</template>
+
+
+<template name="game_display">
+<button type="button" class="btn btn-primary btn-block" data-toggle="collapse" data-target="#table">
+	  <table style="width:100%">
+	    <tr>
+	      <th style="width:60%">{{timestampToDate timestamp}}</th>
+	      <th style="width:25%">{{styleToText style}}</th>
+	      <th style="width:15%">{{currentRound allHands style}} B{{currentBonus allHands style}}</th>
+	    </tr>
+	  </table>
+	</button>
+	<div id="table" class="collapse">
+	  <table style="width:100%">
+	    <tr>
+	      <th colspan="4"></th>
+	      <th>{{getPlayer players EAST}} ({{getElo style (getPlayer players EAST)}})</th>
+	      <th>{{getPlayer players SOUTH}} ({{getElo style (getPlayer players SOUTH)}})</th>
+	      <th>{{getPlayer players WEST}} ({{getElo style (getPlayer players WEST)}})</th>
+	      <th>{{getPlayer players NORTH}} ({{getElo style (getPlayer players NORTH)}})</th>
+	    </tr>
+	    {{#if isHongKongStyle style}}
+	    <tr>
+	      <th colspan="2">Round</th>
+	      <th>Bonus</th>
+	      <th>Points</th>
+	      <th>{{HKG_START_POINTS}}</th>
+	      <th>{{HKG_START_POINTS}}</th>
+	      <th>{{HKG_START_POINTS}}</th>
+	      <th>{{HKG_START_POINTS}}</th>
+	    </tr>
+	    {{#each allHands}}
+	    {{> hkg_hand_display}}
+	    {{/each}}
+	    <tr>
+	      <td>{{currentRound allHands style}}</td>
+	      <td>B{{currentBonus allHands style}}</td>
+	    </tr>
+	    {{/if}}
+	    {{#if isJapaneseStyle style}}
+	    <tr>
+	      <th>Round</th>
+	      <th>P</th>
+	      <th>F</th>
+	      <th>D</th>
+	      <th>{{JPN_START_POINTS}}</th>
+	      <th>{{JPN_START_POINTS}}</th>
+	      <th>{{JPN_START_POINTS}}</th>
+	      <th>{{JPN_START_POINTS}}</th>
+	    </tr>
+	    {{#each allHands}}
+	    {{> jpn_hand_display}}
+	    {{/each}}
+	    <tr>
+	      <td>{{currentRound allHands style}} B{{currentBonus allHands style}}</td>
+	    </tr>
+	    {{/if}}
+	  </table>
+	</div>
+
+</template>
+
+<template name="hkg_hand_display">
+  {{#if isWin handType}}
+  <tr>
+    <td colspan="2">{{displayRoundWind round}}{{displayTrueRound round}}</td>
+    <td>B{{bonus}}</td>
+    {{#if isWin handType}}
+    <td>{{points}}</td>
+    {{/if}}
+    {{#if isNoWin handType}}
+    <td>{{handTypeToString handType}}</td>
+    {{/if}}
+    <td>{{getDelta deltas EAST}}</td>
+    <td>{{getDelta deltas SOUTH}}</td>
+    <td>{{getDelta deltas WEST}}</td>
+    <td>{{getDelta deltas NORTH}}</td>
+  </tr>
+  {{/if}}
+</template>
+
+<template name="jpn_hand_display">
+  <tr>
+    <td>{{displayRoundWind round}}{{displayTrueRound round}} B{{bonus}}</td>
+    {{#if isWin handType}}
+    <td>{{points}}</td>
+    <td>{{fu}}</td>
+    <td>{{dora}}</td>
+    {{/if}}
+    {{#if isNoWin handType}}
+    <td colspan="3">{{handTypeToString handType}}</td>
+    {{/if}}
+    <td>{{getDelta deltas EAST}}</td>
+    <td>{{getDelta deltas SOUTH}}</td>
+    <td>{{getDelta deltas WEST}}</td>
+    <td>{{getDelta deltas NORTH}}</td>
+  </tr>
 </template>

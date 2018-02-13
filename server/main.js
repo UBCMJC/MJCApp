@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 
+import CurrentGames from '../imports/api/CurrentGames';
 import Players from '../imports/api/Players';
 import Admin from '../imports/api/Admin';
 
@@ -49,4 +50,67 @@ Meteor.startup(() => {
 	    });
 	}
     }
+    if (CurrentGames.find().count() === 0) {
+	CurrentGames.insert({
+	    timestamp: 1518490447206,
+
+	    code: "1234",
+
+	    style: "jpn",
+
+	    players: [ "JPN_DELETE_ME_0",
+		       "JPN_DELETE_ME_1",
+		       "JPN_DELETE_ME_2",
+		       "JPN_DELETE_ME_3" ],
+
+	    winSums: [ 1, 1, 0, 0 ],
+
+	    lossSums: [ 0, 1, 0, 0 ],
+
+	    pointSums: [ 4, 1, 0, 0 ],
+
+	    doraSums: [ 1, 0, 0, 0 ],
+
+	    riichiSums: [ 2, 1, 0, 1 ],
+
+	    riichiWinSums: [ 1, 0, 0, 0 ],
+
+	    chomboSums: [ 0, 0, 0, 0 ],
+
+	    scores: [ 33000, 24800, 21100, 21100 ],
+	    
+	    allHands: [
+		{
+		    handType: "dealin",
+		    round: 1,
+		    bonus: 0,
+		    points: 1,
+		    fu: 30,
+		    dora: 0,
+		    riichis: [ true, false, false, false ],
+		    deltas: [ -1000, 2000, -1000, -1000 ]
+		},
+		{
+		    handType: "nowin",
+		    round: 2,
+		    bonus: 0,
+		    points: 0,
+		    fu: 0,
+		    dora: 0,
+		    riichis: [ true, true, false, false ],
+		    deltas: [ 500, 500, -1500, -1500 ]
+		},
+		{
+		    handType: "selfdraw",
+		    round: 2,
+		    bonus: 1,
+		    points: 4,
+		    fu: 20,
+		    dora: 1,
+		    riichis: [ true, false, false, true ],
+		    deltas: [ 8500, -2700, -1400, -1400 ]
+		}
+	    ]	    
+	});
+    }    
 });
