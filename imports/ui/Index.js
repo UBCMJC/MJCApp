@@ -18,11 +18,12 @@ Template.Index.helpers({
 
 Template.Index.events({
 	'click .nav-tabs li'( event, template ) {
-		// Prevent dropdown menus from being selectable, but maintain their clickiness
-		if ($( event.target ).attr( 'class' ) == "dropdown-toggle" )
-			return;
-
+		// Prevent dropdown menus from being selectable,
+		// but maintain their clickiness
 		var currentTab = $( event.target ).closest( "li" );
+
+		if (currentTab.data("template") === undefined)
+			return;
 
 		currentTab.addClass( "active" );
 		$( ".nav-tabs li" ).not( currentTab ).removeClass( "active" );
