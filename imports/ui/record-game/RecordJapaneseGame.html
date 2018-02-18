@@ -1,4 +1,4 @@
-<template name="JapaneseNewGame">
+<template name="RecordJapaneseGame">
 	<h2>Riichi Japanese Mahjong Game Sheet</h2>
 
 	<section class="game_input_form container">
@@ -93,7 +93,7 @@
 		{{/each}}
 		<tr>
 			<td>
-				{{displayRoundWind get_round}} {{jpn_round_mod4 get_round}} B{{get_bonus}}
+				{{displayRoundWind get_round}} {{displayRoundNumber get_round}} B{{get_bonus}}
 			</td>
 		</tr>
 		<tr>
@@ -135,7 +135,7 @@
 <template name="jpn_render_hand">
 	<tr>
 		<td>
-			{{displayRoundWind round}} {{jpn_round_mod4 round}} B{{bonus}}
+			{{displayRoundWind round}} {{displayRoundNumber round}} B{{bonus}}
 		</td>
 
 		{{#if is_dealin handType}}
