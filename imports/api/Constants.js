@@ -3,11 +3,20 @@ const Constants = {
 	// Title
 	MAHJONG_CLUB_LEAGUE: "Mahjong Club League",
 
+	// Universal hands per round in a four player game
+	HANDS_PER_ROUND: 4,
+
 	// The starting number of points in a Hong Kong game
 	HKG_START_POINTS: 500,
 
 	// Points paid out for a mistake in a Hong Kong game
 	HKG_MISTAKE_POINTS: 192,
+
+	// The number of rounds in a Hong Kong game
+	HKG_NUM_ROUNDS: 4,
+
+	// The number of hands in a Hong Kong game
+	get HKG_NUM_HANDS() { return this.HKG_NUM_ROUNDS * this.HANDS_PER_ROUND },
 
 	// The starting number of points in a Japanese game
 	JPN_START_POINTS: 25000,
@@ -33,6 +42,12 @@ const Constants = {
 
 	// Points paid out for a mistake in a Japanese game
 	JPN_MISTAKE_POINTS: 12000,
+
+	// The number of rounds in a Japanese game
+	JPN_NUM_ROUNDS: 2,
+
+	// The number of hands in a Japanese game
+	get JPN_NUM_HANDS() { return this.JPN_NUM_ROUNDS * this.HANDS_PER_ROUND },
 
 	// Constants for defining the ELO calculation operation
 	ELO_CALCULATOR_N: 2000,
@@ -93,6 +108,8 @@ const Constants = {
 	WEST: "west",
 	NORTH: "north",
 
+	get WINDS() { return [this.EAST, this.SOUTH, this.WEST, this.NORTH]; },
+    
 	// Hong Kong HTML forms
 	// Be careful as some of these are hardcoded in HTML!
 	HKG_DEAL_IN: "hkg_dealin",
@@ -119,8 +136,6 @@ const Constants = {
 		north: 0,
 	}
 };
-
-Constants.WINDS = [Constants.EAST, Constants.SOUTH, Constants.WEST, Constants.NORTH];
 
 export default Constants;
 

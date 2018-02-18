@@ -2,8 +2,8 @@ import './static/About.html';
 import './static/Home.html';
 import './Index.html';
 
-import './new-games/HongKongNewGame';
-import './new-games/JapaneseNewGame';
+import './record-game/RecordHongKongGame';
+import './record-game/RecordJapaneseGame';
 import './ranking/Ranking';
 
 Template.Index.onCreated( function() {

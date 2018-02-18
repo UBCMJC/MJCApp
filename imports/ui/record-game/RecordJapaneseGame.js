@@ -4,12 +4,12 @@ import { JapaneseHands } from '../../api/GameDatabases';
 
 import Constants from '../../api/Constants';
 import EloCalculator from '../../api/EloCalculator';
-import NewGameUtils from '../../api/utils/NewGameUtils';
+import GameRecordUtils from '../../api/utils/GameRecordUtils';
 
-import './JapaneseNewGame.html';
+import './RecordJapaneseGame.html';
 
-// Code to be evaluated when JapaneseNewGame template is reloaded
-Template.JapaneseNewGame.onCreated( function() {
+// Code to be evaluated when RecordJapaneseGame template is reloaded
+Template.RecordJapaneseGame.onCreated( function() {
 	// Meteor: Template type to show for choosing hand submission
 	this.hand_type = new ReactiveVar( Constants.JPN_DEAL_IN );
 
@@ -21,7 +21,7 @@ Template.JapaneseNewGame.onCreated( function() {
 	this.riichi_sum_history = [];
 
 	// Reset shared Mahjong stats
-	NewGameUtils.resetGameValues(Constants.JPN_START_POINTS);
+	GameRecordUtils.resetGameValues(Constants.JPN_START_POINTS);
 
 	// Reset Japanese hand specific stats
 	Session.set("current_fu", 0);
@@ -85,19 +85,8 @@ Template.jpn_dealin_pao.onCreated( function() {
 	setAllGUIRiichisFalse();
 });
 
-// GUI helper to show current round #
-// [E1,E2,E3,E4,S1,S2,S3,S4,W1,W2,W3,W4,W5,W...]
-Template.registerHelper("jpn_round_mod4", function(round) {
-	if (Number(round) > 8)
-		return (Number(round) - 8);
-	var retval = Number(round) % 4;
-	if (retval == 0)
-		retval = 4;
-	return retval;
-})
-
 // GUI helpers for hand submission template
-Template.JapaneseNewGame.helpers({
+Template.RecordJapaneseGame.helpers({
 	// Choose hand type for submission form
 	hand_type() {
 		return Template.instance().hand_type.get();
@@ -112,15 +101,15 @@ Template.JapaneseNewGame.helpers({
 	},
 	// Show what a player's +/- is
 	get_player_delta(direction) {
-		return (NewGameUtils.getDirectionScore(direction) - Constants.JPN_START_POINTS);
+		return (GameRecordUtils.getDirectionScore(direction) - Constants.JPN_START_POINTS);
 	},
 	// Show what a player's current score is
 	get_player_score(direction) {
-		return NewGameUtils.getDirectionScore(direction);
+		return GameRecordUtils.getDirectionScore(direction);
 	},
 	// Show what a player's score will look like if game is ended now
 	get_player_score_final(direction) {
-		retval = NewGameUtils.getDirectionScore(direction);
+		retval = GameRecordUtils.getDirectionScore(direction);
 
 		var winScore = Math.max(Number(Session.get("east_score")),
 								Number(Session.get("south_score")),
@@ -147,14 +136,14 @@ Template.JapaneseNewGame.helpers({
 	// Show what a player's Elo change will look like if game is ended now
 	get_expected_elo_change(direction) {
 
-		let eastPlayer  = Session.get("current_east");
+		let eastPlayer	= Session.get("current_east");
 		let southPlayer = Session.get("current_south");
-		let westPlayer  = Session.get("current_west");
+		let westPlayer	= Session.get("current_west");
 		let northPlayer = Session.get("current_north");
 
-		if (eastPlayer  == Constants.DEFAULT_EAST ||
+		if (eastPlayer	== Constants.DEFAULT_EAST ||
 		    southPlayer == Constants.DEFAULT_SOUTH ||
-		    westPlayer  == Constants.DEFAULT_WEST ||
+		    westPlayer	== Constants.DEFAULT_WEST ||
 		    northPlayer == Constants.DEFAULT_NORTH) {
 			return "N/A";
 		}
@@ -199,7 +188,12 @@ Template.JapaneseNewGame.helpers({
 	},
 	// Return a string of the round wind for Japanese style
 	displayRoundWind(round) {
-		return NewGameUtils.displayRoundWind(round, Constants.GAME_TYPE.JAPANESE);
+		return GameRecordUtils.displayRoundWind(round, Constants.GAME_TYPE.JAPANESE);
+	},
+	// Return the current round number for Japanese style
+	displayRoundNumber(round) {
+		return GameRecordUtils.handNumberToRoundNumber(round,
+		                                               Constants.GAME_TYPE.JAPANESE);
 	},
 });
 
@@ -223,7 +217,12 @@ Template.jpn_render_hand.helpers({
 	},
 	// Return a string of the round wind for Japanese style
 	displayRoundWind(round) {
-		return NewGameUtils.displayRoundWind(round, Constants.GAME_TYPE.JAPANESE);
+		return GameRecordUtils.displayRoundWind(round, Constants.GAME_TYPE.JAPANESE);
+	},
+	// Return the current round number for Japanese style
+	displayRoundNumber(round) {
+		return GameRecordUtils.handNumberToRoundNumber(round,
+		                                               Constants.GAME_TYPE.JAPANESE);
 	},
 })
 
@@ -312,7 +311,7 @@ Template.jpn_dora.helpers({
 });
 
 // Functions for browser events
-Template.JapaneseNewGame.events({
+Template.RecordJapaneseGame.events({
 	//Selecting who the east player is
 	'change select[name="east_player"]'(event) {
 		Session.set("current_east", event.target.value);
@@ -361,20 +360,20 @@ Template.JapaneseNewGame.events({
 	'click .riichi'(event) {
 		if ( !$( event.target ).hasClass( "active" )) {
 			$( event.target ).addClass( "active" );
-			Session.set( NewGameUtils.playerToDirection(event.target.innerHTML) + "_riichi", true);
+			Session.set( GameRecordUtils.playerToDirection(event.target.innerHTML) + "_riichi", true);
 		} else {
 			$( event.target ).removeClass( "active" )
-			Session.set( NewGameUtils.playerToDirection(event.target.innerHTML) + "_riichi", false);
+			Session.set( GameRecordUtils.playerToDirection(event.target.innerHTML) + "_riichi", false);
 		}
 	},
 	//Selecting who tenpaied
 	'click .tenpai'(event) {
 		if ( !$( event.target ).hasClass( "active" )) {
 			$( event.target ).addClass( "active" );
-			Session.set( NewGameUtils.playerToDirection(event.target.innerHTML) + "_tenpai", true);
+			Session.set( GameRecordUtils.playerToDirection(event.target.innerHTML) + "_tenpai", true);
 		} else {
 			$( event.target ).removeClass( "active" )
-			Session.set( NewGameUtils.playerToDirection(event.target.innerHTML) + "_tenpai", false);
+			Session.set( GameRecordUtils.playerToDirection(event.target.innerHTML) + "_tenpai", false);
 		}
 	},
 	//Selecting who is under pao
@@ -398,7 +397,7 @@ Template.JapaneseNewGame.events({
 
 			const handType = template.hand_type.get();
 			//Do nothing if we don't have players yet
-			if (NewGameUtils.allPlayersSelected()) {
+			if (GameRecordUtils.allPlayersSelected()) {
 				// Save what the free riichi stick number is in case we delete this hand
 				template.riichi_sum_history.push(Session.get("free_riichi_sticks"));
 
@@ -410,7 +409,7 @@ Template.JapaneseNewGame.events({
 						Session.get("round_loser") != Constants.NO_PERSON &&
 						Session.get("round_winner") != Session.get("round_loser")) {
 						// Ensure a valid point/fu combination
-						if (NewGameUtils.noIllegalJapaneseHands()) {
+						if (GameRecordUtils.noIllegalJapaneseHands()) {
 							push_dealin_hand(template);
 							$( ".delete_hand_button" ).removeClass( "disabled" );
 							resetRoundStats();
@@ -427,7 +426,7 @@ Template.JapaneseNewGame.events({
 					// Ensure correct input of who won
 					if (Session.get("round_winner") != Constants.NO_PERSON) {
 						// Ensure a valid point/fu combination
-						if (NewGameUtils.noIllegalSelfdrawJapaneseHands()) {
+						if (GameRecordUtils.noIllegalSelfdrawJapaneseHands()) {
 							push_selfdraw_hand(template);
 							$( ".delete_hand_button" ).removeClass( "disabled" );
 							resetRoundStats();
@@ -473,7 +472,7 @@ Template.JapaneseNewGame.events({
 						Session.get("round_loser") != Session.get("round_pao_player") &&
 						Session.get("round_pao_player") != Session.get("round_winner")) {
 						//Ensure a valid point/fu combination
-						if (NewGameUtils.noIllegalJapaneseHands()) {
+						if (GameRecordUtils.noIllegalJapaneseHands()) {
 							push_split_pao_hand(template);
 							$( ".delete_hand_button" ).removeClass( "disabled" );
 							resetRoundStats();
@@ -496,7 +495,7 @@ Template.JapaneseNewGame.events({
 			}
 
 			// If game ending conditions are met, do not allow more hand submissions and allow game submission
-			if (NewGameUtils.japaneseGameOver(handType)) {
+			if (GameRecordUtils.japaneseGameOver(handType)) {
 				$( event.target ).addClass( "disabled");
 				$( ".submit_game_button" ).removeClass( "disabled" );
 			}
@@ -534,21 +533,21 @@ Template.JapaneseNewGame.events({
 
 				// Rollback chombo stat
 				if (del_hand.handType == Constants.MISTAKE)
-					NewGameUtils.rollbackChomboStat(del_hand);
+					GameRecordUtils.rollbackChomboStat(del_hand);
 
 				// Rollback hand win/loss stat
 				if (del_hand.handType == Constants.DEAL_IN || del_hand.handType == Constants.SELF_DRAW) {
 					// win stat
-					NewGameUtils.rollbackHandWinStat(del_hand);
+					GameRecordUtils.rollbackHandWinStat(del_hand);
 
 					// win riichis stat
-					NewGameUtils.rollbackHandRiichiStat(del_hand, riichiHistory);
+					GameRecordUtils.rollbackHandRiichiStat(del_hand, riichiHistory);
 
 					// points stat
-					NewGameUtils.rollbackTotalPointsStat(del_hand);
+					GameRecordUtils.rollbackTotalPointsStat(del_hand);
 
 					// loss stat -> may occur when pao selfdraw
-					NewGameUtils.rollbackHandDealinStat(del_hand);
+					GameRecordUtils.rollbackHandDealinStat(del_hand);
 				}
 
 				$( ".submit_hand_button" ).removeClass( "disabled" );
@@ -770,12 +769,12 @@ function push_dealin_hand(template) {
 	var points = Number(Session.get("current_points"));
 	var fu = Number(Session.get("current_fu"));
 	var dora = Number(Session.get("current_dora"));
-	var winnerWind = NewGameUtils.playerToDirection(Session.get("round_winner"));
-	var loserWind = NewGameUtils.playerToDirection(Session.get("round_loser"));
+	var winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
+	var loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
 	var riichiSum = Session.get("free_riichi_sticks");
 	var eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
 
-	if 		(winnerWind == Constants.EAST) {
+	if		(winnerWind == Constants.EAST) {
 		Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
 		Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) + points);
 		Session.set("eastPlayerDoraSum", Number(Session.get("eastPlayerDoraSum")) + dora);
@@ -804,7 +803,7 @@ function push_dealin_hand(template) {
 			Session.set("northPlayerRiichisWon", Number(Session.get("northPlayerRiichisWon")) + 1);
 	}
 
-	if 		(loserWind == Constants.EAST)
+	if		(loserWind == Constants.EAST)
 		Session.set("eastPlayerLosses", Number(Session.get("eastPlayerLosses")) + 1);
 	else if (loserWind == Constants.SOUTH)
 		Session.set("southPlayerLosses", Number(Session.get("southPlayerLosses")) + 1);
@@ -845,7 +844,7 @@ function push_dealin_hand(template) {
 
 	pushHand(template, Constants.DEAL_IN, eastDelta, southDelta, westDelta, northDelta);
 
-	if (winnerWind == NewGameUtils.roundToDealerDirection(Session.get("current_round")))
+	if (winnerWind == GameRecordUtils.roundToDealerDirection(Session.get("current_round")))
 		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 	else {
 		Session.set("current_bonus", 0);
@@ -862,11 +861,11 @@ function push_selfdraw_hand(template) {
 	var points = Number(Session.get("current_points"));
 	var fu = Number(Session.get("current_fu"));
 	var dora = Number(Session.get("current_dora"));
-	var winnerWind = NewGameUtils.playerToDirection(Session.get("round_winner"));
+	var winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
 	var riichiSum = Session.get("free_riichi_sticks");
 	var eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
 
-	if 		(winnerWind == Constants.EAST) {
+	if		(winnerWind == Constants.EAST) {
 		Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
 		Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) + points);
 		Session.set("eastPlayerDoraSum", Number(Session.get("eastPlayerDoraSum")) + dora);
@@ -928,7 +927,7 @@ function push_selfdraw_hand(template) {
 
 	pushHand(template, Constants.SELF_DRAW, eastDelta, southDelta, westDelta, northDelta);
 
-	if (winnerWind == NewGameUtils.roundToDealerDirection(Session.get("current_round")))
+	if (winnerWind == GameRecordUtils.roundToDealerDirection(Session.get("current_round")))
 		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 	else {
 		Session.set("current_bonus", 0);
@@ -984,7 +983,7 @@ function push_nowin_hand(template) {
 
 	pushHand(template, Constants.NO_WIN, eastDelta, southDelta, westDelta, northDelta);
 
-	if (Session.get(NewGameUtils.roundToDealerDirection(Session.get("current_round")) + "_tenpai") == true)
+	if (Session.get(GameRecordUtils.roundToDealerDirection(Session.get("current_round")) + "_tenpai") == true)
 		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 	else {
 		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
@@ -1035,15 +1034,15 @@ function push_restart_hand(template) {
 };
 
 function push_mistake_hand(template) {
-	var loserWind = NewGameUtils.playerToDirection(Session.get("round_loser"));
+	var loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
 	var eastDelta = mistake_delta(Constants.EAST, loserWind);
 	var southDelta = mistake_delta(Constants.SOUTH, loserWind);
 	var westDelta = mistake_delta(Constants.WEST, loserWind);
 	var northDelta = mistake_delta(Constants.NORTH, loserWind);
 
-	if 		(loserWind == Constants.EAST)  Session.set("eastMistakeTotal",  Number(Session.get("eastMistakeTotal"))  + 1);
+	if		(loserWind == Constants.EAST)  Session.set("eastMistakeTotal",	Number(Session.get("eastMistakeTotal"))	 + 1);
 	else if (loserWind == Constants.SOUTH) Session.set("southMistakeTotal", Number(Session.get("southMistakeTotal")) + 1);
-	else if (loserWind == Constants.WEST)  Session.set("westMistakeTotal",  Number(Session.get("westMistakeTotal"))  + 1);
+	else if (loserWind == Constants.WEST)  Session.set("westMistakeTotal",	Number(Session.get("westMistakeTotal"))	 + 1);
 	else if (loserWind == Constants.NORTH) Session.set("northMistakeTotal", Number(Session.get("northMistakeTotal")) + 1);
 
 	pushHand(template, Constants.MISTAKE, eastDelta, southDelta, westDelta, northDelta);
@@ -1058,13 +1057,13 @@ function push_split_pao_hand(template) {
 	var points = Number(Session.get("current_points"));
 	var fu = Number(Session.get("current_fu"));
 	var dora = Number(Session.get("current_dora"));
-	var winnerWind = NewGameUtils.playerToDirection(Session.get("round_winner"));
-	var loserWind = NewGameUtils.playerToDirection(Session.get("round_loser"));
-	var paoWind = NewGameUtils.playerToDirection(Session.get("round_pao_player"));
+	var winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
+	var loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
+	var paoWind = GameRecordUtils.playerToDirection(Session.get("round_pao_player"));
 	var riichiSum = Session.get("free_riichi_sticks");
 	var eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
 
-	if 		(winnerWind == Constants.EAST) {
+	if		(winnerWind == Constants.EAST) {
 		Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
 		Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) + points);
 		Session.set("eastPlayerDoraSum", Number(Session.get("eastPlayerDoraSum")) + dora);
@@ -1093,7 +1092,7 @@ function push_split_pao_hand(template) {
 			Session.set("northPlayerRiichisWon", Number(Session.get("northPlayerRiichisWon")) + 1);
 	}
 
-	if 		(loserWind == Constants.EAST || paoWind == Constants.EAST)
+	if		(loserWind == Constants.EAST || paoWind == Constants.EAST)
 		Session.set("eastPlayerLosses", Number(Session.get("eastPlayerLosses")) + 1);
 	else if (loserWind == Constants.SOUTH || paoWind == Constants.SOUTH)
 		Session.set("southPlayerLosses", Number(Session.get("southPlayerLosses")) + 1);
@@ -1156,7 +1155,7 @@ function push_split_pao_hand(template) {
 
 	pushHand(template, Constants.DEAL_IN, eastDelta, southDelta, westDelta, northDelta);
 
-	if (winnerWind == NewGameUtils.roundToDealerDirection(Session.get("current_round")))
+	if (winnerWind == GameRecordUtils.roundToDealerDirection(Session.get("current_round")))
 		Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 	else {
 		Session.set("current_bonus", 0);
@@ -1196,7 +1195,7 @@ function dealin_delta(points, fu, playerWind, winnerWind, loserWind) {
 	if (playerWind != winnerWind && playerWind != loserWind)
 		return 0;
 
-	if (winnerWind != NewGameUtils.roundToDealerDirection(Number(Session.get("current_round")))) {
+	if (winnerWind != GameRecordUtils.roundToDealerDirection(Number(Session.get("current_round")))) {
 		switch (points) {
 		case 1:
 			switch (fu) {
@@ -1340,7 +1339,7 @@ function dealin_delta(points, fu, playerWind, winnerWind, loserWind) {
 
 function selfdraw_delta(points, fu, playerWind, winnerWind) {
 	var retval;
-	var dealerWind = NewGameUtils.roundToDealerDirection(Number(Session.get("current_round")));
+	var dealerWind = GameRecordUtils.roundToDealerDirection(Number(Session.get("current_round")));
 
 	if (winnerWind != dealerWind) {
 		switch (points) {

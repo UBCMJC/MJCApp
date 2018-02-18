@@ -68,6 +68,26 @@ export default {
 		};
 	},
 
+	// Helper function to convert hand number to round number
+	handNumberToRoundNumber(roundNum, gameType) {
+
+		let maxRoundNum;
+		switch (gameType) {
+		case Constants.GAME_TYPE.HONG_KONG:
+			maxRoundNum = Constants.HKG_NUM_HANDS;
+			break;
+		case Constants.GAME_TYPE.JAPANESE:
+			maxRoundNum = Constants.JPN_NUM_HANDS;
+			break;
+		}
+
+		if (roundNum > maxRoundNum) {
+			return (roundNum - maxRoundNum);
+		}
+
+		return ((roundNum - 1) % 4) + 1;
+	},
+
 	// Helper function to ensure all players are selected
 	allPlayersSelected() {
 		return (Session.get("current_east") != Constants.DEFAULT_EAST &&
@@ -158,7 +178,7 @@ export default {
 	},
 
 	rollbackChomboStat(lastHand) {
-		if 		(Number(lastHand.eastDelta) < 0)
+		if		(Number(lastHand.eastDelta) < 0)
 			Session.set("eastMistakeTotal", Number(Session.get("eastMistakeTotal")) - 1);
 		else if (Number(lastHand.southDelta) < 0)
 			Session.set("southMistakeTotal", Number(Session.get("southMistakeTotal")) - 1);
@@ -169,7 +189,7 @@ export default {
 	},
 
 	rollbackHandWinStat(lastHand) {
-		if 		(Number(lastHand.eastDelta) > 0)
+		if		(Number(lastHand.eastDelta) > 0)
 			Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) - 1);
 		else if (Number(lastHand.southDelta) > 0)
 			Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) - 1);
@@ -180,7 +200,7 @@ export default {
 	},
 
 	rollbackHandRiichiStat(lastHand, riichiHistory) {
-		if 		(Number(lastHand.eastDelta) > 0) {
+		if		(Number(lastHand.eastDelta) > 0) {
 			if (riichiHistory.east == true)
 				Session.set("eastPlayerRiichisWon", Number(Session.get("eastPlayerRiichisWon")) - 1);
 		}
@@ -200,7 +220,7 @@ export default {
 	},
 
 	rollbackTotalPointsStat(lastHand) {
-		if 		(Number(lastHand.eastDelta) > 0)
+		if		(Number(lastHand.eastDelta) > 0)
 			Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) - lastHand.points);
 		else if (Number(lastHand.southDelta) > 0)
 			Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) - lastHand.points);
@@ -215,7 +235,7 @@ export default {
 		if (lastHand.eastDelta == 0 || lastHand.southDelta == 0 || lastHand.westDelta == 0 || lastHand.northDelta == 0)
 			return -1;
 
-		if 		(Number(lastHand.eastDelta) < 0)
+		if		(Number(lastHand.eastDelta) < 0)
 			Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) - 1);
 		else if (Number(lastHand.southDelta) < 0)
 			Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) - 1);

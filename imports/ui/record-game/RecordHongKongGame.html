@@ -1,4 +1,4 @@
-<template name="HongKongNewGame">
+<template name="RecordHongKongGame">
 	<h2>Hong Kong Mahjong Game Sheet</h2>
 
 	<section class="game_input_form container">
@@ -95,7 +95,7 @@
 		{{/each}}
 		<tr>
 			<td>
-				{{displayRoundWind get_round}} {{hkg_round_mod4 get_round}}
+				{{displayRoundWind get_round}} {{displayRoundNumber get_round}}
 			</td>
 			<td>B {{get_bonus}}</td>
 		</tr>
@@ -138,7 +138,7 @@
 <template name="render_hand">
 	<tr>
 		<td>
-			{{displayRoundWind round}} {{hkg_round_mod4 round}}
+			{{displayRoundWind round}} {{displayRoundNumber round}}
 		</td>
 		<td>B {{bonus}}</td>
 
