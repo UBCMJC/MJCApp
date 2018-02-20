@@ -4,7 +4,7 @@ import Players from '../../api/Players';
 
 // API
 import Constants from '../../api/Constants';
-import NewGameUtils from '../../api/utils/NewGameUtils';
+import GameRecordUtils from '../../api/utils/GameRecordUtils';
 
 import './CurrentGames.html';
 
@@ -68,7 +68,7 @@ Template.game_display.helpers({
 	    break;
 	};
 
-	return NewGameUtils.displayRoundWind(round, style) + round;
+	return GameRecordUtils.displayRoundWind(round, style) + round;
 	    
     },
     currentBonus(hands, style) {
@@ -165,13 +165,11 @@ Template.hkg_hand_display.helpers({
 	}
     },
     displayRoundWind(round) {
-	return NewGameUtils.displayRoundWind(round, Constants.GAME_TYPE.HONG_KONG);
+	return GameRecordUtils.displayRoundWind(round, Constants.GAME_TYPE.HONG_KONG);
     },
     displayTrueRound(round) {
-	let retval = Number(round) % 4;
-	if (retval === 0)
-	    retval = 4;
-	return retval;
+	return GameRecordUtils.handNumberToRoundNumber(round,
+	                                               Constants.GAME_TYPE.HONG_KONG);
     },
     getDelta(deltas, position) {
 	switch (position) {
@@ -211,15 +209,11 @@ Template.jpn_hand_display.helpers({
 	}
     },
     displayRoundWind(round) {
-	return NewGameUtils.displayRoundWind(round, Constants.GAME_TYPE.JAPANESE);
+	return GameRecordUtils.displayRoundWind(round, Constants.GAME_TYPE.JAPANESE);
     },
     displayTrueRound(round) {
-	if (Number(round) > 8)
-	    return (Number(round) - 8);
-	let retval = Number(round) % 4;
-	if (retval === 0)
-	    retval = 4;
-	return retval;
+	return GameRecordUtils.handNumberToRoundNumber(round,
+	                                               Constants.GAME_TYPE.JAPANESE);
     },
     getDelta(deltas, position) {
 	switch (position) {
