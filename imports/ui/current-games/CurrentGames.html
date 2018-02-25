@@ -2,13 +2,11 @@
   <h2>Current Games</h2>
   <section class="container">
 	<p>We can put games here!</p>
-
 	{{#each games}}
 	  {{> game_display}}
 	{{/each}}
   </section>
 </template>
-
 
 <template name="game_display">
 <button type="button" class="btn btn-primary btn-block" data-toggle="collapse" data-target="#table">
