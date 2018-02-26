@@ -1,88 +1,13 @@
 <template name="RecordHongKongGame">
   <h2>Hong Kong Mahjong Game Sheet</h2>
-
-  {{ > ChooseRecordingTypeModal }}
+  
+  {{ > ChooseRecordingTypeModal style=getStyle}}
+  
   {{#unless hasGame}}
   <p>This is where you can record a Hong Kong ranked game!</p>
   <button type="button" class="btn btn-primary start-recording">Start Game</button>
   {{else}}
   <p>PUT GAME HERE</p>
   {{/unless}}
-</template>
-
-<template name="ChooseRecordingTypeModal">
-  <div class="modal fade" id="choose-record-modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-	
-	<div class="modal-header">
-	  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-	    <span area-hidden="true">&times;</span>
-	  </button>
-	  <h3 class="modal-title">Choose Record Type</h3>
-	</div>
-	
-	<div class="modal-body">
-	  
-	  <div>
-	    <table class="table">
-	      <tr>
-		<th>Seat</th>
-		<th>Player</th>
-	      </tr>
-	      {{#each wind in WINDS}}
-	      <tr>
-		<td>{{wind}}</td>
-		<td>
-		  <select name={{wind}}>
-		    <option disabled selected value> -- select {{wind}} -- </option>
-		    <option value="test" class={{wind}}>test</option>
-		  </select>
-		</td>
-	      </tr>
-	      {{/each}}
-	      <tr>
-		<td>East 東</td>
-		<td>player</td>
-	      </tr>
-	      <tr>
-		<td>South 南</td>
-		<td>player</td>
-	      </tr>
-	      <tr>
-		<td>West 西</td>
-		<td>player</td>
-	      </tr>
-	      <tr>
-		<td>North 北</td>
-		<td>player</td>
-	      </tr>
-	      
-	    </table>
-	    <button type="button" class="btn btn-primary">Start New Game</button>
-	  </div>
-
-	  <div class="input-group">
-	    <p>or:</p>
-	    <form method="POST" class="form-horizontal">
-	      <label class="control-label col-sm-4" for="game-code">Game Code</label>
-	      <div class="col-sm-8">
-		<input required type="text" class="form-control" name="game-code">
-	      </div>
-
-	      <button type="submit" class="btn btn-primary">Load Game</button>
-	    </form>
-	  </div>
-	  
-
-	</div>
-
-	<div class="modal-footer">
-	  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-		  
-	</div>
-
-      </div>
-    </div>
-  </div>
+  
 </template>
