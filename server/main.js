@@ -78,7 +78,7 @@ Meteor.startup(() => {
 	    chomboSums: [ 0, 0, 0, 0 ],
 
 	    scores: [ 33000, 24800, 21100, 21100 ],
-	    
+
 	    allHands: [
 		{
 		    handType: "dealin",
@@ -110,7 +110,7 @@ Meteor.startup(() => {
 		    riichis: [ true, false, false, true ],
 		    deltas: [ 8500, -2700, -1400, -1400 ]
 		}
-	    ]	    
+	    ]
 	});
-    }    
+    }
 });

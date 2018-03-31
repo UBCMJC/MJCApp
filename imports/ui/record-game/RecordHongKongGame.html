@@ -1,13 +1,13 @@
 <template name="RecordHongKongGame">
   <h2>Hong Kong Mahjong Game Sheet</h2>
-  
+
   {{ > ChooseRecordingTypeModal style=getStyle}}
-  
+
   {{#unless hasGame}}
   <p>This is where you can record a Hong Kong ranked game!</p>
   <button type="button" class="btn btn-primary start-recording">Start Game</button>
   {{else}}
   <p>PUT GAME HERE</p>
   {{/unless}}
-  
+
 </template>

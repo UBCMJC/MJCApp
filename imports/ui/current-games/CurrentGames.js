@@ -49,7 +49,7 @@ Template.game_display.helpers({
 		break;
 	    };
 	    break;
-	    
+
 	case Constants.GAME_TYPE.JAPANESE:
 	    switch (lastHand.handType) {
 	    case Constants.RESTART:
@@ -69,7 +69,7 @@ Template.game_display.helpers({
 	};
 
 	return GameRecordUtils.displayRoundWind(round, style) + round;
-	    
+
     },
     currentBonus(hands, style) {
 	let lastHand = hands[hands.length - 1];
@@ -132,7 +132,7 @@ Template.game_display.helpers({
 	case Constants.GAME_TYPE.HONG_KONG:
 	    return Players.findOne({hongKongLeagueName: player}).hongKongElo.toFixed(2);
 	case Constants.GAME_TYPE.JAPANESE:
-	    return Players.findOne({japaneseLeagueName: player}).japaneseElo.toFixed(2);	    
+	    return Players.findOne({japaneseLeagueName: player}).japaneseElo.toFixed(2);
 	}
     },
     isHongKongStyle(style) {
