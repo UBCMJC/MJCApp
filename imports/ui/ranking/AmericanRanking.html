@@ -1,0 +1,188 @@
+<template name="AmericanRanking">
+    <h2>American {{ MAHJONG_CLUB_LEAGUE }}</h2>
+    {{ > AmericanModal1 }}
+    {{ > AmericanModal2 }}
+    {{ > AmericanModal3 }}
+    {{ > AmericanModal4 }}
+    <table class="ranking">
+        <tr>
+            <th class="rank">#</th>
+            <th class="players">Players</th>
+            <th class="elo">ELO</th>
+            <th class="games-played">Games Played</th>
+        </tr>
+	<tr class="player player1"
+	    data-player="1"
+	    data-format="American">
+	  <td class="rank">1</td>
+	  <td class="players">OldManWong👴</td>
+	  <td class="elo">1516.000</td>
+	  <td class="games-played">1</td>
+	</tr>
+	<tr class="player player2"
+	    data-player="2"
+	    data-format="American">
+	  <td class="rank">2</td>
+	  <td class="players">CHOW 🇺🇸 ELO ➡️💹</td>
+	  <td class="elo">1502.000</td>
+	  <td class="games-played">1</td>
+	</tr>
+	<tr class="player player3"
+	    data-player="3"
+	    data-format="American">
+	  <td class="rank">3</td>
+	  <td class="players">sebysebyseby</td>
+	  <td class="elo">1494.000</td>
+	  <td class="games-played">1</td>
+	</tr>
+	<tr class="player player4"
+	    data-player="4"
+	    data-format="American">
+	  <td class="rank">4</td>
+	  <td class="players">Kyaa Loli Senpai</td>
+	  <td class="elo">1488.000</td>
+	  <td class="games-played">1</td>
+	</tr>
+	    
+    </table>
+</template>
+
+<template name="AmericanModal1">
+  <div class="modal fade" id="modal1" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+	<div class="modal-header">
+	  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  <h2 class="modal-title">Player Statistics</h2>
+	</div>
+	<div class="modal-body">
+	  <h3 class="statistics-title">OldManWong👴</h3>
+	  <table class="table">
+	    <tbody>
+	      <tr>
+		<td>Hand win rate: 50.0%</td>
+		<td>Deal-in rate: 0.0%</td>
+	      </tr>
+	      <tr>
+		<td>Average position: 1</td>
+		<td>Average hand size: 36.6</td>
+	      </tr>
+	      <tr>
+		<td>Fly rate: 0.0%</td>
+		<td>Chombos: 0</td>
+	      </tr>
+	    </tbody>
+	  </table>
+	</div>
+	<div class="modal-footer">
+	  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="AmericanModal2">
+  <div class="modal fade" id="modal2" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+	<div class="modal-header">
+	  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  <h2 class="modal-title">Player Statistics</h2>
+	</div>
+	<div class="modal-body">
+	  <h3 class="statistics-title">CHOW 🇺🇸 ELO ➡️💹</h3>
+	  <table class="table">
+	    <tbody>
+	      <tr>
+		<td>Hand win rate: 20%</td>
+		<td>Deal-in rate: 10%</td>
+	      </tr>
+	      <tr>
+		<td>Average position: 2</td>
+		<td>Average hand size: 32.5</td>
+	      </tr>
+	      <tr>
+		<td>Fly rate: 0.0%</td>
+		<td>Chombos: 0</td>
+	      </tr>
+	    </tbody>
+	  </table>
+	</div>
+	<div class="modal-footer">
+	  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="AmericanModal3">
+  <div class="modal fade" id="modal3" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+	<div class="modal-header">
+	  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  <h2 class="modal-title">Player Statistics</h2>
+	</div>
+	<div class="modal-body">
+	  <h3 class="statistics-title">sebysebyseby</h3>
+	  <table class="table">
+	    <tbody>
+	      <tr>
+		<td>Hand win rate: 20%</td>
+		<td>Deal-in rate: 20%</td>
+	      </tr>
+	      <tr>
+		<td>Average position: 3</td>
+		<td>Average hand size: 30.0</td>
+	      </tr>
+	      <tr>
+		<td>Fly rate: 0.0%</td>
+		<td>Chombos: 0</td>
+	      </tr>
+	    </tbody>
+	  </table>
+	</div>
+	<div class="modal-footer">
+	  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="AmericanModal4">
+  <div class="modal fade" id="modal4" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+	<div class="modal-header">
+	  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  <h2 class="modal-title">Player Statistics</h2>
+	</div>
+	<div class="modal-body">
+	  <h3 class="statistics-title">Kyaa Loli Senpai</h3>
+	  <table class="table">
+	    <tbody>
+	      <tr>
+		<td>Hand win rate: 0%</td>
+		<td>Deal-in rate: 20%</td>
+	      </tr>
+	      <tr>
+		<td>Average position: 4</td>
+		<td>Average hand size: 0.0</td>
+	      </tr>
+	      <tr>
+		<td>Fly rate: 0.0%</td>
+		<td>Chombos: 0</td>
+	      </tr>
+	    </tbody>
+	  </table>
+	</div>
+	<div class="modal-footer">
+	  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+      </div>
+    </div>
+  </div>
+</template>

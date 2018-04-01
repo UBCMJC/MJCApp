@@ -1,6 +1,7 @@
 import GameTypeUtils from '../../api/utils/GameTypeUtils';
 
 import '../statistics/PlayerModal';
+import './AmericanRanking';
 import './HongKongRanking';
 import './JapaneseRanking';
 import './Ranking.html';
