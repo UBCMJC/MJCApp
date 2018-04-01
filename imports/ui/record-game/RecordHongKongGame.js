@@ -4,7 +4,7 @@ import Players from '../../api/Players';
 import Constants from '../../api/Constants';
 
 import './RecordHongKongGame.html';
-import './RecordChooseTypeModal.html';
+import './RecordChooseTypeModal';
 
 Template.RecordHongKongGame.onCreated( function() {
     this.hasGame = new ReactiveVar(false);
@@ -15,12 +15,12 @@ Template.RecordHongKongGame.helpers({
         return Template.instance().hasGame.get();
     },
     getStyle() {
-	return Constants.GAME_TYPE.HONG_KONG;
+        return Constants.GAME_TYPE.HONG_KONG;
     },
 });
 
 Template.RecordHongKongGame.events({
     'click .start-recording'(event, template) {
-        $("#choose-record-modal").modal();
+        $("#record-choose-modal").modal();
     }
 });

@@ -1,0 +1,13 @@
+<template name="RecordJapaneseGame">
+  <h2>Japanese Mahjong Game Sheet</h2>
+
+  {{ > RecordChooseTypeModal style=getStyle}}
+
+  {{#unless hasGame}}
+  <p>This is where you can record a Japanese ranked game!</p>
+  <button type="button" class="btn btn-primary start-recording">Start Game</button>
+  {{else}}
+  <p>PUT GAME HERE</p>
+  {{/unless}}
+
+</template>

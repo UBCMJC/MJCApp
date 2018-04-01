@@ -1,5 +1,6 @@
-<template name="ChooseRecordingTypeModal">
-  <div class="modal fade" id="choose-record-modal" tabindex="-1" role="dialog">
+<!-- Parameters: style -->
+<template name="RecordChooseTypeModal">
+  <div class="modal fade" id="record-choose-modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
 
@@ -22,9 +23,21 @@
 	      <tr>
 		<td>{{wind}}</td>
 		<td>
-		  <select name={{wind}}>
-		    <option disabled selected value> -- select {{wind}} -- </option>
-		    <option value="test" class={{wind}}>test</option>
+		  <select name="{{wind}}_select">
+		    <option disabled selected value> -- Select {{wind}} player -- </option>
+		    
+		    {{#if (isHongKongStyle style)}}
+		    {{#each player in (players style)}}
+		    <option value={{player.hongKongleagueName}}>{{player.hongKongLeagueName}}</option>
+		    {{/each}}
+		    {{/if}}
+		    
+		    {{#if (isJapaneseStyle style)}}
+		    {{#each player in (players style)}}
+		    <option value={{player.japaneseLeagueName}}>{{player.japaneseLeagueName}}</option>
+		    {{/each}}
+		    {{/if}}
+		    
 		  </select>
 		</td>
 	      </tr>
@@ -34,7 +47,7 @@
 	    <button type="button" class="btn btn-primary">Start New Game</button>
 	  </div>
 
-	  <div class="input-group">
+	  <div>
 	    <p>or:</p>
 	    <form method="POST" class="form-horizontal">
 	      <label class="control-label col-sm-4" for="game-code">Game Code</label>
