@@ -1,8 +1,8 @@
 .container {
-	max-width: 1080px;
-	margin: 0 auto;
-	min-height: 100%;
-	background: white;
+    max-width: 1080px;
+    margin: 0 auto;
+    min-height: 100%;
+    background: white;
 }
 
 .player-block {
@@ -10,13 +10,13 @@
 }
 
 .player-select-header {
-	font-size: 20px;
+    font-size: 20px;
 }
 
 .player-entry {
-	text-align: center;
-	background: white;
-	padding-bottom: 10px;
+    text-align: center;
+    background: white;
+    padding-bottom: 10px;
 }
 
 .nav-block {
@@ -32,59 +32,59 @@
 }
 
 tr:nth-of-type(even){
-	background-color: #f4f4f4;
-	padding: 6px;
+    background-color: #f4f4f4;
+    padding: 6px;
 }
 
 @media (min-width: 768px){
-	.player-block{
-		max-width: 75%;
-	}
+    .player-block{
+        max-width: 75%;
+    }
 
-	.nav-justified > li > a {
-		margin-bottom: 4px;
-	}
+    .nav-justified > li > a {
+        margin-bottom: 4px;
+    }
 
-	.nav-justified > li {
-		display: block;
-		width: 100%;
+    .nav-justified > li {
+        display: block;
+        width: 100%;
     }
 }
 
 @media (min-width: 960px){
-	.player-block{
-		max-width: 900px;
-	}
+    .player-block{
+        max-width: 900px;
+    }
 }
 
 .dropdown-menu {
-	width: 100%;
+    width: 100%;
 }
 
 .dropdown-menu > li {
-	text-align: center;
+    text-align: center;
 }
 
 .ranking th, td {
-	text-align: center;
+    text-align: center;
 }
 
 .ranking .rank, .ranking .elo, .ranking .games-played {
-	width: 10%;
+    width: 10%;
 }
 
 .ranking .players {
-	width: 25%;
+    width: 25%;
 }
 
 .ranking .player {
-	line-height: 4rem;
+    line-height: 4rem;
 }
 
 .statistics-title {
-	text-align: center;
+    text-align: center;
 }
 
 .names th, td {
-	text-align: center;
+    text-align: center;
 }

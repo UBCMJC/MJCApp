@@ -1,39 +1,39 @@
 <template name="Index">
-	<u1 class="nav nav-tabs nav-justified">
-		<!--comment-->
-		<li data-template="Home" role="presentation" class="active">
-			<a data-toggle="tab" href="#">Home</a>
-		</li>
+  <u1 class="nav nav-tabs nav-justified">
+    <!--comment-->
+    <li data-template="Home" role="presentation" class="active">
+      <a data-toggle="tab" href="#">Home</a>
+    </li>
 
-		<li class="dropdown">
-			<a class="dropdown-toggle" data-toggle="dropdown" href="#">League Ranking<span class="caret"></span></a>
-			<u1 class="dropdown-menu">
-				<li data-template="HongKongRanking" role="presentation">
-					<a href="#">Hong Kong 香港</a>
-				</li>
-				<li data-template="JapaneseRanking" role="presentation">
-					<a href="#">Riichi 立直</a>
-				</li>
-			</u1>
-		</li>
+    <li class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#">League Ranking<span class="caret"></span></a>
+      <u1 class="dropdown-menu">
+        <li data-template="HongKongRanking" role="presentation">
+          <a href="#">Hong Kong 香港</a>
+        </li>
+        <li data-template="JapaneseRanking" role="presentation">
+          <a href="#">Riichi 立直</a>
+        </li>
+      </u1>
+    </li>
 
-		<li class="dropdown">
-			<a class="dropdown-toggle" data-toggle="dropdown" href="#">Record Game
-			<span class="caret"></span></a>
-			<u1 class="dropdown-menu">
-				<li data-template="RecordHongKongGame" role="presentation">
-					<a href="#">Hong Kong 香港</a>
-				</li>
-				<li data-template="RecordJapaneseGame" role="presentation">
-					<a href="#">Riichi 立直</a>
-				</li>
-			</u1>
-		</li>
+    <li class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#">Record Game
+        <span class="caret"></span></a>
+      <u1 class="dropdown-menu">
+        <li data-template="RecordHongKongGame" role="presentation">
+          <a href="#">Hong Kong 香港</a>
+        </li>
+        <li data-template="RecordJapaneseGame" role="presentation">
+          <a href="#">Riichi 立直</a>
+        </li>
+      </u1>
+    </li>
 
-		<li data-template="About" role="presentation">
-			<a data-toggle="tab" href="#">About</a>
-		</li>
-	</u1>
+    <li data-template="About" role="presentation">
+      <a data-toggle="tab" href="#">About</a>
+    </li>
+  </u1>
 
-	{{> Template.dynamic template=tab }}
+  {{> Template.dynamic template=tab }}
 </template>
