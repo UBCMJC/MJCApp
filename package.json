@@ -14,12 +14,12 @@
   "main": "Main.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Futochu/MJCApp.git"
+    "url": "git+https://github.com/UBCMJC/MJCApp.git"
   },
   "author": "Kevin Chow",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Futochu/MJCApp/issues"
+    "url": "https://github.com/UBCMJC/MJCApp/issues"
   },
-  "homepage": "https://github.com/Futochu/MJCApp#readme"
+  "homepage": "https://github.com/UBCMJC/MJCApp#readme"
 }

@@ -703,7 +703,7 @@ function push_selfdraw_pao_hand(template) {
 function push_nowin_hand(template) {
     pushHand(template, Constants.NO_WIN, 0, 0, 0, 0);
 
-    Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
+    Session.set("current_round", Number(Session.get("current_round")) + 1);
 };
 
 function push_restart_hand(template) {
