@@ -775,7 +775,7 @@ function push_dealin_hand(template) {
     var loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
     var riichiSum = Session.get("free_riichi_sticks");
     let seatDeltas = {};
-    Constants.WINDS.forEach(w => {seatDeltas[w] = 0});
+    Constants.WINDS.forEach(w => seatDeltas[w] = 0);
 
     if (winnerWind == Constants.EAST) {
         Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
@@ -879,7 +879,7 @@ function push_selfdraw_hand(template) {
     var winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
     var riichiSum = Session.get("free_riichi_sticks");
     let seatDeltas = {};
-    Constants.WINDS.forEach(w => {seatDeltas[w] = 0});
+    Constants.WINDS.forEach(w => seatDeltas[w] = 0);
 
     if (winnerWind == Constants.EAST) {
         Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
@@ -1095,7 +1095,7 @@ function push_split_pao_hand(template) {
     var paoWind = GameRecordUtils.playerToDirection(Session.get("round_pao_player"));
     var riichiSum = Session.get("free_riichi_sticks");
     let seatDeltas = {};
-    Constants.WINDS.forEach(w => {seatDeltas[w] = 0});
+    Constants.WINDS.forEach(w => seatDeltas[w] = 0);
 
     if (winnerWind == Constants.EAST) {
         Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);

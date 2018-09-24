@@ -31,7 +31,7 @@ function jpn_dealin_delta(points,
                           loserWind,
                           riichiSticks) {
     let winds = {};
-    Constants.WINDS.forEach(w => {winds[w] = 0});
+    Constants.WINDS.forEach(w => winds[w] = 0);
 
     let handValue;
     let bonusPoints = bonus * Constants.JPN_BONUS_POINTS;
@@ -42,7 +42,7 @@ function jpn_dealin_delta(points,
     // Check to see if you have to count basic points
     if (points < 5) {
         if (fu === 20 || (points === 1 && fu === 25)) {
-            throw TypeError("Invalid points/fu combination");
+            throw RangeError("Invalid points/fu combination");
         } else {
             // Calculate hand value, if it's above a mangan, cap it there
             let manganPayout = Constants.JPN_MANGAN_BASE_POINTS * multiplier;
@@ -74,17 +74,14 @@ function jpn_dealin_delta(points,
  */
 function jpn_selfdraw_delta(points, fu, bonus, dealerWind, winnerWind, riichiSticks) {
     let winds = {};
-    Constants.WINDS.forEach(w => {winds[w] = 0});
-    let basicPoints;
-    let nonDealerPays;
-    let dealerPays;
-    let currentBonus = bonus;
+    Constants.WINDS.forEach(w => winds[w] = 0);
+    let basicPoints, nonDealerPays, dealerPays;
     let individualBonusPayout = Constants.JPN_BONUS_POINTS / 3;
 
     // Check to see if you have to count basic points
     if (points < 5) {
         if ((points === 1 && (fu === 20 || fu === 25)) || (points === 2 && fu === 25)) {
-            throw TypeError("Invalid points/fu combination");
+            throw RangeError("Invalid points/fu combination");
         } else {
             // Calculate hand value, if it's above a mangan, cap it there
             basicPoints = fu * Math.pow(2, 2 + points);
@@ -121,7 +118,7 @@ function jpn_selfdraw_delta(points, fu, bonus, dealerWind, winnerWind, riichiSti
  */
 function jpn_mistake_delta(loser) {
     let winds = {};
-    Constants.WINDS.forEach(w => {winds[w] = Constants.JPN_MISTAKE_POINTS / 3});
+    Constants.WINDS.forEach(w => winds[w] = Constants.JPN_MISTAKE_POINTS / 3);
 
     winds[loser] = -Constants.JPN_MISTAKE_POINTS;
     return winds;
