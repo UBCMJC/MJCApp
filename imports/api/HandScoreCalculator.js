@@ -3,9 +3,9 @@ import { GameRecordUtils } from './utils/GameRecordUtils';
 
 export var HandScoreCalculator = {
     jpn: {
-        dealin_delta: jpn_dealin_delta,
-        selfdraw_delta: jpn_selfdraw_delta,
-        mistake_delta: jpn_mistake_delta
+        dealinDelta: jpnDealinDelta,
+        selfDrawDelta: jpnSelfDrawDelta,
+        mistakeDelta: jpnMistakeDelta
     }
 };
 
@@ -23,13 +23,7 @@ export var HandScoreCalculator = {
  * @param {Number} riichiSticks - the number of riichi sticks won
  * @return {Object} containing the point difference for each seat
  */
-function jpn_dealin_delta(points,
-                          fu,
-                          bonus,
-                          dealerWind,
-                          winnerWind,
-                          loserWind,
-                          riichiSticks) {
+function jpnDealinDelta(points, fu, bonus, dealerWind, winnerWind, loserWind, riichiSticks) {
     let winds = {};
     Constants.WINDS.forEach(w => winds[w] = 0);
 
@@ -72,7 +66,7 @@ function jpn_dealin_delta(points,
  * @param {Number} riichiSticks - the total number of thrown riichi sticks
  * @return {Object} containing the point difference for each seat
  */
-function jpn_selfdraw_delta(points, fu, bonus, dealerWind, winnerWind, riichiSticks) {
+function jpnSelfDrawDelta(points, fu, bonus, dealerWind, winnerWind, riichiSticks) {
     let winds = {};
     Constants.WINDS.forEach(w => winds[w] = 0);
     let basicPoints, nonDealerPays, dealerPays;
@@ -116,7 +110,7 @@ function jpn_selfdraw_delta(points, fu, bonus, dealerWind, winnerWind, riichiSti
  * @param {string} loser - the losing seat true wind
  * @return {Object} containing the point difference for each seat
  */
-function jpn_mistake_delta(loser) {
+function jpnMistakeDelta(loser) {
     let winds = {};
     Constants.WINDS.forEach(w => winds[w] = Constants.JPN_MISTAKE_POINTS / 3);
 

@@ -837,13 +837,13 @@ function push_dealin_hand(template) {
         Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) + 1);
     }
 
-    let handDeltas = HandScoreCalculator.jpn.dealin_delta(points,
-                                                          fu,
-                                                          Number(Session.get("current_bonus")),
-                                                          dealerWind,
-                                                          winnerWind,
-                                                          loserWind,
-                                                          riichiSum);
+    let handDeltas = HandScoreCalculator.jpn.dealinDelta(points,
+                                                         fu,
+                                                         Number(Session.get("current_bonus")),
+                                                         dealerWind,
+                                                         winnerWind,
+                                                         loserWind,
+                                                         riichiSum);
     Session.set("free_riichi_sticks", 0);
 
     // Accumulate hand deltas for this round
@@ -932,12 +932,12 @@ function push_selfdraw_hand(template) {
         Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) + 1);
     }
 
-    let handDeltas = HandScoreCalculator.jpn.selfdraw_delta(points,
-                                                            fu,
-                                                            Number(Session.get("current_bonus")),
-                                                            dealerWind,
-                                                            winnerWind,
-                                                            riichiSum);
+    let handDeltas = HandScoreCalculator.jpn.selfDrawDelta(points,
+                                                           fu,
+                                                           Number(Session.get("current_bonus")),
+                                                           dealerWind,
+                                                           winnerWind,
+                                                           riichiSum);
     Session.set("free_riichi_sticks", 0);
 
     // Accumulate hand deltas for this round
@@ -1060,7 +1060,7 @@ function push_restart_hand(template) {
 
 function push_mistake_hand(template) {
     let loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
-    let handDeltas = HandScoreCalculator.jpn.mistake_delta(loserWind);
+    let handDeltas = HandScoreCalculator.jpn.mistakeDelta(loserWind);
 
     if (loserWind == Constants.EAST) {
         Session.set("eastMistakeTotal", Number(Session.get("eastMistakeTotal")) + 1);
@@ -1156,13 +1156,13 @@ function push_split_pao_hand(template) {
         Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) + 1);
     }
 
-    var value = HandScoreCalculator.jpn.dealin_delta(points,
-                                                     fu,
-                                                     Number(Session.get("current_bonus")),
-                                                     dealerWind,
-                                                     winnerWind,
-                                                     loserWind,
-                                                     0)[winnerWind];
+    var value = HandScoreCalculator.jpn.dealinDelta(points,
+                                                    fu,
+                                                    Number(Session.get("current_bonus")),
+                                                    dealerWind,
+                                                    winnerWind,
+                                                    loserWind,
+                                                    0)[winnerWind];
 
     if (((value / 2 ) % 100) == 50) {
         value += 100;
