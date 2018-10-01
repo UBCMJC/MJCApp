@@ -90,9 +90,9 @@ const Constants = {
     // rules.  Possibly add more if ever decided to
     GAME_TYPE: {
         // Hong Kong Old Style
-        HONG_KONG: "hkg",
+        HONG_KONG: "hongKong",
         // Japanese Riichi Style
-        JAPANESE: "jpn"
+        JAPANESE: "japanese"
     },
 
     // Round End Conditions

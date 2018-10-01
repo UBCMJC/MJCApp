@@ -69,8 +69,12 @@ tr:nth-of-type(even){
     text-align: center;
 }
 
-.ranking .rank, .ranking .elo, .ranking .games-played {
-    width: 10%;
+.ranking .rank {
+    width: 5%
+}
+
+.ranking .sortStat, .ranking .additionalStat {
+    width: 20%;
 }
 
 .ranking .players {
