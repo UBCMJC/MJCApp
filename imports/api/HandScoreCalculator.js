@@ -70,7 +70,8 @@ function jpnSelfDrawDelta(points, fu, bonus, dealerWind, winnerWind, riichiStick
     let winds = {};
     Constants.WINDS.forEach(w => winds[w] = 0);
     let basicPoints, nonDealerPays, dealerPays;
-    let individualBonusPayout = Constants.JPN_BONUS_POINTS / 3;
+    let bonusPoints = bonus * Constants.JPN_BONUS_POINTS;
+    let individualBonusPayout = bonusPoints / 3;
 
     // Check to see if you have to count basic points
     if (points < 5) {
@@ -88,17 +89,18 @@ function jpnSelfDrawDelta(points, fu, bonus, dealerWind, winnerWind, riichiStick
     dealerPays = Math.ceil(basicPoints / 100 * 2) * 100;
 
     // Everyone loses except the winner
-    Object.keys(winds).forEach(v => winds[v] = -nonDealerPays);
+    Object.keys(winds).forEach(v => winds[v] = -(nonDealerPays + individualBonusPayout));
 
+    // If dealer wins, everyone pays dealer amount, otherwise dealer pays differently
     if (winnerWind == dealerWind) {
         winds[dealerWind] = (nonDealerPays * 3)
-            + (bonus * Constants.JPN_BONUS_POINTS)
+            + (bonusPoints)
             + (riichiSticks * Constants.JPN_RIICHI_POINTS);
     } else {
-        winds[dealerWind] = -(dealerPays + bonus * individualBonusPayout)
+        winds[dealerWind] = -(dealerPays + individualBonusPayout)
         winds[winnerWind] = dealerPays
             + (nonDealerPays * 2)
-            + (bonus * Constants.JPN_BONUS_POINTS)
+            + (bonusPoints)
             + (riichiSticks * Constants.JPN_RIICHI_POINTS);
     }
 
