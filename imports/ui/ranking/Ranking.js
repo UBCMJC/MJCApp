@@ -143,17 +143,9 @@ Template.Ranking.events({
 });
 
 function getStatisticUnit(statistic) {
-    let returnString = "";
-    switch (statistic) {
-    case "handWinRate":
-    case "dealinRate":
-    case "flyRate":
-    case "riichiRate":
-    case "riichiWinRate":
-        returnString = " %";
-        break;
-    default:
-        break;
-    }
-    return returnString;
+    return ["handWinRate",
+	    "dealinRate",
+	    "flyRate",
+	    "riichiRate",
+	    "riichiWinRate"].includes(statistic) ? " %" : "";
 }
