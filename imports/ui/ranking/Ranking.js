@@ -43,7 +43,7 @@ Template.Ranking.helpers({
      * @returns an object of formatted statistics keyed with statistics
      */
     getRankingStatistics(format, exclusions) {
-        let statisticsList = [
+        let defaultStatisticsList = [
             {value: "elo", displayText: "ELO"},
             {value: "gamesPlayed", displayText: "Games"},
             {value: "handWinRate", displayText: "Hand Win %"},
@@ -53,24 +53,17 @@ Template.Ranking.helpers({
             {value: "flyRate", displayText: "Bankrupt %"},
             {value: "chomboTotal", displayText: "Chombos"}
         ];
+        const japaneseStatisticsList = [
+            {value: "averageHandDora", displayText: "Avg Hand Dora"},
+            {value: "riichiRate", displayText: "Riichi %"},
+            {value: "riichiWinRate", displayText: "Riichi Win %"}
+        ];
 
-        if (format === Constants.GAME_TYPE.JAPANESE) {
-            const japaneseStatisticsList = [
-                {value: "averageHandDora", displayText: "Avg Hand Dora"},
-                {value: "riichiRate", displayText: "Riichi %"},
-                {value: "riichiWinRate", displayText: "Riichi Win %"}
-            ];
-            statisticsList = statisticsList.concat(japaneseStatisticsList);
-        }
-
-        for (let stat of exclusions) {
-            let index = statisticsList.findIndex(i => i.value === stat.value);
-            if (index > -1) {
-                statisticsList.splice(index, 1);
-            }
-        }
-
-        return statisticsList;
+	// Filter out excluded statistics and non-format statistics
+	return [...defaultStatisticsList, ...japaneseStatisticsList].filter(
+	    (statistic) =>
+		!exclusions.find((exclusion) => exclusion.value === statistic.value) &&
+	        !(japaneseStatisticsList.includes(statistic) && format !== Constants.GAME_TYPE.JAPANESE));
     },
 
     /**
