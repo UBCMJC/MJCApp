@@ -44,21 +44,21 @@ Template.Ranking.helpers({
      */
     getRankingStatistics(format, exclusions) {
         let statisticsList = [
-            {value: "elo", format: "ELO"},
-            {value: "gamesPlayed", format: "Games"},
-            {value: "handWinRate", format: "Hand Win %"},
-            {value: "dealinRate", format: "Deal-in %"},
-            {value: "averageHandSize", format: "Avg Hand Size"},
-            {value: "averagePosition", format: "Avg Position"},
-            {value: "flyRate", format: "Bankrupt %"},
-            {value: "chomboTotal", format: "Chombos"}
+            {value: "elo", displayText: "ELO"},
+            {value: "gamesPlayed", displayText: "Games"},
+            {value: "handWinRate", displayText: "Hand Win %"},
+            {value: "dealinRate", displayText: "Deal-in %"},
+            {value: "averageHandSize", displayText: "Avg Hand Size"},
+            {value: "averagePosition", displayText: "Avg Position"},
+            {value: "flyRate", displayText: "Bankrupt %"},
+            {value: "chomboTotal", displayText: "Chombos"}
         ];
 
         if (format === Constants.GAME_TYPE.JAPANESE) {
             const japaneseStatisticsList = [
-                {value: "averageHandDora", format: "Avg Hand Dora"},
-                {value: "riichiRate", format: "Riichi %"},
-                {value: "riichiWinRate", format: "Riichi Win %"}
+                {value: "averageHandDora", displayText: "Avg Hand Dora"},
+                {value: "riichiRate", displayText: "Riichi %"},
+                {value: "riichiWinRate", displayText: "Riichi Win %"}
             ];
             statisticsList = statisticsList.concat(japaneseStatisticsList);
         }
