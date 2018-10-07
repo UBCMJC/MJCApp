@@ -12,8 +12,8 @@
           <table class="table">
             <tbody>
               <tr>
-                <td>Hand win rate: {{ player.winRate }}%</td>
-                <td>Deal-in rate: {{ player.dealin }}%</td>
+                <td>Hand win rate: {{ player.handWinRate }}%</td>
+                <td>Deal-in rate: {{ player.dealinRate }}%</td>
               </tr>
               <tr>
                 <td>Average position: {{ player.averagePosition }}</td>
@@ -21,11 +21,11 @@
               </tr>
               <tr>
                 <td>Fly rate: {{ player.flyRate }}%</td>
-                <td>Chombos: {{ player.chombo }}</td>
+                <td>Chombos: {{ player.chomboTotal }}</td>
               </tr>
-              {{ #if player.riichis }}
+              {{ #if player.riichiRate }}
               <tr>
-                <td>Riichi rate: {{ player.riichis }}%</td>
+                <td>Riichi rate: {{ player.riichiRate }}%</td>
                 <td>Riichi win rate: {{ player.riichiWinRate }}%</td>
               </tr>
               {{ /if }}

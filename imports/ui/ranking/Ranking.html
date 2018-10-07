@@ -1,23 +1,50 @@
+<!--
+    Template for Ranking page
+    @param[in] format The Constants.GAME_TYPE game format
+    @param[in] rankingSort The MongoDB collection sort option to use
+-->
 <template name="Ranking">
   <h2>{{ getName format }} {{ MAHJONG_CLUB_LEAGUE }}</h2>
   {{ > PlayerModal }}
   <table class="ranking">
     <tr>
       <th class="rank">#</th>
-      <th class="players">Players</th>
-      <th class="elo">ELO</th>
-      <th class="games-played">Games Played</th>
+      <th class="players">Player</th>
+      <th class="sortStat">
+        <select name="sortStatistic" class="sortStatisticSelect">
+          <option disabled selected>Sort by: ELO</option>
+          <option value="elo">ELO</option>
+          {{ #each statistic in (getRankingStatistics format sortRankingExclusion) }}
+          {{ > statisticsChoiceOptions statistic=statistic}}
+          {{ /each }}
+        </select>
+      </th>
+      <th class="additionalStat">
+        <select name="additionalStatistic" class="additionalStatisticSelect">
+          <option value="gamesPlayed">Games</option>
+          {{ #each statistic in (getRankingStatistics format additionalRankingExclusion) }}
+          {{ > statisticsChoiceOptions statistic=statistic}}
+          {{ /each }}
+        </select>
+      </th>
     </tr>
-    <!-- The following lines get the format argument from the templates JapaneseRanking or HongKongRanking -->
-    {{ #each player in (getPlayers format sort) }}
+    {{ #each player in (getOrderedPlayers format rankingSort orderSort=orderSort) }}
     <tr class="player"
         data-player="{{ player.id }}"
         data-format="{{ format }}">
       <td class="rank">{{ player.rank }}</td>
-      <td class="players">{{ player.leagueName }}</td>
-      <td class="elo">{{ player.elo }}</td>
-      <td class="games-played">{{ player.gamesPlayed }}</td>
+      <td class="players">{{ player.name }}</td>
+      <td class="sortStat">{{ getSortStatistic player }}{{ getSortStatUnit }}</td>
+      <td class="additionalStat">{{ getAdditionalStatistic player }}{{ getAdditionalStatUnit }}</td>
     </tr>
     {{ /each }}
   </table>
+</template>
+
+<!--
+    Template to display a single option for rankings
+    @param statistic Object with a value and formatted value
+  -->
+<template name="statisticsChoiceOptions">
+  <option value={{statistic.value}}>{{statistic.displayText}}</option>
 </template>
