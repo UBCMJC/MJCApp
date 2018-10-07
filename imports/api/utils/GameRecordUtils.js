@@ -3,10 +3,13 @@ import Constants from '../Constants';
 export default {
 
     resetGameValues(defaultScore) {
-        Session.set("current_east", Constants.DEFAULT_EAST);
-        Session.set("current_south", Constants.DEFAULT_SOUTH);
-        Session.set("current_west", Constants.DEFAULT_WEST);
-        Session.set("current_north", Constants.DEFAULT_NORTH);
+	Session.set("currentPlayers",
+		    {
+			[Constants.EAST]: Constants.DEFAULT_EAST,
+			[Constants.SOUTH]: Constants.DEFAULT_SOUTH,
+			[Constants.WEST]: Constants.DEFAULT_WEST,
+			[Constants.NORTH]: Constants.DEFAULT_NORTH
+		    });
 
         Session.set("round_winner", Constants.NO_PERSON);
         Session.set("round_loser", Constants.NO_PERSON);
@@ -90,10 +93,10 @@ export default {
 
     // Helper function to ensure all players are selected
     allPlayersSelected() {
-        return (Session.get("current_east") != Constants.DEFAULT_EAST &&
-                Session.get("current_south") != Constants.DEFAULT_SOUTH &&
-                Session.get("current_west") != Constants.DEFAULT_WEST &&
-                Session.get("current_north") != Constants.DEFAULT_NORTH);
+        return (Session.get("currentPlayers")[Constants.EAST] != Constants.DEFAULT_EAST &&
+                Session.get("currentPlayers")[Constants.SOUTH] != Constants.DEFAULT_SOUTH &&
+                Session.get("currentPlayers")[Constants.WEST] != Constants.DEFAULT_WEST &&
+                Session.get("currentPlayers")[Constants.NORTH] != Constants.DEFAULT_NORTH);
     },
 
     someoneBankrupt() {
@@ -259,10 +262,12 @@ export default {
     },
 
     playerToDirection(player) {
-        if (player == Session.get("current_east")) return Constants.EAST;
-        if (player == Session.get("current_south")) return Constants.SOUTH;
-        if (player == Session.get("current_west")) return Constants.WEST;
-        if (player == Session.get("current_north")) return Constants.NORTH;
+	let direction;
+	Constants.WINDS.forEach(w => {
+				if (Session.get("currentPlayers")[w] == player) {
+				    direction = w;
+				}});
+	return direction;
     },
 
     roundToDealerDirection(round) {
@@ -274,16 +279,16 @@ export default {
 };
 
 Template.registerHelper("get_east", function () {
-    return Session.get("current_east");
+    return Session.get("currentPlayers")[Constants.EAST];
 });
 Template.registerHelper("get_south", function () {
-    return Session.get("current_south");
+    return Session.get("currentPlayers")[Constants.SOUTH];
 });
 Template.registerHelper("get_west", function () {
-    return Session.get("current_west");
+    return Session.get("currentPlayers")[Constants.WEST];
 });
 Template.registerHelper("get_north", function () {
-    return Session.get("current_north");
+    return Session.get("currentPlayers")[Constants.NORTH];
 });
 
 Template.registerHelper("get_round", function() {

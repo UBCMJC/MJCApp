@@ -136,11 +136,10 @@ Template.RecordJapaneseGame.helpers({
     },
     // Show what a player's Elo change will look like if game is ended now
     get_expected_elo_change(direction) {
-
-        let eastPlayer  = Session.get("current_east");
-        let southPlayer = Session.get("current_south");
-        let westPlayer  = Session.get("current_west");
-        let northPlayer = Session.get("current_north");
+	let eastPlayer = Session.get("currentPlayers")[Constants.EAST];
+	let southPlayer = Session.get("currentPlayers")[Constants.SOUTH];
+	let westPlayer = Session.get("currentPlayers")[Constants.WEST];
+	let northPlayer = Session.get("currentPlayers")[Constants.NORTH];
 
         if (eastPlayer  == Constants.DEFAULT_EAST ||
             southPlayer == Constants.DEFAULT_SOUTH ||
@@ -315,19 +314,27 @@ Template.jpn_dora.helpers({
 Template.RecordJapaneseGame.events({
     //Selecting who the east player is
     'change select[name="east_player"]'(event) {
-        Session.set("current_east", event.target.value);
+	let players = Session.get("currentPlayers");
+	players[Constants.EAST] = event.target.value;
+	Session.set("currentPlayers", players);
     },
     //Selecting who the south player is
     'change select[name="south_player"]'(event) {
-        Session.set("current_south", event.target.value);
+	let players = Session.get("currentPlayers");
+	players[Constants.SOUTH] = event.target.value;
+	Session.set("currentPlayers", players);
     },
     //Selecting who the west player is
     'change select[name="west_player"]'(event) {
-        Session.set("current_west", event.target.value);
+	let players = Session.get("currentPlayers");
+	players[Constants.WEST] = event.target.value;
+	Session.set("currentPlayers", players);
     },
     //Selecting who the north player is
     'change select[name="north_player"]'(event) {
-        Session.set("current_north", event.target.value);
+	let players = Session.get("currentPlayers");
+	players[Constants.NORTH] = event.target.value;
+	Session.set("currentPlayers", players);
     },
     //Selecting who the winner is for a dealin or tsumo
     'click .winner'(event) {
@@ -646,10 +653,10 @@ Template.RecordJapaneseGame.events({
 function save_game_to_database(hands_array) {
     var position;
 
-    var east_player = Session.get("current_east");
-    var south_player= Session.get("current_south");
-    var west_player = Session.get("current_west");
-    var north_player= Session.get("current_north");
+    var east_player = Session.get("currentPlayers")[Constants.EAST];
+    var south_player= Session.get("currentPlayers")[Constants.SOUTH];
+    var west_player = Session.get("currentPlayers")[Constants.WEST];
+    var north_player= Session.get("currentPlayers")[Constants.NORTH];
 
     // Initialise game to be saved
     var game = {
