@@ -81,10 +81,12 @@ const Constants = {
 
     // The default text to display for player buttons/fields
     // When no player has been selected
-    DEFAULT_EAST: "Select East!",
-    DEFAULT_SOUTH: "Select South!",
-    DEFAULT_WEST: "Select West!",
-    DEFAULT_NORTH: "Select North!",
+    get DEFAULT_SELECTION_TEXT() {
+	return { [this.EAST]: "Select East!",
+		 [this.SOUTH]: "Select South!",
+		 [this.WEST]: "Select West!",
+		 [this.NORTH]: "Select North!" };
+    },
 
     // An enum of game types for shared yet slightly altered
     // rules.  Possibly add more if ever decided to

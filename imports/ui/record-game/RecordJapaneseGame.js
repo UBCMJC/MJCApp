@@ -136,17 +136,17 @@ Template.RecordJapaneseGame.helpers({
     },
     // Show what a player's Elo change will look like if game is ended now
     get_expected_elo_change(direction) {
+	let players = Session.get("currentPlayers");
 	let eastPlayer = Session.get("currentPlayers")[Constants.EAST];
 	let southPlayer = Session.get("currentPlayers")[Constants.SOUTH];
 	let westPlayer = Session.get("currentPlayers")[Constants.WEST];
 	let northPlayer = Session.get("currentPlayers")[Constants.NORTH];
 
-        if (eastPlayer  == Constants.DEFAULT_EAST ||
-            southPlayer == Constants.DEFAULT_SOUTH ||
-            westPlayer  == Constants.DEFAULT_WEST ||
-            northPlayer == Constants.DEFAULT_NORTH) {
-            return "N/A";
-        }
+	for (let wind of Constants.WINDS) {
+	    if (players[wind] == Constants.DEFAULT_SELECTION_TEXT[wind]) {
+		return "N/A"
+	    }
+	}
 
         let game = {
             timestamp: Date.now(),
@@ -176,15 +176,11 @@ Template.RecordJapaneseGame.helpers({
     },
     // Show a player's ELO
     get_jpn_elo(player) {
-        switch (player) {
-        case Constants.DEFAULT_EAST:
-        case Constants.DEFAULT_SOUTH:
-        case Constants.DEFAULT_WEST:
-        case Constants.DEFAULT_NORTH:
-            return "?";
-        default:
-            return Players.findOne({japaneseLeagueName: player}).japaneseElo.toFixed(2);
-        };
+	if (Object.values(Constants.DEFAULT_SELECTION_TEXT).includes(player)) {
+	    return "?";
+	} else {
+	    return Players.findOne({japaneseLeagueName: player}).japaneseElo.toFixed(2);
+	}
     },
     // Return a string of the round wind for Japanese style
     displayRoundWind(round) {

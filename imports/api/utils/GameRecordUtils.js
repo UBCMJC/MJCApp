@@ -3,13 +3,7 @@ import Constants from '../Constants';
 export default {
 
     resetGameValues(defaultScore) {
-	Session.set("currentPlayers",
-		    {
-			[Constants.EAST]: Constants.DEFAULT_EAST,
-			[Constants.SOUTH]: Constants.DEFAULT_SOUTH,
-			[Constants.WEST]: Constants.DEFAULT_WEST,
-			[Constants.NORTH]: Constants.DEFAULT_NORTH
-		    });
+	Session.set("currentPlayers", Constants.DEFAULT_SELECTION_TEXT);
 
         Session.set("round_winner", Constants.NO_PERSON);
         Session.set("round_loser", Constants.NO_PERSON);
@@ -93,10 +87,14 @@ export default {
 
     // Helper function to ensure all players are selected
     allPlayersSelected() {
-        return (Session.get("currentPlayers")[Constants.EAST] != Constants.DEFAULT_EAST &&
-                Session.get("currentPlayers")[Constants.SOUTH] != Constants.DEFAULT_SOUTH &&
-                Session.get("currentPlayers")[Constants.WEST] != Constants.DEFAULT_WEST &&
-                Session.get("currentPlayers")[Constants.NORTH] != Constants.DEFAULT_NORTH);
+	let allSelected = true;
+	const players = Session.get("currentPlayers");
+	Constants.WINDS.forEach(w => {
+	    if (players[w] == Constants.DEFAULT_SELECTION_TEXT[w]) {
+		allSelected = false;
+	    }
+	});
+	return allSelected;
     },
 
     someoneBankrupt() {
@@ -271,10 +269,7 @@ export default {
     },
 
     roundToDealerDirection(round) {
-        if (round % 4 == 1) return Constants.EAST;
-        if (round % 4 == 2) return Constants.SOUTH;
-        if (round % 4 == 3) return Constants.WEST;
-        if (round % 4 == 0) return Constants.NORTH;
+	return Constants.WINDS[(round - 1) % 4];
     },
 };
 
