@@ -124,20 +124,16 @@ Template.render_hand.helpers({
     },
 });
 
+// Helper for point selection dropdown
 Template.points.helpers({
-    possible_points: [
-        { point: 3 },
-        { point: 4 },
-        { point: 5 },
-        { point: 6 },
-        { point: 7 },
-        { point: 8 },
-        { point: 9 },
-        { point: 10 },
-        { point: 11 },
-        { point: 12 },
-        { point: 13 }
-    ],
+    /**
+     * Return an Array of valid Hong Kong mahjong hand point values
+     *
+     * @return {Array} An Array of valid point values
+     */
+    get possiblePoints() {
+        return Array.from({ length: Constants.HKG_MAX_HAND_SIZE - 2 }).map((_,i) => ({ point: i + 3 }));
+    }
 });
 
 Template.RecordHongKongGame.events({

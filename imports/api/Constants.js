@@ -6,6 +6,9 @@ const Constants = {
     // Universal hands per round in a four player game
     HANDS_PER_ROUND: 4,
 
+    // The maximum hand size in a Hong Kong game
+    HKG_MAX_HAND_SIZE: 13,
+
     // The starting number of points in a Hong Kong game
     HKG_START_POINTS: 500,
 
@@ -17,6 +20,13 @@ const Constants = {
 
     // The number of hands in a Hong Kong game
     get HKG_NUM_HANDS() { return this.HKG_NUM_ROUNDS * this.HANDS_PER_ROUND },
+
+    // The maximum hand size in a Japanese game (yakuman)
+    // Hands may be bigger, but must be a multiple of this value
+    JPN_MAX_HAND_SIZE: 13,
+
+    // The maximum yakuman multiple in a Japanese game
+    JPN_MAX_YAKUMAN_MULTIPLE: 5,
 
     // The starting number of points in a Japanese game
     JPN_START_POINTS: 25000,
