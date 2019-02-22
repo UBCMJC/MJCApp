@@ -133,7 +133,10 @@ Template.points.helpers({
         { point: 7 },
         { point: 8 },
         { point: 9 },
-        { point: 10 }
+        { point: 10 },
+        { point: 11 },
+        { point: 12 },
+        { point: 13 }
     ],
 });
 
@@ -750,19 +753,25 @@ function pushHand(template, handType, eastDelta, southDelta, westDelta, northDel
 function dealin_delta(points, playerWind, winnerWind, loserWind) {
     var retval;
 
-    switch (points) {
-    case 3: retval = -8; break;
-    case 4: retval = -16; break;
-    case 5: retval = -24; break;
-    case 6: retval = -32; break;
-    case 7: retval = -48; break;
-    case 8: retval = -64; break;
-    case 9: retval = -96; break;
-    case 10: retval = -128; break;
+    if (playerWind != winnerWind && playerWind != loserWind) {
+        return 0;
     }
 
-    if ( playerWind == winnerWind ) retval = -4 * retval;
-    else if ( playerWind == loserWind ) retval = 2 * retval;
+    switch (points) {
+    case 3: retval = -32; break;
+    case 4: retval = -64; break;
+    case 5: retval = -96; break;
+    case 6: retval = -128; break;
+    case 7: retval = -192; break;
+    case 8: retval = -256; break;
+    case 9: retval = -352; break;
+    case 10:
+    case 11:
+    case 12: retval = -448; break;
+    case 13: retval = -576; break;
+    }
+
+    if ( playerWind == winnerWind ) retval = -retval;
 
     return retval;
 };
@@ -777,8 +786,11 @@ function selfdraw_delta(points, playerWind, winnerWind) {
     case 6: retval = -64; break;
     case 7: retval = -96; break;
     case 8: retval = -128; break;
-    case 9: retval = -192; break;
-    case 10: retval = -256; break;
+    case 9: retval = -176; break;
+    case 10:
+    case 11:
+    case 12: retval = -224; break;
+    case 13: retval = -288; break;
     }
 
     if ( playerWind == winnerWind )
