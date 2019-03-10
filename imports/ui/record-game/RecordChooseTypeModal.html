@@ -1,0 +1,74 @@
+<template name="RecordChooseTypeModal">
+    <div class="modal fade" id="record-choose-modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+	    <div class="modal-content">
+
+		<div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span area-hidden="true">&times;</span>
+		    </button>
+		    <h3 class="modal-title">Choose Record Type</h3>
+		</div>
+
+		<div class="modal-body">
+
+		    <div>
+			<form method="POST" class="form-horizontal start-new-game">
+			    <table class="table">
+				<tr>
+				    <th>Seat</th>
+				    <th>Player</th>
+				</tr>
+				{{#each wind in WINDS}}
+				    <tr>
+					<td>{{wind}}</td>
+					<td>
+					    <select name="{{wind}}_select" class="form-control">
+						<option disabled selected value> -- Select {{wind}} player -- </option>
+
+						{{#if (isHongKongStyle style)}}
+						    {{#each player in (players style)}}
+							<option value={{player.hongKongleagueName}}>{{player.hongKongLeagueName}}</option>
+						    {{/each}}
+						{{/if}}
+
+						{{#if (isJapaneseStyle style)}}
+						    {{#each player in (players style)}}
+							<option value={{player.japaneseLeagueName}}>{{player.japaneseLeagueName}}</option>
+						    {{/each}}
+						{{/if}}
+
+					    </select>
+					</td>
+				    </tr>
+				{{/each}}
+
+			    </table>
+			    
+			    <label class="control-label col-sm-4" for="game-code">Game Code</label>
+			    <div class="col-sm-8">
+				<input required type="text" class="form-control" name="game-code">
+			    </div>
+			    
+			    <button type="submit" class="btn btn-primary">Start New Game</button>
+			</form>
+		    </div>
+
+		    <div>
+			<p>or:</p>
+			<form method="POST" class="form-horizontal">
+
+			    <button type="submit" class="btn btn-primary">Load Game</button>
+			</form>
+		    </div>
+
+		</div>
+
+		<div class="modal-footer">
+		    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		</div>
+
+	    </div>
+	</div>
+    </div>
+</template>

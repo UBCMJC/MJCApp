@@ -5,6 +5,7 @@ import Admin from '../imports/api/Admin';
 
 // We need to instantiate the collections server-side. Maintain this import, even though
 // we don't use it at all
+import CurrentGames from '../imports/api/collections/CurrentGames';
 import '../imports/api/GameDatabases';
 
 Meteor.startup(() => {
