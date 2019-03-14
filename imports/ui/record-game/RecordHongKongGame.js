@@ -5,6 +5,7 @@ import Constants from '../../api/Constants';
 
 import './RecordHongKongGame.html'
 import './RecordChooseTypeModal';
+import './RecordGameSheet';
 
 Template.RecordHongKongGame.onCreated( function () {
     this.hasGame = new ReactiveVar(false);
@@ -14,6 +15,9 @@ Template.RecordHongKongGame.onCreated( function () {
 Template.RecordHongKongGame.helpers({
     hasGame() {
 	return Template.instance().hasGame.get();
+    },
+    keyCode() {
+	return Template.instance().keyCode.get();
     },
     getStyle() {
 	return Constants.GAME_TYPE.HONG_KONG;

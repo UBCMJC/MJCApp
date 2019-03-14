@@ -34,29 +34,6 @@ Template.RecordChooseTypeModal.helpers({
 });
 
 Template.RecordChooseTypeModal.events({
-    // 'click .start-new-game'(event, template) {
-    // 	if (template.newGameKeyCode === undefined) {
-    // 	    window.alert("Must provide keycode");
-    // 	} else if (template.players.includes(undefined) || (new Set(template.players)).size != template.players.length) {
-    // 	    window.alert("Must provide all players")
-    // 	} else {
-    // 	    newGame = {
-    // 		startTimestamp: Date.now(),
-    // 		endTimestamp: 0,
-		
-    // 		keyCode: template.newGameKeyCode,
-		
-    // 		style: template.data.style,
-		
-    // 		players: template.players,
-		
-    // 		hands: []
-    // 	    }
-    // 	    template.data.hasGame.set(true);
-    // 	    template.data.keyCode.set(template.newGameKeyCode);
-    // 	    $("#record-choose-modal").modal('hide');
-    // 	}
-    // },
     'submit .start-new-game'(event, template) {
 	event.preventDefault();
 	const [ east, south, west, north, keyCode ] = event.target;
