@@ -227,88 +227,49 @@ Template.jpn_render_hand.helpers({
     },
 })
 
-// Helper for point selection dropdown--All allowable points
-// Assume that 13, 26, 39, and 52, 65 are single->quintuple yakuman
+// Helpers for point selection dropdown
 Template.jpn_points.helpers({
-    possible_points: [
-        { point: 1 },
-        { point: 2 },
-        { point: 3 },
-        { point: 4 },
-        { point: 5 },
-        { point: 6 },
-        { point: 7 },
-        { point: 8 },
-        { point: 9 },
-        { point: 10 },
-        { point: 11 },
-        { point: 12 },
-        { point: 13 },
-        { point: 26 },
-        { point: 39 },
-        { point: 52 },
-        { point: 65 },
-    ],
+    /**
+     * Return an Array of valid Japanese mahjong hand point values
+     * 13, 26, 39, 52, and 65 are considered single->quintuple yakumans
+     *
+     * @return {Array} An Array of valid point values with yakuman values
+     */
+    get possiblePoints() {
+        let normalPoints = Array.from({ length: Constants.JPN_MAX_HAND_SIZE - 1 })
+                                .map((_,i) => ({ point: i + 1}));
+        let yakumanPoints = Array.from({ length: Constants.JPN_MAX_YAKUMAN_MULTIPLE })
+                                 .map((_,i) => ({ point: (i + 1) * Constants.JPN_MAX_HAND_SIZE}));
+        return normalPoints.concat(yakumanPoints);
+    }
 });
 
-// Helper for fu selection dropdown--All allowable fu
-// Must do checks to ensure a valid point/fu selection is made
+// Helpers for fu selection dropdown
 Template.jpn_fu.helpers({
-    possible_fu: [
-        { fu: 20 },
-        { fu: 25 },
-        { fu: 30 },
-        { fu: 40 },
-        { fu: 50 },
-        { fu: 60 },
-        { fu: 70 },
-        { fu: 80 },
-        { fu: 90 },
-        { fu: 100 },
-        { fu: 110 },
-    ],
+    /**
+     * Return an Array of valid Japanese mahjong hand fu values
+     *
+     * @return {Array} An Array of valid fu values
+     */
+    get possibleFu() {
+        let allowedFu = Array.from({length: 10}).map((_,i) => ({ fu: 20 + 10 * i }));
+        allowedFu.push({ fu: 25});
+        allowedFu.sort((a, b) => a.fu > b.fu);
+        return allowedFu;
+    }
 });
 
-// Helper for dora selection dropdown--All allowable dora
+// Helpers for dora selection dropdown
 Template.jpn_dora.helpers({
-    possible_dora: [
-        { dora: 0 },
-        { dora: 1 },
-        { dora: 2 },
-        { dora: 3 },
-        { dora: 4 },
-        { dora: 5 },
-        { dora: 6 },
-        { dora: 7 },
-        { dora: 8 },
-        { dora: 9 },
-        { dora: 10 },
-        { dora: 11 },
-        { dora: 12 },
-        { dora: 13 },
-        { dora: 14 },
-        { dora: 15 },
-        { dora: 16 },
-        { dora: 17 },
-        { dora: 18 },
-        { dora: 19 },
-        { dora: 20 },
-        { dora: 21 },
-        { dora: 22 },
-        { dora: 23 },
-        { dora: 24 },
-        { dora: 25 },
-        { dora: 26 },
-        { dora: 27 },
-        { dora: 28 },
-        { dora: 29 },
-        { dora: 30 },
-        { dora: 31 },
-        { dora: 32 },
-        { dora: 33 },
-        { dora: 34 },
-        { dora: 35 },
-    ],
+    /**
+     * Return an Array of valid Japanese mahjong hand dora values
+     * Theoretically, maximum dora in one hand is 35
+     *
+     * @return {Array} An Array of valid dora values
+     */
+    get possibleDora() {
+        return Array.from({length: 36}).map((_,i) => ({ dora: i }));
+    }
 });
 
 // Functions for browser events
