@@ -5,6 +5,7 @@ import { JapaneseHands } from '../../api/GameDatabases';
 import Constants from '../../api/Constants';
 import EloCalculator from '../../api/EloCalculator';
 import GameRecordUtils from '../../api/utils/GameRecordUtils';
+import '../game-sheet/GameSheet';
 import { HandScoreCalculator } from '../../api/HandScoreCalculator';
 
 import './RecordJapaneseGame.html';
@@ -100,132 +101,22 @@ Template.RecordJapaneseGame.helpers({
     hands() {
         return Template.instance().hands.get();
     },
-    // Show what a player's +/- is
-    get_player_delta(direction) {
-        return (GameRecordUtils.getDirectionScore(direction) - Constants.JPN_START_POINTS);
-    },
-    // Show what a player's current score is
-    get_player_score(direction) {
-        return GameRecordUtils.getDirectionScore(direction);
-    },
-    // Show what a player's score will look like if game is ended now
-    get_player_score_final(direction) {
-        retval = GameRecordUtils.getDirectionScore(direction);
-
-        var winScore = Math.max(Number(Session.get("east_score")),
-                                Number(Session.get("south_score")),
-                                Number(Session.get("west_score")),
-                                Number(Session.get("north_score")));
-
-        if (winScore == Session.get("east_score")) {
-            if (direction == Constants.EAST)
-                retval += Constants.JPN_RIICHI_POINTS * Number(Session.get("free_riichi_sticks"));
-        } else if (winScore == Session.get("south_score")) {
-            if (direction == Constants.SOUTH)
-                retval += Constants.JPN_RIICHI_POINTS * Number(Session.get("free_riichi_sticks"));
-        } else if (winScore == Session.get("west_score")) {
-            if (direction == Constants.WEST)
-                retval += Constants.JPN_RIICHI_POINTS * Number(Session.get("free_riichi_sticks"));
-        } else if (winScore == Session.get("north_score")) {
-            if (direction == Constants.NORTH)
-                retval += Constants.JPN_RIICHI_POINTS * Number(Session.get("free_riichi_sticks"));
-        }
-
-
-        return retval;
-    },
-    // Show what a player's Elo change will look like if game is ended now
-    get_expected_elo_change(direction) {
-
-        let eastPlayer  = Session.get("current_east");
-        let southPlayer = Session.get("current_south");
-        let westPlayer  = Session.get("current_west");
-        let northPlayer = Session.get("current_north");
-
-        if (eastPlayer  == Constants.DEFAULT_EAST ||
-            southPlayer == Constants.DEFAULT_SOUTH ||
-            westPlayer  == Constants.DEFAULT_WEST ||
-            northPlayer == Constants.DEFAULT_NORTH) {
-            return "N/A";
-        }
-
-        let game = {
-            timestamp: Date.now(),
-            east_player: eastPlayer,
-            south_player: southPlayer,
-            west_player: westPlayer,
-            north_player: northPlayer,
-            east_score: (Number(Session.get("east_score"))),
-            south_score: (Number(Session.get("south_score"))),
-            west_score: (Number(Session.get("west_score"))),
-            north_score: (Number(Session.get("north_score"))),
-            all_hands: Template.instance().hands.get(),
-        };
-
-        let jpnEloCalculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
-                                                 Constants.ELO_CALCULATOR_EXP,
-                                                 Constants.JPN_SCORE_ADJUSTMENT,
-                                                 game,
-                                                 Constants.GAME_TYPE.JAPANESE);
-
-        switch (direction) {
-        case Constants.EAST:  return jpnEloCalculator.eloChange(eastPlayer).toFixed(2);
-        case Constants.SOUTH: return jpnEloCalculator.eloChange(southPlayer).toFixed(2);
-        case Constants.WEST:  return jpnEloCalculator.eloChange(westPlayer).toFixed(2);
-        case Constants.NORTH: return jpnEloCalculator.eloChange(northPlayer).toFixed(2);
-        };
-    },
-    // Show a player's ELO
-    get_jpn_elo(player) {
-        switch (player) {
-        case Constants.DEFAULT_EAST:
-        case Constants.DEFAULT_SOUTH:
-        case Constants.DEFAULT_WEST:
-        case Constants.DEFAULT_NORTH:
-            return "?";
-        default:
-            return Players.findOne({japaneseLeagueName: player}).japaneseElo.toFixed(2);
-        };
-    },
-    // Return a string of the round wind for Japanese style
-    displayRoundWind(round) {
-        return GameRecordUtils.displayRoundWind(round, Constants.GAME_TYPE.JAPANESE);
-    },
-    // Return the current round number for Japanese style
-    displayRoundNumber(round) {
-        return GameRecordUtils.handNumberToRoundNumber(round,
-                                                       Constants.GAME_TYPE.JAPANESE);
+    /**
+     * Returns a game object to display
+     *
+     * @returns a formatted game object
+     */
+    getGame() {
+	return {
+	    style: Constants.GAME_TYPE.JAPANESE,
+	    players: [Session.get("current_east"),
+		      Session.get("current_south"),
+		      Session.get("current_west"),
+		      Session.get("current_north")],
+	    hands: Template.instance().hands.get()
+	};
     },
 });
-
-// GUI helpers for rendering hands
-Template.jpn_render_hand.helpers({
-    // Boolean expressions to help with rendering hands
-    is_dealin(hand_type) {
-        return hand_type == Constants.DEAL_IN;
-    },
-    is_selfdraw(hand_type) {
-        return hand_type == Constants.SELF_DRAW;
-    },
-    is_nowin(hand_type) {
-        return hand_type == Constants.NO_WIN;
-    },
-    is_restart(hand_type) {
-        return hand_type == Constants.RESTART;
-    },
-    is_mistake(hand_type) {
-        return hand_type == Constants.MISTAKE;
-    },
-    // Return a string of the round wind for Japanese style
-    displayRoundWind(round) {
-        return GameRecordUtils.displayRoundWind(round, Constants.GAME_TYPE.JAPANESE);
-    },
-    // Return the current round number for Japanese style
-    displayRoundNumber(round) {
-        return GameRecordUtils.handNumberToRoundNumber(round,
-                                                       Constants.GAME_TYPE.JAPANESE);
-    },
-})
 
 // Helpers for point selection dropdown
 Template.jpn_points.helpers({

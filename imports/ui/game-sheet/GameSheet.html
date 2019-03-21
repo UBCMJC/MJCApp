@@ -1,0 +1,140 @@
+<!--
+    Game sheet template
+    @param[in] game The game to display
+
+    @returns A game sheet filled in by provided game
+  -->
+<template name="GameSheet">
+    <table style="width:100%">
+	<tr>
+	    <th colspan="{{getInfoColumnWidth game.style}}"></th>
+	    {{#each player in game.players}}
+		<th>{{player}} {{getElo player game.style}}</th>
+	    {{/each}}
+	</tr>
+	<tr>
+	    <th>Round</th>
+	    {{#if isHongKong game.style}}
+		<th>Points</th>
+	    {{/if}}
+	    {{#if isJapanese game.style}}
+		<th>P</th>
+		<th>F</th>
+		<th>D</th>
+	    {{/if}}
+	    {{#each player in game.players}}
+		<th>{{getStartPoints game.style}}</th>
+	    {{/each}}
+	</tr>
+	{{#each gameHand in game.hands}}
+	    {{ > RenderHand hand=gameHand style=game.style}}
+	{{/each}}
+	<tr>
+	    <td>
+		{{displayRoundWind get_round game.style}} {{displayRoundNumber get_round game.style}} B{{get_bonus}}
+	    </td>
+	</tr>
+	<tr>
+	    <th colspan="{{getInfoColumnWidth game.style}}">Transaction total:</th>
+	    {{#each seat in WINDS}}
+		<td>{{getPlayerDelta seat game.style}}</td>
+	    {{/each}}
+	</tr>
+	<tr>
+	    <th colspan="{{getInfoColumnWidth game.style}}">Current score:</th>
+	    {{#each seat in WINDS}}
+		<td>{{getPlayerScore seat}}</td>
+	    {{/each}}
+	</tr>
+	<tr>
+	    <th colspan="{{getInfoColumnWidth game.style}}">End score:</th>
+	    {{#each seat in WINDS}}
+		<td>{{getPlayerScoreFinal seat game.style}}</td>
+	    {{/each}}
+	</tr>
+	<tr>
+	    <th colspan="{{getInfoColumnWidth game.style}}">ELO change:</th>
+	    {{#each seat in WINDS}}
+		<td>{{getExpectedEloChange seat game.style}}</td>
+	    {{/each}}
+	</tr>
+    </table>
+</template>
+
+<!--
+     Single hand record template
+     @param[in] hand The hand to display
+     @param[in] style The style of game being played
+
+     @returns A table row displaying a single hand record
+-->
+<template name="RenderHand">
+    <tr>
+	<td>
+	    {{displayRoundWind hand.round style}} {{displayRoundNumber hand.round style}} B{{hand.bonus}}
+	</td>
+
+	{{#if isDealin hand.handType}}
+	    <td>{{hand.points}}</td>
+	    {{#if isJapanese style}}
+		<td>{{hand.fu}}</td>
+		<td>{{hand.dora}}</td>
+	    {{/if}}
+	    <td>{{hand.eastDelta}}</td>
+	    <td>{{hand.southDelta}}</td>
+	    <td>{{hand.westDelta}}</td>
+	    <td>{{hand.northDelta}}</td>
+	{{/if}}
+
+	{{#if isSelfdraw hand.handType}}
+	    <td>{{hand.points}}</td>
+	    {{#if isJapanese style}}
+		<td>{{hand.fu}}</td>
+		<td>{{hand.dora}}</td>
+	    {{/if}}
+	    <td>{{hand.eastDelta}}</td>
+	    <td>{{hand.southDelta}}</td>
+	    <td>{{hand.westDelta}}</td>
+	    <td>{{hand.northDelta}}</td>
+	{{/if}}
+
+	{{#if isNowin hand.handType}}
+	    {{#if isJapanese style}}
+		<td colspan="3">No win!</td>
+	    {{/if}}
+	    {{#if isHongKong style}}
+		<td>No win!</td>
+	    {{/if}}
+	    <td>{{hand.eastDelta}}</td>
+	    <td>{{hand.southDelta}}</td>
+	    <td>{{hand.westDelta}}</td>
+	    <td>{{hand.northDelta}}</td>
+	{{/if}}
+
+	{{#if isRestart hand.handType}}
+	    {{#if isJapanese style}}
+		<td colspan="3">Reshuffle!</td>
+	    {{/if}}
+	    {{#if isHongKong style}}
+		<td>Reshuffle!</td>
+	    {{/if}}
+	    <td>{{hand.eastDelta}}</td>
+	    <td>{{hand.southDelta}}</td>
+	    <td>{{hand.westDelta}}</td>
+	    <td>{{hand.northDelta}}</td>
+	{{/if}}
+
+	{{#if isMistake hand.handType}}
+	    {{#if isJapanese style}}
+		<td colspan="3">Mistake!</td>
+	    {{/if}}
+	    {{#if isHongKong style}}
+		<td>Mistake!</td>
+	    {{/if}}
+	    <td>{{hand.eastDelta}}</td>
+	    <td>{{hand.southDelta}}</td>
+	    <td>{{hand.westDelta}}</td>
+	    <td>{{hand.northDelta}}</td>
+	{{/if}}
+    </tr>
+</template>
