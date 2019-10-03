@@ -714,7 +714,7 @@ function save_game_to_database(hands_array) {
         Players.update({_id: north_id}, {$inc: {japaneseHandsLose: Number(Session.get("northPlayerLosses"))}});
 
         // Calculates all positions quickly
-        let positions = Constants.WINDS.map((wind) => ({ wind, score: Session.get(wind + "_score") })).sort((a, b) => a.score < b.score);
+        let positions = Constants.WINDS.map((wind) => ({ wind, score: Session.get(wind + "_score") })).sort((a, b) => b.score - a.score);
         let idMappings = { east: east_id, south: south_id, west: west_id, north: north_id };
 
         Players.update({ _id: idMappings[positions[0].wind] }, { $inc: { japaneseFirstPlaceSum: 1 }});
