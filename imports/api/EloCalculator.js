@@ -94,7 +94,7 @@ export default class EloCalculator {
 
         //Add score adjustment for 1st, 2nd, 3rd, 4th place
         //Is this too crude? Replace this if you have a better way
-        for (index in this.placingAdjustments) {
+        for (let index in this.placingAdjustments) {
             var nextBestScore = Math.max(eastScore, southScore, westScore, northScore);
 
             switch (nextBestScore) {
@@ -119,7 +119,7 @@ export default class EloCalculator {
 
         rawScoreSum = rawScores.reduce( (a,b) => a+b);
 
-        for (index in rawScores) {
+        for (let index in rawScores) {
             adjustedScores.push((rawScores[index] + adjustments[index]) / rawScoreSum);
         }
 
