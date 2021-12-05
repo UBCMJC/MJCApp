@@ -14,7 +14,7 @@ curl https://install.meteor.com | sh
 You will also need to install the `babel-runtime` package.
 
 ```
-meteor npm install --save babel-runtime
+meteor npm install --save @babel/runtime
 ```
 
 ### Deployment
