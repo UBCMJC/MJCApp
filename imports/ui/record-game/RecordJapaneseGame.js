@@ -352,6 +352,22 @@ Template.RecordJapaneseGame.events({
             }
         }
     },
+
+    //Submission of names
+    'click .submit_names_button'(event, template) {
+        if ( !$( event.target ).hasClass( "disabled")) {
+            if (GameRecordUtils.allPlayersSelected()) {
+                document.getElementById("jpn_buttons").style.display = "block";
+                document.getElementById("jpn_rest").style.display = "block";
+                document.getElementById("jpn_dynamic").style.display = "block";
+                document.getElementById("jpn_players").style.display = "none";
+                document.getElementById("submit_button").style.display = "none";
+            } else {
+                window.alert("please enter all 4 player names!");
+            }
+        }
+    },
+
     //Submission of a hand
     'click .submit_hand_button'(event, template) {
 
