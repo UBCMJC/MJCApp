@@ -1,0 +1,37 @@
+<template name="Home">
+  <h2>Home</h2>
+  <div class="game-list">
+    {{#each current_games}}
+      {{> game_summary}}
+    {{/each}}
+  </div>
+</template>
+
+<template name="game_summary">
+  <div class="summary-container">
+    <div>Riichi</div>
+    <div class="summary-column-container">
+      <div class="winds">
+        <div>East</div>
+        <div>South</div>
+        <div>West</div>
+        <div>North</div>
+      </div>
+      <div class="username">
+        <div>{{east_player}}</div>
+        <div>{{south_player}}</div>
+        <div>{{west_player}}</div>
+        <div>{{north_player}}</div>
+      </div>
+      <div class="points">
+        <div>{{displayScore east_score}}</div>
+        <div>{{displayScore south_score}}</div>
+        <div>{{displayScore west_score}}</div>
+        <div>{{displayScore north_score}}</div>
+      </div>
+    </div>
+    <div>
+      {{displayRoundWind all_hands}} {{displayRoundNumber all_hands}} Bonus {{getBonus all_hands}}
+    </div>
+  </div>
+</template>
