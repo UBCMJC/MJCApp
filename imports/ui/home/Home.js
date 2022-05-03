@@ -6,10 +6,6 @@ import { JapaneseHands, HongKongHands } from '../../api/GameDatabases';
 
 import './Home.html';
 
-Template.Home.onCreated( function() {
-    console.log("created");
-});
-
 Template.Home.helpers({
     current_games() {
         return JapaneseHands.find().fetch();
@@ -22,14 +18,14 @@ Template.game_summary.helpers({
     },
     displayRoundWind(rounds) {
         let lastRound = rounds[rounds.length - 1];
-        return GameRecordUtils.displayRoundWind(lastRound.round, Constants.GAME_TYPE.JAPANESE);
+        return GameRecordUtils.displayRoundWind(lastRound.round + 1, Constants.GAME_TYPE.JAPANESE);
     },
     displayRoundNumber(rounds) {
         let lastRound = rounds[rounds.length - 1];
-        return GameRecordUtils.handNumberToRoundNumber(lastRound.round, Constants.GAME_TYPE.JAPANESE);
+        return GameRecordUtils.handNumberToRoundNumber(lastRound.round + 1, Constants.GAME_TYPE.JAPANESE);
     },
     getBonus(rounds) {
         let lastRound = rounds[rounds.length - 1];
         return lastRound.bonus;
     }
-});
+}); // TODO: custom popups, localStorage stuff
