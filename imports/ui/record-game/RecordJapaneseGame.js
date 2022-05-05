@@ -366,6 +366,29 @@ Template.RecordJapaneseGame.events({
                 window.alert("please enter all 4 player names!");
             }
         }
+
+        var position;
+        var east_player = Session.get("current_east");
+        var south_player= Session.get("current_south");
+        var west_player = Session.get("current_west");
+        var north_player= Session.get("current_north");
+
+        var game = {
+                timestamp: Date.now(),
+                east_player: east_player,
+                south_player: south_player,
+                west_player: west_player,
+                north_player: north_player,
+                east_score: Constants.JPN_START_POINTS,
+                south_score: Constants.JPN_START_POINTS,
+                west_score: Constants.JPN_START_POINTS,
+                north_score: Constants.JPN_START_POINTS,
+                current_round: 1,
+                current_bonus: 0,
+                all_hands: [],
+                complete: 0,
+        };
+        Session.set("game_id", JapaneseHands.insert(game));
     },
 
     //Submission of a hand
@@ -394,9 +417,11 @@ Template.RecordJapaneseGame.events({
                         }
                         else {
                             window.alert("Invalid points/fu entry!");
+                            return;
                         }
                     } else {
                         window.alert("You need to fill out who won and who dealt in!");
+                        return;
                     }
                     break;
                     // Push a self draw hand and ensure proper information
@@ -411,9 +436,11 @@ Template.RecordJapaneseGame.events({
                         }
                         else {
                             window.alert("Invalid points/fu entry!");
+                            return;
                         }
                     } else {
                         window.alert("You need to fill out who self drew!");
+                        return;
                     }
                     break;
                     // Push a tenpai hand -> cannot input invalid information
@@ -437,6 +464,7 @@ Template.RecordJapaneseGame.events({
                         resetRoundStats();
                     } else {
                         window.alert("You need to fill out who chomboed!");
+                        return;
                     }
 
                     break;
@@ -457,9 +485,11 @@ Template.RecordJapaneseGame.events({
                         }
                         else {
                             window.alert("Invalid points/fu entry!");
+                            return;
                         }
                     } else {
                         window.alert("You need to fill out who won, who dealt in, and who has pao penalty!");
+                        return;
                     }
                     break;
                     // No other hands should be possible!
@@ -470,7 +500,16 @@ Template.RecordJapaneseGame.events({
             }
             else {
                 window.alert("You need to fill out the player information!");
+                return;
             }
+
+            let current_hand = template.hands.get()[template.hands.get().length - 1];
+            JapaneseHands.update({_id: Session.get("game_id")},
+                        {$set:{all_hands: template.hands.get(),
+                               current_round: Session.get("current_round"),
+                               current_bonus: Session.get("current_bonus")},
+                        $inc: {east_score: current_hand.eastDelta, south_score: current_hand.southDelta,
+                               west_score: current_hand.westDelta, north_score: current_hand.northDelta}});
 
             // If game ending conditions are met, do not allow more hand submissions and allow game submission
             if (GameRecordUtils.japaneseGameOver(handType)) {
@@ -533,9 +572,91 @@ Template.RecordJapaneseGame.events({
                 if (Template.instance().hands.get().length === 0) {
                     $( ".delete_hand_button" ).addClass( "disabled" );
                 }
+
+                JapaneseHands.update({_id: Session.get("game_id")},
+                            {$set:{all_hands: template.hands.get(),
+                                   current_round: Session.get("current_round"),
+                                   current_bonus: Session.get("current_bonus"),
+                                   east_score: Session.get("east_score"),
+                                   south_score: Session.get("south_score"),
+                                   west_score: Session.get("west_score"),
+                                   north_score: Session.get("north_score")}});
+
             }
         }
     },
+    //Delete a game from the database
+
+    'click .delete_game_button'(event, template) {
+        if ( !$(event.target ).hasClass( "disabled" )) {
+            var r = confirm("Are you sure you want to delete this game?");
+            if (r == true) {
+                //deletes game from database
+                JapaneseHands.remove({_id: Session.get("game_id")});
+
+                //resets page UI
+                document.getElementById("jpn_buttons").style.display = "none";
+                document.getElementById("jpn_rest").style.display = "none";
+                document.getElementById("jpn_dynamic").style.display = "none";
+                document.getElementById("jpn_players").style.display = "block";
+                document.getElementById("submit_button").style.display = "block";
+
+
+                //Deletes all hands to reset to empty game
+                while (template.hands.pop()) {}
+
+                Session.set("east_score", Constants.JPN_START_POINTS);
+                Session.set("south_score", Constants.JPN_START_POINTS);
+                Session.set("west_score", Constants.JPN_START_POINTS);
+                Session.set("north_score", Constants.JPN_START_POINTS);
+
+                Session.set("current_round", 1);
+                Session.set("current_bonus", 0);
+
+                Session.set("free_riichi_sticks", 0);
+
+                Session.set("eastPlayerRiichisWon", 0);
+                Session.set("southPlayerRiichisWon", 0);
+                Session.set("westPlayerRiichisWon", 0);
+                Session.set("northPlayerRiichisWon", 0);
+
+                Session.set("eastMistakeTotal", 0);
+                Session.set("southMistakeTotal", 0);
+                Session.set("westMistakeTotal", 0);
+                Session.set("northMistakeTotal", 0);
+
+                Session.set("eastPlayerWins", 0);
+                Session.set("southPlayerWins", 0);
+                Session.set("westPlayerWins", 0);
+                Session.set("northPlayerWins", 0);
+
+                Session.set("eastPlayerPointsWon", 0);
+                Session.set("southPlayerPointsWon", 0);
+                Session.set("westPlayerPointsWon", 0);
+                Session.set("northPlayerPointsWon", 0);
+
+                Session.set("eastPlayerDoraSum", 0);
+                Session.set("southPlayerDoraSum", 0);
+                Session.set("westPlayerDoraSum", 0);
+                Session.set("northPlayerDoraSum", 0);
+
+                Session.set("eastPlayerLosses", 0);
+                Session.set("southPlayerLosses", 0);
+                Session.set("westPlayerLosses", 0);
+                Session.set("northPlayerLosses", 0);
+
+                resetRoundStats();
+
+                $( ".submit_hand_button" ).removeClass( "disabled" );
+                $( ".submit_game_button" ).addClass( "disabled" );
+                $( ".delete_hand_button" ).addClass( "disabled" );
+            }
+
+        }
+    },
+
+
+
     //Submit a game to the database
     'click .submit_game_button'(event, template) {
         if ( !$(event.target ).hasClass( "disabled" )) {
@@ -630,7 +751,6 @@ function save_game_to_database(hands_array) {
 
     // Initialise game to be saved
     var game = {
-        timestamp: Date.now(),
         east_player: east_player,
         south_player: south_player,
         west_player: west_player,
@@ -639,8 +759,9 @@ function save_game_to_database(hands_array) {
         south_score: (Number(Session.get("south_score"))),
         west_score: (Number(Session.get("west_score"))),
         north_score: (Number(Session.get("north_score"))),
-        all_hands: hands_array,
     };
+
+    JapaneseHands.update({_id: Session.get("game_id")}, {$set:{complete: 1}});
 
     // Initialise ELO calculator to update player ELO
     var jpn_elo_calculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
@@ -737,9 +858,6 @@ function save_game_to_database(hands_array) {
         Players.update({ _id: idMappings[positions[1].wind] }, { $inc: { japaneseSecondPlaceSum: 1 }});
         Players.update({ _id: idMappings[positions[2].wind] }, { $inc: { japaneseThirdPlaceSum: 1 }});
         Players.update({ _id: idMappings[positions[3].wind] }, { $inc: { japaneseFourthPlaceSum: 1 }});
-
-        //Save game to database
-        JapaneseHands.insert(game);
     }
 };
 
