@@ -7,7 +7,15 @@ import './record-game/RecordJapaneseGame';
 import './ranking/Ranking';
 
 Template.Index.onCreated( function() {
-    this.currentTab = new ReactiveVar( "Home" );
+    if (localStorage.getItem("game_id") !== null) {
+        this.currentTab = new ReactiveVar( "RecordJapaneseGame" );
+    } else {
+        this.currentTab = new ReactiveVar( "Home" );
+    }
+});
+
+Template.Index.onRendered( function() {
+    $("#" + this.currentTab.curValue).addClass( "active" );
 });
 
 Template.Index.helpers({

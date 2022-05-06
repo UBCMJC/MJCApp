@@ -31,6 +31,43 @@ Template.RecordJapaneseGame.onCreated( function() {
     // Reset GUI selection fields
     setAllGUIRiichisFalse();
 
+    let self = this;
+    if (localStorage.getItem("game_id") !== null) {
+        Session.set("game_id", localStorage.getItem("game_id"));
+        Meteor.call('getJapaneseGame', Session.get("game_id"), function (error, game) {
+            for (let i = 0; i < game.all_hands.length; i++) {
+                let hand = game.all_hands[i];
+                self.hands.push({
+                    handType: hand.handType,
+                    round: hand.round,
+                    bonus: hand.bonus,
+                    points: hand.points,
+                    fu: hand.fu,
+                    dora: hand.dora,
+                    eastDelta: hand.eastDelta,
+                    southDelta: hand.southDelta,
+                    westDelta: hand.westDelta,
+                    northDelta: hand.northDelta,
+                });
+            }
+
+            Meteor.call('canRetrievePlayer', game.east_player, function (error, exists) {
+                Session.set("current_east", game.east_player);
+                Session.set("current_south", game.south_player);
+                Session.set("current_west", game.west_player);
+                Session.set("current_north", game.north_player);
+            });
+
+            Session.set("east_score", game.east_score);
+            Session.set("south_score", game.south_score);
+            Session.set("west_score", game.west_score);
+            Session.set("north_score", game.north_score);
+
+            Session.set("current_round", game.current_round);
+            Session.set("current_bonus", game.current_bonus);
+        });
+    }
+
     // Reset Japanese game specific stats
     Session.set("east_riichi_sum", 0);
     Session.set("south_riichi_sum", 0);
@@ -49,6 +86,16 @@ Template.RecordJapaneseGame.onCreated( function() {
 
     // Reset number of riichi sticks stored for next player win
     Session.set("free_riichi_sticks", 0);
+});
+
+Template.RecordJapaneseGame.onRendered( function() {
+    if (localStorage.getItem("game_id") !== null) {
+        document.getElementById("jpn_buttons").style.display = "block";
+        document.getElementById("jpn_rest").style.display = "block";
+        document.getElementById("jpn_dynamic").style.display = "block";
+        document.getElementById("jpn_players").style.display = "none";
+        document.getElementById("submit_button").style.display = "none";
+    }
 });
 
 // Code to be evaluated when jpn_dealin template is reloaded
@@ -389,6 +436,7 @@ Template.RecordJapaneseGame.events({
                 complete: 0,
         };
         Session.set("game_id", JapaneseHands.insert(game));
+        localStorage.setItem("game_id", Session.get("game_id"));
     },
 
     //Submission of a hand
@@ -591,6 +639,8 @@ Template.RecordJapaneseGame.events({
         if ( !$(event.target ).hasClass( "disabled" )) {
             var r = confirm("Are you sure you want to delete this game?");
             if (r == true) {
+                localStorage.clear();
+
                 //deletes game from database
                 JapaneseHands.remove({_id: Session.get("game_id")});
 
