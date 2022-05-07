@@ -13,7 +13,7 @@ const Constants = {
     HKG_START_POINTS: 750,
 
     // Points paid out for a mistake in a Hong Kong game
-    HKG_MISTAKE_POINTS: 200,
+    HKG_MISTAKE_POINTS: 600,
 
     // The number of rounds in a Hong Kong game
     HKG_NUM_ROUNDS: 4,
