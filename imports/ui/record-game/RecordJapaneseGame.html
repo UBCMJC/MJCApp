@@ -1,11 +1,11 @@
 <template name="RecordJapaneseGame">
   <h2>Riichi Japanese Mahjong Game Sheet</h2>
 
-  <section class="game_input_form container">
+  <section id="jpn_container" class="game_input_form container">
     <div class="player-block" id = "jpn_players">
       <div class="player-entry col-lg-3 col-xs-6">
         <p>East</p>
-        <select name="east_player">
+        <select id="east_player" name="east_player">
           <option disabled selected value> -- Select East Player (東) -- </option>
           {{#each players}}
           {{> jpn_player_select_east}}

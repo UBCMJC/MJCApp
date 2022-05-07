@@ -15,6 +15,21 @@ Template.RecordHongKongGame.onCreated( function() {
     GameRecordUtils.resetGameValues(Constants.HKG_START_POINTS);
 });
 
+//Template.RecordHongKongGame.onRendered( function() {
+//    if (localStorage.getItem("game_id") !== null) {
+//        if (localStorage.getItem("game_type") !== "jp") {
+//            document.getElementsById("jpn_container").style.display = "none";
+//            window.alert("Please submit games in progress before starting a new game!");
+//            return;
+//        }
+//        document.getElementById("jpn_buttons").style.display = "block";
+//        document.getElementById("jpn_rest").style.display = "block";
+//        document.getElementById("jpn_dynamic").style.display = "block";
+//        document.getElementById("jpn_players").style.display = "none";
+//        document.getElementById("jpn_submit_button").style.display = "none";
+//    }
+//});
+
 Template.RecordHongKongGame.helpers({
     hand_type() {
         return Template.instance().hand_type.get();
@@ -205,7 +220,7 @@ Template.RecordHongKongGame.events({
                 document.getElementById("hk_players").style.display = "none";
                 document.getElementById("hk_submit_button").style.display = "none";
             } else {
-                window.alert("please enter all 4 player names!");
+                window.alert("Please enter all 4 player names!");
             }
         }
 
@@ -232,6 +247,7 @@ Template.RecordHongKongGame.events({
         };
         Session.set("game_id", HongKongHands.insert(game));
         localStorage.setItem("game_id", Session.get("game_id"));
+        localStorage.setItem("game_type", "hk");
     },
     //Submission of a hand
     'click .submit_hand_button'(event, template) {
