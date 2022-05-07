@@ -13,7 +13,6 @@ import './RecordJapaneseGame.html';
 Template.RecordJapaneseGame.onCreated( function() {
     // Meteor: Template type to show for choosing hand submission
     this.hand_type = new ReactiveVar( Constants.JPN_DEAL_IN );
-
     // Meteor: List of hands submitted to display
     this.hands = new ReactiveArray();
 
@@ -94,7 +93,7 @@ Template.RecordJapaneseGame.onRendered( function() {
         document.getElementById("jpn_rest").style.display = "block";
         document.getElementById("jpn_dynamic").style.display = "block";
         document.getElementById("jpn_players").style.display = "none";
-        document.getElementById("submit_button").style.display = "none";
+        document.getElementById("jpn_submit_button").style.display = "none";
     }
 });
 
@@ -408,7 +407,7 @@ Template.RecordJapaneseGame.events({
                 document.getElementById("jpn_rest").style.display = "block";
                 document.getElementById("jpn_dynamic").style.display = "block";
                 document.getElementById("jpn_players").style.display = "none";
-                document.getElementById("submit_button").style.display = "none";
+                document.getElementById("jpn_submit_button").style.display = "none";
             } else {
                 window.alert("please enter all 4 player names!");
             }
@@ -712,6 +711,7 @@ Template.RecordJapaneseGame.events({
         if ( !$(event.target ).hasClass( "disabled" )) {
             var r = confirm("Are you sure you want to submit this game?");
             if (r == true) {
+                localStorage.clear();
                 var winScore = Math.max(Number(Session.get("east_score")),
                                         Number(Session.get("south_score")),
                                         Number(Session.get("west_score")),
