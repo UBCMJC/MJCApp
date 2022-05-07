@@ -30,6 +30,25 @@ Template.RecordJapaneseGame.onCreated( function() {
     // Reset GUI selection fields
     setAllGUIRiichisFalse();
 
+    // Reset Japanese game specific stats
+    Session.set("east_riichi_sum", 0);
+    Session.set("south_riichi_sum", 0);
+    Session.set("west_riichi_sum", 0);
+    Session.set("north_riichi_sum", 0);
+
+    Session.set("eastPlayerRiichisWon", 0);
+    Session.set("southPlayerRiichisWon", 0);
+    Session.set("westPlayerRiichisWon", 0);
+    Session.set("northPlayerRiichisWon", 0);
+
+    Session.set("eastPlayerDoraSum", 0);
+    Session.set("southPlayerDoraSum", 0);
+    Session.set("westPlayerDoraSum", 0);
+    Session.set("northPlayerDoraSum", 0);
+
+    // Reset number of riichi sticks stored for next player win
+    Session.set("free_riichi_sticks", 0);
+
     let self = this;
     if (localStorage.getItem("game_id") !== null) {
         Session.set("game_id", localStorage.getItem("game_id"));
@@ -71,25 +90,6 @@ Template.RecordJapaneseGame.onCreated( function() {
             Session.set("free_riichi_sticks", game.free_riichi_sticks);
         });
     }
-
-    // Reset Japanese game specific stats
-    Session.set("east_riichi_sum", 0);
-    Session.set("south_riichi_sum", 0);
-    Session.set("west_riichi_sum", 0);
-    Session.set("north_riichi_sum", 0);
-
-    Session.set("eastPlayerRiichisWon", 0);
-    Session.set("southPlayerRiichisWon", 0);
-    Session.set("westPlayerRiichisWon", 0);
-    Session.set("northPlayerRiichisWon", 0);
-
-    Session.set("eastPlayerDoraSum", 0);
-    Session.set("southPlayerDoraSum", 0);
-    Session.set("westPlayerDoraSum", 0);
-    Session.set("northPlayerDoraSum", 0);
-
-    // Reset number of riichi sticks stored for next player win
-    Session.set("free_riichi_sticks", 0)
 });
 
 Template.RecordJapaneseGame.onRendered( function() {
