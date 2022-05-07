@@ -1,20 +1,18 @@
 <template name="Home">
   <h2>Home</h2>
   <div class="game-list">
-    {{#each current_games}}
-      {{> game_summary}}
+    {{#each jpn_game in jpn_games}}
+      {{> game_summary game=jpn_game name="Riichi"}}
+    {{/each}}
+    {{#each hk_game in hk_games}}
+      {{> game_summary game=hk_game name="Hong Kong"}}
     {{/each}}
   </div>
-<!--  <div class="jpn-game-list">-->
-<!--    {{#each current_games}}-->
-<!--      {{> jpn_game_summary}}-->
-<!--      {{/each}}-->
-<!--  </div>  -->
 </template>
 
 <template name="game_summary">
   <div class="summary-container">
-    <div>Riichi</div>
+    <div>{{name}}</div>
     <div class="summary-column-container">
       <div class="winds">
         <div>East</div>
@@ -23,20 +21,20 @@
         <div>North</div>
       </div>
       <div class="username">
-        <div>{{east_player}}</div>
-        <div>{{south_player}}</div>
-        <div>{{west_player}}</div>
-        <div>{{north_player}}</div>
+        <div>{{game.east_player}}</div>
+        <div>{{game.south_player}}</div>
+        <div>{{game.west_player}}</div>
+        <div>{{game.north_player}}</div>
       </div>
       <div class="points">
-        <div>{{displayScore east_score}}</div>
-        <div>{{displayScore south_score}}</div>
-        <div>{{displayScore west_score}}</div>
-        <div>{{displayScore north_score}}</div>
+        <div>{{displayScore game.east_score}}</div>
+        <div>{{displayScore game.south_score}}</div>
+        <div>{{displayScore game.west_score}}</div>
+        <div>{{displayScore game.north_score}}</div>
       </div>
     </div>
     <div>
-      {{displayRoundWind current_round}} {{displayRoundNumber current_round}} Bonus {{current_bonus}}
+      {{displayRoundWind game.current_round}} {{displayRoundNumber game.current_round}} Bonus {{game.current_bonus}}
     </div>
   </div>
 </template>

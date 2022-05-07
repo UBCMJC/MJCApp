@@ -7,8 +7,11 @@ import { JapaneseHands, HongKongHands } from '../../api/GameDatabases';
 import './Home.html';
 
 Template.Home.helpers({
-    current_games() {
+    jpn_games() {
         return JapaneseHands.find({complete: 0}).fetch();
+    },
+    hk_games() {
+        return HongKongHands.find({complete: 0}).fetch();
     }
 });
 
