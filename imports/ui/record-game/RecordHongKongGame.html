@@ -51,17 +51,11 @@
         <li data-template="hkg_nowin" role="presentation">
           <a data-toggle="pill" href="#">Deck out (Lau Guk 流局)</a>
         </li>
-        <li data-template="hkg_restart" role="presentation">
-          <a data-toggle="pill" href="#">Reshuffle</a>
-        </li>
         <li data-template="hkg_mistake" role="presentation">
           <a data-toggle="pill" href="#">Mistake! (Zaa Wu 詐糊)</a>
         </li>
-        <li data-template="hkg_dealin_pao" role="presentation">
-          <a data-toggle="pill" href="#">Dealin pao</a>
-        </li>
-        <li data-template="hkg_selfdraw_pao" role="presentation">
-          <a data-toggle="pill" href="#">Selfdraw pao</a>
+        <li data-template="hkg_pao" role="presentation">
+          <a data-toggle="pill" href="#">Pao</a>
         </li>
       </u1>
     </div>
@@ -209,25 +203,13 @@
   <p>Wall ran out of tiles!</p>
 </template>
 
-<template name="hkg_restart">
-  <p>Game was restarted!</p>
-</template>
-
 <template name="hkg_mistake">
   <p>Game ruining mistake!</p>
   {{> loser_s east=get_east south=get_south west=get_west north=get_north}}
 </template>
 
-<template name="hkg_dealin_pao">
-  <p>Someone dealt in while someone was under pao</p>
-  {{> winner_s east=get_east south=get_south west=get_west north=get_north}}
-  {{> loser_s east=get_east south=get_south west=get_west north=get_north}}
-  {{> pao_s east=get_east south=get_south west=get_west north=get_north}}
-  {{> points}}
-</template>
-
-<template name="hkg_selfdraw_pao">
-  <p>Someone self drew while someone was under pao or someone under pao dealt in!</p>
+<template name="hkg_pao">
+  <p>Someone won while someone else was under pao!</p>
   {{> winner_s east=get_east south=get_south west=get_west north=get_north}}
   {{> pao_s east=get_east south=get_south west=get_west north=get_north}}
   {{> points}}
