@@ -1483,7 +1483,7 @@ function push_split_pao_hand(template) {
     Session.set("free_riichi_sticks", 0);
 
     pushHand(template,
-             Constants.DEAL_IN,
+             Constants.PAO,
              seatDeltas[Constants.EAST],
              seatDeltas[Constants.SOUTH],
              seatDeltas[Constants.WEST],

@@ -253,7 +253,7 @@ Template.RecordHongKongGame.events({
     'click .submit_hand_button'(event, template) {
 
         if ( !$( event.target ).hasClass( "disabled")) {
-            var pnt = Number(Session.get("current_points"));
+            let pnt = Number(Session.get("current_points"));
 
             //Do nothing if we don't have players yet
             if (GameRecordUtils.allPlayersSelected() ) {
@@ -308,7 +308,7 @@ Template.RecordHongKongGame.events({
                 case Constants.HKG_PAO:
                     if (Session.get("round_winner") != Constants.NO_PERSON &&
                         Session.get("round_pao_player") != Constants.NO_PERSON &&
-                        Session.get("round_winner")     != Session.get("round_pao_player")) {
+                        Session.get("round_winner") != Session.get("round_pao_player")) {
                         if (Session.get("current_points") != 0) {
                             push_pao_hand(template);
                             resetRoundStats();
@@ -317,7 +317,7 @@ Template.RecordHongKongGame.events({
                             window.alert("Invalid points entry!");
                         }
                     } else {
-                        window.alert("You need to fill out who won, who dealt in, and who has pao penalty!");
+                        window.alert("You need to fill out who won, and who has pao penalty!");
                     }
                     break;
 
@@ -338,8 +338,8 @@ Template.RecordHongKongGame.events({
                                west_score: current_hand.westDelta, north_score: current_hand.northDelta}});
 
             if (GameRecordUtils.someoneBankrupt() ||
-                Session.get("current_round") > 16)
-            {
+                Session.get("current_round") > 16) {
+
                 $( event.target ).addClass( "disabled");
                 $( ".submit_game_button" ).removeClass( "disabled" );
             }
@@ -696,59 +696,56 @@ function push_selfdraw_hand(template) {
 };
 
 function push_pao_hand(template) {
-    var points = Number(Session.get("current_points"));
-    var winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
-    var paoWind = GameRecordUtils.playerToDirection(Session.get("round_pao_player"));
+    const points = Number(Session.get("current_points"));
+    const winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
+    const paoWind = GameRecordUtils.playerToDirection(Session.get("round_pao_player"));
 
-    var eastDelta = pao_delta(points, Constants.EAST, winnerWind, paoWind);
-    var southDelta = pao_delta(points, Constants.SOUTH, winnerWind, paoWind);
-    var westDelta = pao_delta(points, Constants.WEST, winnerWind, paoWind);
-    var northDelta = pao_delta(points, Constants.NORTH, winnerWind, paoWind);
+    const eastDelta = pao_delta(points, Constants.EAST, winnerWind, paoWind);
+    const southDelta = pao_delta(points, Constants.SOUTH, winnerWind, paoWind);
+    const westDelta = pao_delta(points, Constants.WEST, winnerWind, paoWind);
+    const northDelta = pao_delta(points, Constants.NORTH, winnerWind, paoWind);
 
-    if          (winnerWind == Constants.EAST) {
+    if (winnerWind === Constants.EAST) {
         Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
         Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) + points);
     }
-    else if (winnerWind == Constants.SOUTH) {
+    else if (winnerWind === Constants.SOUTH) {
         Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) + 1);
         Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) + points);
     }
-    else if (winnerWind == Constants.WEST) {
+    else if (winnerWind === Constants.WEST) {
         Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) + 1);
         Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) + points);
     }
-    else if (winnerWind == Constants.NORTH) {
+    else if (winnerWind === Constants.NORTH) {
         Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) + 1);
         Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) + points);
     }
 
-    if          (loserWind == Constants.EAST)
-        Session.set("eastPlayerLosses", Number(Session.get("eastPlayerLosses")) + 1);
-    else if (loserWind == Constants.SOUTH)
-        Session.set("southPlayerLosses", Number(Session.get("southPlayerLosses")) + 1);
-    else if (loserWind == Constants.WEST)
-        Session.set("westPlayerLosses", Number(Session.get("westPlayerLosses")) + 1);
-    else if (loserWind == Constants.NORTH)
-        Session.set("northPlayerLosses", Number(Session.get("northPlayerLosses")) + 1);
-
     pushHand(template, Constants.PAO, eastDelta, southDelta, westDelta, northDelta);
 
-    if (winnerWind == GameRecordUtils.roundToDealerDirection(Session.get("current_round")))
+    if (winnerWind === GameRecordUtils.roundToDealerDirection(Session.get("current_round"))) {
         Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
-    else {
+    } else {
         Session.set("current_bonus", 0);
-        Session.set("current_round", Number(Session.get("current_round")) + 1)
+        Session.set("current_round", Number(Session.get("current_round")) + 1);
     }
 };
 
 function push_nowin_hand(template) {
     pushHand(template, Constants.NO_WIN, 0, 0, 0, 0);
-    if (Number(Session.get("current_round")) == 16) {
-        Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
-    } else {
-        Session.set("current_round", Number(Session.get("current_round")) + 1);
-    }
 
+    if (Number(Session.get("current_round")) != Constants.HANDS_PER_ROUND * Constants.HKG_NUM_ROUNDS) {
+        Session.set("current_round", Number(Session.get("current_round")) + 1);
+    } else {
+        Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
+    }
+};
+
+function push_restart_hand(template) {
+    pushHand(template, Constants.RESTART, 0, 0, 0, 0);
+
+    Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 };
 
 function push_mistake_hand(template) {
@@ -787,7 +784,7 @@ function pushHand(template, handType, eastDelta, southDelta, westDelta, northDel
 };
 
 function dealin_delta(points, playerWind, winnerWind, loserWind) {
-    var retval;
+    let retval;
 
     if (playerWind != winnerWind && playerWind != loserWind) {
         return 0;
@@ -807,13 +804,11 @@ function dealin_delta(points, playerWind, winnerWind, loserWind) {
     case 13: retval = -768; break;
     }
 
-    if ( playerWind == winnerWind ) retval = -retval;
-
-    return retval;
+    return (playerWind == winnerWind) ? -retval : retval;
 };
 
 function selfdraw_delta(points, playerWind, winnerWind) {
-    var retval;
+    let retval;
 
     switch (points) {
     case 3: retval = -8; break;
@@ -829,14 +824,11 @@ function selfdraw_delta(points, playerWind, winnerWind) {
     case 13: retval = -384; break;
     }
 
-    if ( playerWind == winnerWind )
-        retval = -3 * retval;
-
-    return retval;
+    return (playerWind == winnerWind) ? -3 * retval : retval;
 };
 
-function pao_delta(points, playerWind, winnerWind, loserWind) {
-    var retval;
+function pao_delta(points, playerWind, winnerWind, paoWind) {
+    let retval;
 
     if (playerWind != winnerWind && playerWind != loserWind) {
         return 0;
@@ -856,9 +848,7 @@ function pao_delta(points, playerWind, winnerWind, loserWind) {
     case 13: retval = -1152; break;
     }
 
-    if ( playerWind == winnerWind ) retval = -retval;
-
-    return retval;
+    return (playerWind == winnerWind) ? -retval : retval;
 };
 
 function mistake_delta(playerWind, loserWind) {

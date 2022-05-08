@@ -111,6 +111,7 @@ const Constants = {
     NO_WIN: "nowin",
     PAO: "pao",
     RESTART: "restart",
+    PAO: "pao",
     MISTAKE: "mistake",
 
     // Direction Constants
