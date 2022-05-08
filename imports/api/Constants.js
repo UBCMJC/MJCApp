@@ -10,10 +10,10 @@ const Constants = {
     HKG_MAX_HAND_SIZE: 13,
 
     // The starting number of points in a Hong Kong game
-    HKG_START_POINTS: 500,
+    HKG_START_POINTS: 750,
 
     // Points paid out for a mistake in a Hong Kong game
-    HKG_MISTAKE_POINTS: 192,
+    HKG_MISTAKE_POINTS: 600,
 
     // The number of rounds in a Hong Kong game
     HKG_NUM_ROUNDS: 4,
@@ -110,6 +110,7 @@ const Constants = {
     SELF_DRAW: "selfdraw",
     NO_WIN: "nowin",
     RESTART: "restart",
+    PAO: "pao",
     MISTAKE: "mistake",
 
     // Direction Constants
@@ -125,10 +126,8 @@ const Constants = {
     HKG_DEAL_IN: "hkg_dealin",
     HKG_SELF_DRAW: "hkg_selfdraw",
     HKG_NO_WIN: "hkg_nowin",
-    HKG_RESTART: "hkg_restart",
     HKG_MISTAKE: "hkg_mistake",
-    HKG_DEAL_IN_PAO: "hkg_dealin_pao",
-    HKG_SELF_DRAW_PAO: "hkg_selfdraw_pao",
+    HKG_PAO: "hkg_pao",
 
     // Japanese HTML forms
     // Be careful as some of these are hardcoded in HTML!
