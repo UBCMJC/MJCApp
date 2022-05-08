@@ -127,7 +127,7 @@ const Constants = {
     HKG_SELF_DRAW: "hkg_selfdraw",
     HKG_NO_WIN: "hkg_nowin",
     HKG_MISTAKE: "hkg_mistake",
-    HKG_PAO: "hkg_selfdraw_pao",
+    HKG_PAO: "hkg_pao",
 
     // Japanese HTML forms
     // Be careful as some of these are hardcoded in HTML!
