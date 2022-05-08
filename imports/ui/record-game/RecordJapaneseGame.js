@@ -88,6 +88,41 @@ Template.RecordJapaneseGame.onCreated( function() {
                 self.riichi_sum_history.push(game.riichi_sum_history[i]);
             }
             Session.set("free_riichi_sticks", game.free_riichi_sticks);
+
+            Session.set("eastPlayerWins", game.eastPlayerWins);
+            Session.set("southPlayerWins", game.southPlayerWins);
+            Session.set("westPlayerWins", game.westPlayerWins);
+            Session.set("northPlayerWins", game.northPlayerWins);
+
+            Session.set("eastPlayerLosses", game.eastPlayerLosses);
+            Session.set("southPlayerLosses", game.southPlayerLosses);
+            Session.set("westPlayerLosses", game.westPlayerLosses);
+            Session.set("northPlayerLosses", game.northPlayerLosses);
+
+            Session.set("eastPlayerPointsWon", game.eastPlayerPointsWon);
+            Session.set("southPlayerPointsWon", game.southPlayerPointsWon);
+            Session.set("westPlayerPointsWon", game.westPlayerPointsWon);
+            Session.set("northPlayerPointsWon", game.northPlayerPointsWon);
+
+            Session.set("eastMistakeTotal", game.eastMistakeTotal);
+            Session.set("southMistakeTotal", game.southMistakeTotal);
+            Session.set("westMistakeTotal", game.westMistakeTotal);
+            Session.set("northMistakeTotal", game.northMistakeTotal);
+
+            Session.set("east_riichi_sum", game.east_riichi_sum);
+            Session.set("south_riichi_sum", game.south_riichi_sum);
+            Session.set("west_riichi_sum", game.west_riichi_sum);
+            Session.set("north_riichi_sum", game.north_riichi_sum);
+
+            Session.set("eastPlayerRiichisWon", game.eastPlayerRiichisWon);
+            Session.set("southPlayerRiichisWon", game.southPlayerRiichisWon);
+            Session.set("westPlayerRiichisWon", game.westPlayerRiichisWon);
+            Session.set("northPlayerRiichisWon", game.northPlayerRiichisWon);
+
+            Session.set("eastPlayerDoraSum", game.eastPlayerDoraSum);
+            Session.set("southPlayerDoraSum", game.southPlayerDoraSum);
+            Session.set("westPlayerDoraSum", game.westPlayerDoraSum);
+            Session.set("northPlayerDoraSum", game.northPlayerDoraSum);
         });
     }
 });
@@ -445,6 +480,34 @@ Template.RecordJapaneseGame.events({
             riichi_sum_history: [],
             all_hands: [],
             complete: 0,
+            eastPlayerWins: 0,
+            southPlayerWins: 0,
+            westPlayerWins: 0,
+            northPlayerWins: 0,
+            eastPlayerLosses: 0,
+            southPlayerLosses: 0,
+            westPlayerLosses: 0,
+            northPlayerLosses: 0,
+            eastPlayerPointsWon: 0,
+            southPlayerPointsWon: 0,
+            westPlayerPointsWon: 0,
+            northPlayerPointsWon: 0,
+            eastMistakeTotal: 0,
+            southMistakeTotal: 0,
+            westMistakeTotal: 0,
+            northMistakeTotal: 0,
+            east_riichi_sum: 0,
+            south_riichi_sum: 0,
+            west_riichi_sum: 0,
+            north_riichi_sum: 0,
+            eastPlayerRiichisWon: 0,
+            southPlayerRiichisWon: 0,
+            westPlayerRiichisWon: 0,
+            northPlayerRiichisWon: 0,
+            eastPlayerDoraSum: 0,
+            southPlayerDoraSum: 0,
+            westPlayerDoraSum: 0,
+            northPlayerDoraSum: 0,
         };
         Session.set("game_id", JapaneseHands.insert(game));
         localStorage.setItem("game_id", Session.get("game_id"));
@@ -572,6 +635,34 @@ Template.RecordJapaneseGame.events({
                                current_bonus: Session.get("current_bonus"),
                                free_riichi_sticks: Session.get("free_riichi_sticks"),
                                riichi_sum_history: template.riichi_sum_history},
+                               eastPlayerWins: Session.get("eastPlayerWins"),
+                               southPlayerWins: Session.get("southPlayerWins"),
+                               westPlayerWins: Session.get("westPlayerWins"),
+                               northPlayerWins: Session.get("northPlayerWins"),
+                               eastPlayerLosses: Session.get("eastPlayerLosses"),
+                               southPlayerLosses: Session.get("southPlayerLosses"),
+                               westPlayerLosses: Session.get("westPlayerLosses"),
+                               northPlayerLosses: Session.get("northPlayerLosses"),
+                               eastPlayerPointsWon: Session.get("eastPlayerPointsWon"),
+                               southPlayerPointsWon: Session.get("southPlayerPointsWon"),
+                               westPlayerPointsWon: Session.get("westPlayerPointsWon"),
+                               northPlayerPointsWon: Session.get("northPlayerPointsWon"),
+                               eastMistakeTotal: Session.get("eastMistakeTotal"),
+                               southMistakeTotal: Session.get("southMistakeTotal"),
+                               westMistakeTotal: Session.get("westMistakeTotal"),
+                               northMistakeTotal: Session.get("northMistakeTotal"),
+                               east_riichi_sum: Session.get("east_riichi_sum"),
+                               south_riichi_sum: Session.get("south_riichi_sum"),
+                               west_riichi_sum: Session.get("west_riichi_sum"),
+                               north_riichi_sum: Session.get("north_riichi_sum"),
+                               eastPlayerRiichisWon: Session.get("eastPlayerRiichisWon"),
+                               southPlayerRiichisWon: Session.get("southPlayerRiichisWon"),
+                               westPlayerRiichisWon: Session.get("westPlayerRiichisWon"),
+                               northPlayerRiichisWon: Session.get("northPlayerRiichisWon"),
+                               eastPlayerDoraSum: Session.get("eastPlayerDoraSum"),
+                               southPlayerDoraSum: Session.get("southPlayerDoraSum"),
+                               westPlayerDoraSum: Session.get("westPlayerDoraSum"),
+                               northPlayerDoraSum: Session.get("northPlayerDoraSum"),
                         $inc: {east_score: current_hand.eastDelta, south_score: current_hand.southDelta,
                                west_score: current_hand.westDelta, north_score: current_hand.northDelta}});
 
@@ -646,7 +737,35 @@ Template.RecordJapaneseGame.events({
                                    east_score: Session.get("east_score"),
                                    south_score: Session.get("south_score"),
                                    west_score: Session.get("west_score"),
-                                   north_score: Session.get("north_score")}});
+                                   north_score: Session.get("north_score"),
+                                   eastPlayerWins: Session.get("eastPlayerWins"),
+                                  southPlayerWins: Session.get("southPlayerWins"),
+                                  westPlayerWins: Session.get("westPlayerWins"),
+                                  northPlayerWins: Session.get("northPlayerWins"),
+                                  eastPlayerLosses: Session.get("eastPlayerLosses"),
+                                  southPlayerLosses: Session.get("southPlayerLosses"),
+                                  westPlayerLosses: Session.get("westPlayerLosses"),
+                                  northPlayerLosses: Session.get("northPlayerLosses"),
+                                  eastPlayerPointsWon: Session.get("eastPlayerPointsWon"),
+                                  southPlayerPointsWon: Session.get("southPlayerPointsWon"),
+                                  westPlayerPointsWon: Session.get("westPlayerPointsWon"),
+                                  northPlayerPointsWon: Session.get("northPlayerPointsWon"),
+                                  eastMistakeTotal: Session.get("eastMistakeTotal"),
+                                  southMistakeTotal: Session.get("southMistakeTotal"),
+                                  westMistakeTotal: Session.get("westMistakeTotal"),
+                                  northMistakeTotal: Session.get("northMistakeTotal"),
+                                  east_riichi_sum: Session.get("east_riichi_sum"),
+                                  south_riichi_sum: Session.get("south_riichi_sum"),
+                                  west_riichi_sum: Session.get("west_riichi_sum"),
+                                  north_riichi_sum: Session.get("north_riichi_sum"),
+                                  eastPlayerRiichisWon: Session.get("eastPlayerRiichisWon"),
+                                  southPlayerRiichisWon: Session.get("southPlayerRiichisWon"),
+                                  westPlayerRiichisWon: Session.get("westPlayerRiichisWon"),
+                                  northPlayerRiichisWon: Session.get("northPlayerRiichisWon"),
+                                  eastPlayerDoraSum: Session.get("eastPlayerDoraSum"),
+                                  southPlayerDoraSum: Session.get("southPlayerDoraSum"),
+                                  westPlayerDoraSum: Session.get("westPlayerDoraSum"),
+                                  northPlayerDoraSum: Session.get("northPlayerDoraSum"),}});
 
             }
         }
