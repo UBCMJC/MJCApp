@@ -1,6 +1,6 @@
 //Databases
 import Players from '../../api/Players';
-import { JapaneseHands } from '../../api/GameDatabases';
+import { JapaneseHands, InProgressJapaneseHands } from '../../api/GameDatabases';
 
 import Constants from '../../api/Constants';
 import EloCalculator from '../../api/EloCalculator';
@@ -52,7 +52,10 @@ Template.RecordJapaneseGame.onCreated( function() {
     let self = this;
     if (localStorage.getItem("game_id") !== null) {
         Session.set("game_id", localStorage.getItem("game_id"));
-        Meteor.call('getJapaneseGame', Session.get("game_id"), function (error, game) {
+        if (localStorage.getItem("game_type") !== "jp") {
+            return;
+        }
+        Meteor.call('getInProgressJapaneseGame', Session.get("game_id"), function (error, game) {
             for (let i = 0; i < game.all_hands.length; i++) {
                 let hand = game.all_hands[i];
                 self.hands.push({
@@ -129,16 +132,13 @@ Template.RecordJapaneseGame.onCreated( function() {
 
 Template.RecordJapaneseGame.onRendered( function() {
     if (localStorage.getItem("game_id") !== null) {
-//        if (localStorage.getItem("game_type") !== "jp") {
-//            document.getElementsById("jpn_container").style.display = "none";
-//            window.alert("Please submit games in progress before starting a new game!");
-//            return;
-//        }
-        document.getElementById("jpn_buttons").style.display = "block";
-        document.getElementById("jpn_rest").style.display = "block";
-        document.getElementById("jpn_dynamic").style.display = "block";
-        document.getElementById("jpn_players").style.display = "none";
-        document.getElementById("jpn_submit_button").style.display = "none";
+        if (localStorage.getItem("game_type") !== "jp") {
+            document.getElementsById("jpn_container").style.display = "none";
+            window.alert("Please submit games in progress before starting a new game!");
+            return;
+        }
+        document.getElementById("jpn_names").style.display = "block";
+        document.getElementById("jpn_game_buttons").style.display = "none";
     }
 });
 
@@ -203,7 +203,7 @@ Template.RecordJapaneseGame.helpers({
     get_player_score_final(direction) {
         retval = GameRecordUtils.getDirectionScore(direction);
 
-        var winScore = Math.max(Number(Session.get("east_score")),
+        let winScore = Math.max(Number(Session.get("east_score")),
                                 Number(Session.get("south_score")),
                                 Number(Session.get("west_score")),
                                 Number(Session.get("north_score")));
@@ -448,23 +448,20 @@ Template.RecordJapaneseGame.events({
     'click .submit_names_button'(event, template) {
         if ( !$( event.target ).hasClass( "disabled")) {
             if (GameRecordUtils.allPlayersSelected()) {
-                document.getElementById("jpn_buttons").style.display = "block";
-                document.getElementById("jpn_rest").style.display = "block";
-                document.getElementById("jpn_dynamic").style.display = "block";
-                document.getElementById("jpn_players").style.display = "none";
-                document.getElementById("jpn_submit_button").style.display = "none";
+                document.getElementById("jpn_names").style.display = "block";
+                document.getElementById("jpn_game_buttons").style.display = "none";
             } else {
                 window.alert("please enter all 4 player names!");
             }
         }
 
-        var position;
-        var east_player = Session.get("current_east");
-        var south_player= Session.get("current_south");
-        var west_player = Session.get("current_west");
-        var north_player= Session.get("current_north");
+        let position;
+        let east_player = Session.get("current_east");
+        let south_player= Session.get("current_south");
+        let west_player = Session.get("current_west");
+        let north_player= Session.get("current_north");
 
-        var game = {
+        let game = {
             timestamp: Date.now(),
             east_player: east_player,
             south_player: south_player,
@@ -479,7 +476,6 @@ Template.RecordJapaneseGame.events({
             free_riichi_sticks: 0,
             riichi_sum_history: [],
             all_hands: [],
-            complete: 0,
             eastPlayerWins: 0,
             southPlayerWins: 0,
             westPlayerWins: 0,
@@ -509,7 +505,7 @@ Template.RecordJapaneseGame.events({
             westPlayerDoraSum: 0,
             northPlayerDoraSum: 0,
         };
-        Session.set("game_id", JapaneseHands.insert(game));
+        Session.set("game_id", InProgressJapaneseHands.insert(game));
         localStorage.setItem("game_id", Session.get("game_id"));
         localStorage.setItem("game_type", "jp");
     },
@@ -524,7 +520,6 @@ Template.RecordJapaneseGame.events({
             if (GameRecordUtils.allPlayersSelected()) {
                 // Save what the free riichi stick number is in case we delete this hand
                 template.riichi_sum_history.push(Session.get("free_riichi_sticks"));
-                console.log(Session.get("free_riichi_sticks"));
 
                 switch(handType) {
                     // Push a deal in hand and ensure proper information
@@ -628,8 +623,7 @@ Template.RecordJapaneseGame.events({
             }
 
             let current_hand = template.hands.get()[template.hands.get().length - 1];
-            console.log(template.riichi_sum_history);
-            JapaneseHands.update({_id: Session.get("game_id")},
+            InProgressJapaneseHands.update({_id: Session.get("game_id")},
                         {$set:{all_hands: template.hands.get(),
                                current_round: Session.get("current_round"),
                                current_bonus: Session.get("current_bonus"),
@@ -677,11 +671,11 @@ Template.RecordJapaneseGame.events({
     //Remove the last submitted hand
     'click .delete_hand_button'(event, template) {
         if ( !$(event.target ).hasClass( "disabled" )) {
-            var r = confirm("Are you sure you want to delete the last hand?");
+            let r = confirm("Are you sure you want to delete the last hand?");
             // Reset game to last hand state
             if (r == true) {
                 // Deletes last hand
-                var del_hand = Template.instance().hands.pop();
+                let del_hand = Template.instance().hands.pop();
 
                 Session.set("east_score", Number(Session.get("east_score")) - Number(del_hand.eastDelta));
                 Session.set("south_score", Number(Session.get("south_score")) - Number(del_hand.southDelta));
@@ -693,7 +687,7 @@ Template.RecordJapaneseGame.events({
                 //Set free riichi sticks to last round's value
                 Session.set("free_riichi_sticks", template.riichi_sum_history.pop())
 
-                var riichiHistory = template.riichi_round_history.pop();
+                let riichiHistory = template.riichi_round_history.pop();
                 if (riichiHistory.east == true)
                     Session.set("east_riichi_sum", Number(Session.get("east_riichi_sum")) - 1);
                 if (riichiHistory.south == true)
@@ -728,7 +722,7 @@ Template.RecordJapaneseGame.events({
                     $( ".delete_hand_button" ).addClass( "disabled" );
                 }
 
-                JapaneseHands.update({_id: Session.get("game_id")},
+                InProgressJapaneseHands.update({_id: Session.get("game_id")},
                             {$set:{all_hands: template.hands.get(),
                                    current_round: Session.get("current_round"),
                                    current_bonus: Session.get("current_bonus"),
@@ -774,21 +768,18 @@ Template.RecordJapaneseGame.events({
 
     'click .delete_game_button'(event, template) {
         if ( !$(event.target ).hasClass( "disabled" )) {
-            var r = confirm("Are you sure you want to delete this game?");
+            let r = confirm("Are you sure you want to delete this game?");
             if (r == true) {
                 let r2 = confirm("Are you sure sure you want to delete this game?");
                 if (r2 == true) {
                     localStorage.clear();
 
-                    //deletes game from database
-                    JapaneseHands.remove({_id: Session.get("game_id")});
+                    //deletes game from in progress database
+                    InProgressJapaneseHands.remove({_id: Session.get("game_id")});
 
                     //resets page UI
-                    document.getElementById("jpn_buttons").style.display = "none";
-                    document.getElementById("jpn_rest").style.display = "none";
-                    document.getElementById("jpn_dynamic").style.display = "none";
-                    document.getElementById("jpn_players").style.display = "block";
-                    document.getElementById("jpn_submit_button").style.display = "block";
+                    document.getElementById("jpn_names").style.display = "block";
+                    document.getElementById("jpn_game_buttons").style.display = "none";
 
                     document.querySelector('select[name="east_player"]').value="";
                     document.querySelector('select[name="south_player"]').value="";
@@ -858,7 +849,7 @@ Template.RecordJapaneseGame.events({
             let r = confirm("Are you sure you want to submit this game?");
             if (r == true) {
                 localStorage.clear();
-                var winScore = Math.max(Number(Session.get("east_score")),
+                let winScore = Math.max(Number(Session.get("east_score")),
                                         Number(Session.get("south_score")),
                                         Number(Session.get("west_score")),
                                         Number(Session.get("north_score")));
@@ -875,11 +866,8 @@ Template.RecordJapaneseGame.events({
                 save_game_to_database(template.hands.get());
 
                 //resets page UI
-                document.getElementById("jpn_buttons").style.display = "none";
-                document.getElementById("jpn_rest").style.display = "none";
-                document.getElementById("jpn_dynamic").style.display = "none";
-                document.getElementById("jpn_players").style.display = "block";
-                document.getElementById("jpn_submit_button").style.display = "block";
+                document.getElementById("jpn_names").style.display = "block";
+                document.getElementById("jpn_game_buttons").style.display = "none";
 
                 document.querySelector('select[name="east_player"]').value="";
                 document.querySelector('select[name="south_player"]').value="";
@@ -939,7 +927,7 @@ Template.RecordJapaneseGame.events({
     },
     //Toggle between different round types
     'click .nav-pills li'( event, template ) {
-        var hand_type = $( event.target ).closest( "li" );
+        let hand_type = $( event.target ).closest( "li" );
 
         hand_type.addClass( "active" );
         $( ".nav-pills li" ).not( hand_type ).removeClass( "active" );
@@ -950,15 +938,15 @@ Template.RecordJapaneseGame.events({
 
 // Save the currently recorded game to database and update player statistics
 function save_game_to_database(hands_array) {
-    var position;
+    let position;
 
-    var east_player = Session.get("current_east");
-    var south_player= Session.get("current_south");
-    var west_player = Session.get("current_west");
-    var north_player= Session.get("current_north");
+    let east_player = Session.get("current_east");
+    let south_player= Session.get("current_south");
+    let west_player = Session.get("current_west");
+    let north_player= Session.get("current_north");
 
     // Initialise game to be saved
-    var game = {
+    let game = {
         east_player: east_player,
         south_player: south_player,
         west_player: west_player,
@@ -967,25 +955,24 @@ function save_game_to_database(hands_array) {
         south_score: (Number(Session.get("south_score"))),
         west_score: (Number(Session.get("west_score"))),
         north_score: (Number(Session.get("north_score"))),
+        all_hands: hands_array,
     };
 
-    JapaneseHands.update({_id: Session.get("game_id")}, {$set:{complete: 1}});
-
     // Initialise ELO calculator to update player ELO
-    var jpn_elo_calculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
+    let jpn_elo_calculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
                                                Constants.ELO_CALCULATOR_EXP,
                                                Constants.JPN_SCORE_ADJUSTMENT,
                                                game,
                                                Constants.GAME_TYPE.JAPANESE);
-    var east_elo_delta = jpn_elo_calculator.eloChange(east_player);
-    var south_elo_delta = jpn_elo_calculator.eloChange(south_player);
-    var west_elo_delta = jpn_elo_calculator.eloChange(west_player);
-    var north_elo_delta = jpn_elo_calculator.eloChange(north_player);
+    let east_elo_delta = jpn_elo_calculator.eloChange(east_player);
+    let south_elo_delta = jpn_elo_calculator.eloChange(south_player);
+    let west_elo_delta = jpn_elo_calculator.eloChange(west_player);
+    let north_elo_delta = jpn_elo_calculator.eloChange(north_player);
 
-    var east_id = Players.findOne({japaneseLeagueName: east_player}, {})._id;
-    var south_id = Players.findOne({japaneseLeagueName: south_player}, {})._id;
-    var west_id = Players.findOne({japaneseLeagueName: west_player}, {})._id;
-    var north_id = Players.findOne({japaneseLeagueName: north_player}, {})._id;
+    let east_id = Players.findOne({japaneseLeagueName: east_player}, {})._id;
+    let south_id = Players.findOne({japaneseLeagueName: south_player}, {})._id;
+    let west_id = Players.findOne({japaneseLeagueName: west_player}, {})._id;
+    let north_id = Players.findOne({japaneseLeagueName: north_player}, {})._id;
 
     if (east_elo_delta != NaN && south_elo_delta != NaN && west_elo_delta != NaN && north_elo_delta != NaN) {
         // Save ELO
@@ -1067,16 +1054,22 @@ function save_game_to_database(hands_array) {
         Players.update({ _id: idMappings[positions[2].wind] }, { $inc: { japaneseThirdPlaceSum: 1 }});
         Players.update({ _id: idMappings[positions[3].wind] }, { $inc: { japaneseFourthPlaceSum: 1 }});
     }
+
+    //Save game to database
+    JapaneseHands.insert(game);
+
+    //deletes game from in progress database
+    InProgressJapaneseHands.remove({_id: Session.get("game_id")});
 };
 
 function push_dealin_hand(template) {
-    var points = Number(Session.get("current_points"));
-    var fu = Number(Session.get("current_fu"));
-    var dora = Number(Session.get("current_dora"));
+    let points = Number(Session.get("current_points"));
+    let fu = Number(Session.get("current_fu"));
+    let dora = Number(Session.get("current_dora"));
     let dealerWind = GameRecordUtils.roundToDealerDirection(Number(Session.get("current_round")));
-    var winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
-    var loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
-    var riichiSum = Session.get("free_riichi_sticks");
+    let winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
+    let loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
+    let riichiSum = Session.get("free_riichi_sticks");
     let seatDeltas = {};
     Constants.WINDS.forEach(w => seatDeltas[w] = 0);
 
@@ -1175,12 +1168,12 @@ function push_dealin_hand(template) {
 };
 
 function push_selfdraw_hand(template) {
-    var points = Number(Session.get("current_points"));
-    var fu = Number(Session.get("current_fu"));
-    var dora = Number(Session.get("current_dora"));
+    let points = Number(Session.get("current_points"));
+    let fu = Number(Session.get("current_fu"));
+    let dora = Number(Session.get("current_dora"));
     let dealerWind = GameRecordUtils.roundToDealerDirection(Number(Session.get("current_round")));
-    var winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
-    var riichiSum = Session.get("free_riichi_sticks");
+    let winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
+    let riichiSum = Session.get("free_riichi_sticks");
     let seatDeltas = {};
     Constants.WINDS.forEach(w => seatDeltas[w] = 0);
 
@@ -1269,8 +1262,8 @@ function push_selfdraw_hand(template) {
 };
 
 function push_nowin_hand(template) {
-    var eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
-    var tenpaiSum = 0, tenpaiWin, tenpaiLose, riichiSum = 0;
+    let eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
+    let tenpaiSum = 0, tenpaiWin, tenpaiLose, riichiSum = 0;
 
     if (Session.get("east_tenpai") == true) tenpaiSum++;
     if (Session.get("south_tenpai") == true) tenpaiSum++;
@@ -1308,7 +1301,6 @@ function push_nowin_hand(template) {
     }
 
     Session.set("free_riichi_sticks", Number(Session.get("free_riichi_sticks")) + riichiSum);
-    console.log(Session.get("free_riichi_sticks"));
 
     pushHand(template, Constants.NO_WIN, eastDelta, southDelta, westDelta, northDelta);
 
@@ -1326,8 +1318,8 @@ function push_nowin_hand(template) {
 };
 
 function push_restart_hand(template) {
-    var eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
-    var riichiSum = 0;
+    let eastDelta = 0, southDelta = 0, westDelta = 0, northDelta = 0;
+    let riichiSum = 0;
 
     if (Session.get("east_riichi") == true) {
         eastDelta -= Constants.JPN_RIICHI_POINTS;
@@ -1390,14 +1382,14 @@ function push_mistake_hand(template) {
 };
 
 function push_split_pao_hand(template) {
-    var points = Number(Session.get("current_points"));
-    var fu = Number(Session.get("current_fu"));
-    var dora = Number(Session.get("current_dora"));
+    let points = Number(Session.get("current_points"));
+    let fu = Number(Session.get("current_fu"));
+    let dora = Number(Session.get("current_dora"));
     let dealerWind = GameRecordUtils.roundToDealerDirection(Number(Session.get("current_round")));
-    var winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
-    var loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
-    var paoWind = GameRecordUtils.playerToDirection(Session.get("round_pao_player"));
-    var riichiSum = Session.get("free_riichi_sticks");
+    let winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
+    let loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
+    let paoWind = GameRecordUtils.playerToDirection(Session.get("round_pao_player"));
+    let riichiSum = Session.get("free_riichi_sticks");
     let seatDeltas = {};
     Constants.WINDS.forEach(w => seatDeltas[w] = 0);
 
@@ -1460,7 +1452,7 @@ function push_split_pao_hand(template) {
         Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) + 1);
     }
 
-    var value = HandScoreCalculator.jpn.dealinDelta(points,
+    let value = HandScoreCalculator.jpn.dealinDelta(points,
                                                     fu,
                                                     Number(Session.get("current_bonus")),
                                                     dealerWind,

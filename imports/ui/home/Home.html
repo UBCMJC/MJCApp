@@ -2,10 +2,10 @@
   <h2>Home</h2>
   <div class="game-list">
     {{#each jpn_game in jpn_games}}
-      {{> game_summary game=jpn_game name="Riichi"}}
+      {{> game_summary game=jpn_game name="Riichi" type="japanese"}}
     {{/each}}
     {{#each hk_game in hk_games}}
-      {{> game_summary game=hk_game name="Hong Kong"}}
+      {{> game_summary game=hk_game name="Hong Kong" type="hongKong"}}
     {{/each}}
   </div>
 </template>
@@ -27,14 +27,14 @@
         <div>{{game.north_player}}</div>
       </div>
       <div class="points">
-        <div>{{displayScore game.east_score}}</div>
-        <div>{{displayScore game.south_score}}</div>
-        <div>{{displayScore game.west_score}}</div>
-        <div>{{displayScore game.north_score}}</div>
+        <div>{{displayScore game.east_score type}}</div>
+        <div>{{displayScore game.south_score type}}</div>
+        <div>{{displayScore game.west_score type}}</div>
+        <div>{{displayScore game.north_score type}}</div>
       </div>
     </div>
     <div>
-      {{displayRoundWind game.current_round}} {{displayRoundNumber game.current_round}} Bonus {{game.current_bonus}}
+      {{displayRoundWind game.current_round type}} {{displayRoundNumber game.current_round type}} Bonus {{game.current_bonus}}
     </div>
   </div>
 </template>

@@ -2,28 +2,40 @@ import { Template } from 'meteor/templating';
 import Constants from '../../api/Constants';
 import GameRecordUtils from '../../api/utils/GameRecordUtils';
 
-import { JapaneseHands, HongKongHands } from '../../api/GameDatabases';
+import { InProgressJapaneseHands, InProgressHongKongHands } from '../../api/GameDatabases';
 
 import './Home.html';
 
 Template.Home.helpers({
     jpn_games() {
-        return JapaneseHands.find({complete: 0}).fetch();
+        return InProgressJapaneseHands.find().fetch();
     },
     hk_games() {
-        return HongKongHands.find({complete: 0}).fetch();
+        return InProgressHongKongHands.find().fetch();
     }
 });
 
 Template.game_summary.helpers({
-    displayScore(score) {
-        return (score / 1000).toFixed(1);
+    displayScore(score, game_type) {
+        if (game_type == Constants.GAME_TYPE.JAPANESE) {
+            return (score / 1000).toFixed(1);
+        } else {
+            return score;
+        }
     },
-    displayRoundWind(round) {
-        return GameRecordUtils.displayRoundWind(round, Constants.GAME_TYPE.JAPANESE);
+    displayRoundWind(round, game_type) {
+        if (game_type == Constants.GAME_TYPE.JAPANESE) {
+            return GameRecordUtils.displayRoundWind(round, Constants.GAME_TYPE.JAPANESE);
+        } else {
+            return GameRecordUtils.displayRoundWind(round, Constants.GAME_TYPE.HONG_KONG);
+        }
     },
-    displayRoundNumber(round) {
-        return GameRecordUtils.handNumberToRoundNumber(round, Constants.GAME_TYPE.JAPANESE);
+    displayRoundNumber(round, game_type) {
+        if (game_type == Constants.GAME_TYPE.JAPANESE) {
+            return GameRecordUtils.handNumberToRoundNumber(round, Constants.GAME_TYPE.JAPANESE);
+        } else {
+            return GameRecordUtils.handNumberToRoundNumber(round, Constants.GAME_TYPE.HONG_KONG);
+        }
     },
 
 });
