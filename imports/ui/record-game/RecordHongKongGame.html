@@ -45,8 +45,8 @@
           <input type="button" value="Submit Names" class="btn btn-primary btn-block submit_names_button">
         </div>
     </div>
-    <div id="hk_game_buttons">
-        <div class="nav-block" style="display:none">
+    <div id="hk_game_buttons" style="display:none">
+        <div class="nav-block">
           <u1 class="nav nav-pills nav-justified">
             <li data-template="hkg_dealin" role="presentation" class="active">
               <a data-toggle="pill" href="#">Deal in (Sik Wu 食糊)</a>
@@ -69,10 +69,10 @@
              By changing the hand_type variable you can select between the different
              template names.
           -->
-        <div style="display:none">
+        <div>
           {{> Template.dynamic template=hand_type }}
         </div>
-        <div style="display:none">
+        <div>
             <input type="button" value="Submit Hand" class="btn btn-primary btn-block submit_hand_button">
 
             <table style="width:100%">

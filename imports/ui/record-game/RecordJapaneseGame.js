@@ -133,12 +133,19 @@ Template.RecordJapaneseGame.onCreated( function() {
 Template.RecordJapaneseGame.onRendered( function() {
     if (localStorage.getItem("game_id") !== null) {
         if (localStorage.getItem("game_type") !== "jp") {
-            document.getElementsById("jpn_container").style.display = "none";
+            document.getElementById("jpn_container").style.display = "none";
             window.alert("Please submit games in progress before starting a new game!");
             return;
         }
-        document.getElementById("jpn_names").style.display = "block";
-        document.getElementById("jpn_game_buttons").style.display = "none";
+        document.getElementById("jpn_names").style.display = "none";
+        document.getElementById("jpn_game_buttons").style.display = "block";
+        if (localStorage.getItem("game_over") == 1) {
+            $( ".submit_hand_button" ).addClass( "disabled" );
+            $( ".submit_game_button" ).removeClass( "disabled" );
+            $( ".delete_hand_button" ).removeClass( "disabled" );
+        } else if (Session.get("current_round") > 0) {
+            $( ".delete_hand_button" ).removeClass( "disabled" );
+        }
     }
 });
 
@@ -448,8 +455,8 @@ Template.RecordJapaneseGame.events({
     'click .submit_names_button'(event, template) {
         if ( !$( event.target ).hasClass( "disabled")) {
             if (GameRecordUtils.allPlayersSelected()) {
-                document.getElementById("jpn_names").style.display = "block";
-                document.getElementById("jpn_game_buttons").style.display = "none";
+                document.getElementById("jpn_names").style.display = "none";
+                document.getElementById("jpn_game_buttons").style.display = "block";
             } else {
                 window.alert("please enter all 4 player names!");
             }
@@ -508,6 +515,7 @@ Template.RecordJapaneseGame.events({
         Session.set("game_id", InProgressJapaneseHands.insert(game));
         localStorage.setItem("game_id", Session.get("game_id"));
         localStorage.setItem("game_type", "jp");
+        localStorage.setItem("game_over", 0);
     },
 
     //Submission of a hand
@@ -628,7 +636,7 @@ Template.RecordJapaneseGame.events({
                                current_round: Session.get("current_round"),
                                current_bonus: Session.get("current_bonus"),
                                free_riichi_sticks: Session.get("free_riichi_sticks"),
-                               riichi_sum_history: template.riichi_sum_history},
+                               riichi_sum_history: template.riichi_sum_history,
                                eastPlayerWins: Session.get("eastPlayerWins"),
                                southPlayerWins: Session.get("southPlayerWins"),
                                westPlayerWins: Session.get("westPlayerWins"),
@@ -656,12 +664,13 @@ Template.RecordJapaneseGame.events({
                                eastPlayerDoraSum: Session.get("eastPlayerDoraSum"),
                                southPlayerDoraSum: Session.get("southPlayerDoraSum"),
                                westPlayerDoraSum: Session.get("westPlayerDoraSum"),
-                               northPlayerDoraSum: Session.get("northPlayerDoraSum"),
+                               northPlayerDoraSum: Session.get("northPlayerDoraSum")},
                         $inc: {east_score: current_hand.eastDelta, south_score: current_hand.southDelta,
                                west_score: current_hand.westDelta, north_score: current_hand.northDelta}});
 
             // If game ending conditions are met, do not allow more hand submissions and allow game submission
             if (GameRecordUtils.japaneseGameOver(handType)) {
+                localStorage.setItem("game_over", 1);
                 $( event.target ).addClass( "disabled");
                 $( ".submit_game_button" ).removeClass( "disabled" );
             }
@@ -759,7 +768,7 @@ Template.RecordJapaneseGame.events({
                                   eastPlayerDoraSum: Session.get("eastPlayerDoraSum"),
                                   southPlayerDoraSum: Session.get("southPlayerDoraSum"),
                                   westPlayerDoraSum: Session.get("westPlayerDoraSum"),
-                                  northPlayerDoraSum: Session.get("northPlayerDoraSum"),}});
+                                  northPlayerDoraSum: Session.get("northPlayerDoraSum")}});
 
             }
         }

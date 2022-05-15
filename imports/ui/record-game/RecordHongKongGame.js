@@ -80,8 +80,15 @@ Template.RecordHongKongGame.onRendered( function() {
             window.alert("Please submit games in progress before starting a new game!");
             return;
         }
-        document.getElementById("hk_names").style.display = "block";
-        document.getElementById("hk_game_buttons").style.display = "none";
+        document.getElementById("hk_names").style.display = "none";
+        document.getElementById("hk_game_buttons").style.display = "block";
+        if (localStorage.getItem("game_over") == 1) {
+            $( ".submit_hand_button" ).addClass( "disabled" );
+            $( ".submit_game_button" ).removeClass( "disabled" );
+            $( ".delete_hand_button" ).removeClass( "disabled" );
+        } else if (Session.get("current_round") > 0) {
+            $( ".delete_hand_button" ).removeClass( "disabled" );
+        }
     }
 });
 
@@ -269,8 +276,8 @@ Template.RecordHongKongGame.events({
     'click .submit_names_button'(event, template) {
         if ( !$( event.target ).hasClass( "disabled")) {
             if (GameRecordUtils.allPlayersSelected()) {
-                document.getElementById("hk_names").style.display = "block";
-                document.getElementById("hk_game_buttons").style.display = "none";
+                document.getElementById("hk_names").style.display = "none";
+                document.getElementById("hk_game_buttons").style.display = "block";
             } else {
                 window.alert("Please enter all 4 player names!");
             }
@@ -315,6 +322,7 @@ Template.RecordHongKongGame.events({
         Session.set("game_id", InProgressHongKongHands.insert(game));
         localStorage.setItem("game_id", Session.get("game_id"));
         localStorage.setItem("game_type", "hk");
+        localStorage.setItem("game_over", 0);
     },
     //Submission of a hand
     'click .submit_hand_button'(event, template) {
@@ -400,7 +408,7 @@ Template.RecordHongKongGame.events({
             InProgressHongKongHands.update({_id: Session.get("game_id")},
                         {$set:{all_hands: template.hands.get(),
                                current_round: Session.get("current_round"),
-                               current_bonus: Session.get("current_bonus")},
+                               current_bonus: Session.get("current_bonus"),
                                eastPlayerWins: Session.get("eastPlayerWins"),
                                southPlayerWins: Session.get("southPlayerWins"),
                                westPlayerWins: Session.get("westPlayerWins"),
@@ -416,13 +424,13 @@ Template.RecordHongKongGame.events({
                                eastMistakeTotal: Session.get("eastMistakeTotal"),
                                southMistakeTotal: Session.get("southMistakeTotal"),
                                westMistakeTotal: Session.get("westMistakeTotal"),
-                               northMistakeTotal: Session.get("northMistakeTotal"),
+                               northMistakeTotal: Session.get("northMistakeTotal")},
                         $inc: {east_score: current_hand.eastDelta, south_score: current_hand.southDelta,
                                west_score: current_hand.westDelta, north_score: current_hand.northDelta}});
 
             if (GameRecordUtils.someoneBankrupt() ||
                 Session.get("current_round") > 16) {
-
+                localStorage.setItem("game_over", 1);
                 $( event.target ).addClass( "disabled");
                 $( ".submit_game_button" ).removeClass( "disabled" );
             }

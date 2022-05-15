@@ -8,7 +8,11 @@ import './ranking/Ranking';
 
 Template.Index.onCreated( function() {
     if (localStorage.getItem("game_id") !== null) {
-        this.currentTab = new ReactiveVar( "RecordJapaneseGame" );
+        if (localStorage.getItem("game_type") === "jp") {
+            this.currentTab = new ReactiveVar( "RecordJapaneseGame" );
+        } else if (localStorage.getItem("game_type") === "hk") {
+            this.currentTab = new ReactiveVar( "RecordHongKongGame" );
+        }
     } else {
         this.currentTab = new ReactiveVar( "Home" );
     }
