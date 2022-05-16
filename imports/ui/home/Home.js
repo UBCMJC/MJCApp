@@ -2,9 +2,17 @@ import { Template } from 'meteor/templating';
 import Constants from '../../api/Constants';
 import GameRecordUtils from '../../api/utils/GameRecordUtils';
 
-import { InProgressJapaneseHands, InProgressHongKongHands } from '../../api/GameDatabases';
+import { InProgressJapaneseHands, InProgressHongKongHands, Players } from '../../api/GameDatabases';
 
+import './LiveJapaneseGameModal';
+import './LiveHongKongGameModal';
 import './Home.html';
+
+Template.Home.onCreated( function() {
+    Meteor.call('canRetrievePlayer', function (error, game) {
+        return;
+    });
+});
 
 Template.Home.helpers({
     jpn_games() {
@@ -39,3 +47,19 @@ Template.game_summary.helpers({
     },
 
 });
+
+Template.Home.events({
+    'click .summary-container': (event) => {
+        event.preventDefault();
+        let game_type = event.currentTarget.dataset["type"];
+        if (game_type == Constants.GAME_TYPE.JAPANESE) {
+            let game = InProgressJapaneseHands.findOne(event.currentTarget.dataset["game"]);
+            Session.set("game_summary", game);
+            $("#jpn-game-modal").modal('show');
+        } else {
+            let game = InProgressHongKongHands.findOne(event.currentTarget.dataset["game"]);
+            Session.set("game_summary", game);
+            $("#hk-game-modal").modal('show');
+        }
+    },
+})

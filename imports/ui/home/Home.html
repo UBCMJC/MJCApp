@@ -1,5 +1,7 @@
 <template name="Home">
   <h2>Home</h2>
+    {{ > LiveJapaneseGameModal }}
+    {{ > LiveHongKongGameModal }}
   <div class="game-list">
     {{#each jpn_game in jpn_games}}
       {{> game_summary game=jpn_game name="Riichi" type="japanese"}}
@@ -11,7 +13,9 @@
 </template>
 
 <template name="game_summary">
-  <div class="summary-container">
+  <div class="summary-container"
+       data-game="{{ game._id }}"
+       data-type="{{ type }}" >
     <div>{{name}}</div>
     <div class="summary-column-container">
       <div class="winds">
