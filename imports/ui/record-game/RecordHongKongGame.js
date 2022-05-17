@@ -107,11 +107,11 @@ Template.render_hand.helpers({
     is_nowin(hand_type) {
         return hand_type == Constants.NO_WIN;
     },
-    is_restart(hand_type) {
-        return hand_type == Constants.RESTART;
-    },
     is_mistake(hand_type) {
         return hand_type == Constants.MISTAKE;
+    },
+    is_pao(hand_type) {
+        return hand_type == Constants.PAO;
     },
     // Return a string of the round wind for Hong Kong style
     displayRoundWind(round) {
@@ -200,7 +200,6 @@ Template.RecordHongKongGame.events({
 
         if ( !$( event.target ).hasClass( "disabled")) {
             let pnt = Number(Session.get("current_points"));
-
             //Do nothing if we don't have players yet
             if (GameRecordUtils.allPlayersSelected() ) {
                 switch(template.hand_type.get()) {
@@ -694,7 +693,7 @@ function selfdraw_delta(points, playerWind, winnerWind) {
 function pao_delta(points, playerWind, winnerWind, paoWind) {
     let retval;
 
-    if (playerWind != winnerWind && playerWind != loserWind) {
+    if (playerWind != winnerWind && playerWind != paoWind) {
         return 0;
     }
     
