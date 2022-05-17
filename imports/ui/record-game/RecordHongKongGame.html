@@ -168,12 +168,16 @@
     <td>No win!</td>
     {{/if}}
 
-    {{#if is_restart handType}}
-    <td>Reshuffle!</td>
-    {{/if}}
-
     {{#if is_mistake handType}}
     <td>Mistake!</td>
+    <td>{{eastDelta}}</td>
+    <td>{{southDelta}}</td>
+    <td>{{westDelta}}</td>
+    <td>{{northDelta}}</td>
+    {{/if}}
+
+    {{#if is_pao handType}}
+    <td>{{points}}</td>
     <td>{{eastDelta}}</td>
     <td>{{southDelta}}</td>
     <td>{{westDelta}}</td>
