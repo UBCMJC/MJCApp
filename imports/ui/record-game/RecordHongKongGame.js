@@ -5,6 +5,7 @@ import { HongKongHands } from '../../api/GameDatabases';
 import Constants from '../../api/Constants';
 import EloCalculator from '../../api/EloCalculator';
 import GameRecordUtils from '../../api/utils/GameRecordUtils';
+import '../game-sheet/GameSheet';
 
 import './RecordHongKongGame.html';
 
@@ -25,103 +26,22 @@ Template.RecordHongKongGame.helpers({
     hands() {
         return Template.instance().hands.get();
     },
-    get_player_delta(direction) {
-        return (GameRecordUtils.getDirectionScore(direction) - Constants.HKG_START_POINTS);
-    },
-    get_player_score(direction) {
-        return GameRecordUtils.getDirectionScore(direction);
-    },
-    get_player_score_final(direction) {
-        return GameRecordUtils.getDirectionScore(direction);
-    },
-    // Show what a player's Elo change will look like if game is ended now
-    get_expected_elo_change(direction) {
+    /**
+     * Returns a game object to display
+     *
+     * @returns a formatted game object
+     */
+    getGame() {
+	return {
+	    style: Constants.GAME_TYPE.HONG_KONG,
+	    players: [Session.get("current_east"),
+		      Session.get("current_south"),
+		      Session.get("current_west"),
+		      Session.get("current_north")],
 
-        let eastPlayer  = Session.get("current_east");
-        let southPlayer = Session.get("current_south");
-        let westPlayer  = Session.get("current_west");
-        let northPlayer = Session.get("current_north");
-
-        if (eastPlayer  == Constants.DEFAULT_EAST ||
-            southPlayer == Constants.DEFAULT_SOUTH ||
-            westPlayer  == Constants.DEFAULT_WEST ||
-            northPlayer == Constants.DEFAULT_NORTH) {
-            return "N/A";
-        }
-
-        let game = {
-            timestamp: Date.now(),
-            east_player: eastPlayer,
-            south_player: southPlayer,
-            west_player: westPlayer,
-            north_player: northPlayer,
-            east_score: (Number(Session.get("east_score"))),
-            south_score: (Number(Session.get("south_score"))),
-            west_score: (Number(Session.get("west_score"))),
-            north_score: (Number(Session.get("north_score"))),
-            all_hands: Template.instance().hands.get(),
-        };
-
-        let hkEloCalculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
-                                                Constants.ELO_CALCULATOR_EXP,
-                                                Constants.HKG_SCORE_ADJUSTMENT,
-                                                game,
-                                                Constants.GAME_TYPE.HONG_KONG);
-
-        switch (direction) {
-        case Constants.EAST:  return hkEloCalculator.eloChange(eastPlayer).toFixed(2);
-        case Constants.SOUTH: return hkEloCalculator.eloChange(southPlayer).toFixed(2);
-        case Constants.WEST:  return hkEloCalculator.eloChange(westPlayer).toFixed(2);
-        case Constants.NORTH: return hkEloCalculator.eloChange(northPlayer).toFixed(2);
-        };
-    },
-    get_hk_elo(player) {
-        switch (player) {
-        case Constants.DEFAULT_EAST:
-        case Constants.DEFAULT_SOUTH:
-        case Constants.DEFAULT_WEST:
-        case Constants.DEFAULT_NORTH:
-            return "?";
-        default:
-            return Players.findOne({hongKongLeagueName: player}).hongKongElo.toFixed(2);
-        };
-    },
-    // Return a string of the round wind for Hong Kong style
-    displayRoundWind(round) {
-        return GameRecordUtils.displayRoundWind(round, Constants.GAME_TYPE.HONG_KONG);
-    },
-    // Return the current round number for Hong Kong style
-    displayRoundNumber(round) {
-        return GameRecordUtils.handNumberToRoundNumber(round,
-                                                       Constants.GAME_TYPE.HONG_KONG);
-    },
-});
-
-Template.render_hand.helpers({
-    is_dealin(hand_type) {
-        return hand_type == Constants.DEAL_IN;
-    },
-    is_selfdraw(hand_type) {
-        return hand_type == Constants.SELF_DRAW;
-    },
-    is_nowin(hand_type) {
-        return hand_type == Constants.NO_WIN;
-    },
-    is_restart(hand_type) {
-        return hand_type == Constants.RESTART;
-    },
-    is_mistake(hand_type) {
-        return hand_type == Constants.MISTAKE;
-    },
-    // Return a string of the round wind for Hong Kong style
-    displayRoundWind(round) {
-        return GameRecordUtils.displayRoundWind(round, Constants.GAME_TYPE.HONG_KONG);
-    },
-    // Return the current round number for Hong Kong style
-    displayRoundNumber(round) {
-        return GameRecordUtils.handNumberToRoundNumber(round,
-                                                       Constants.GAME_TYPE.HONG_KONG);
-    },
+	    hands: Template.instance().hands.get()
+	};
+    }
 });
 
 // Helper for point selection dropdown
