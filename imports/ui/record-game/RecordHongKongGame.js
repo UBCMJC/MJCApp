@@ -200,7 +200,6 @@ Template.RecordHongKongGame.events({
 
         if ( !$( event.target ).hasClass( "disabled")) {
             let pnt = Number(Session.get("current_points"));
-            console.log(template.hand_type.get());
             //Do nothing if we don't have players yet
             if (GameRecordUtils.allPlayersSelected() ) {
                 switch(template.hand_type.get()) {
