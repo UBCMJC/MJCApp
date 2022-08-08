@@ -7,9 +7,10 @@ export const JapaneseHands = new Mongo.Collection('japaneseHands');
 export const InProgressHongKongHands = new Mongo.Collection('inProgressHongKongHands');
 export const InProgressJapaneseHands = new Mongo.Collection('inProgressJapaneseHands');
 
-//if (Meteor.isServer){
-//    InProgressJapaneseHands.createIndex( { "timestamp": 1}, { expireAfterSeconds: 10} );
-//}
+if (Meteor.isServer){
+   InProgressJapaneseHands.createIndex( { "timestamp": 1}, { expireAfterSeconds: 21600} ); // TTL is 6 hours
+   InProgressHongKongHands.createIndex( { "timestamp": 1}, { expireAfterSeconds: 21600} );
+}
 
 Meteor.methods({
   canRetrievePlayer: function () {

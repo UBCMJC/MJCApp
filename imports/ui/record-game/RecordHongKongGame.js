@@ -127,7 +127,7 @@ Template.RecordHongKongGame.helpers({
         }
 
         let game = {
-            timestamp: Date.now(),
+            timestamp: new Date(),
             east_player: eastPlayer,
             south_player: southPlayer,
             west_player: westPlayer,
@@ -290,7 +290,7 @@ Template.RecordHongKongGame.events({
         let north_player= Session.get("current_north");
 
         let game = {
-                timestamp: Date.now(),
+                timestamp: new Date(),
                 east_player: east_player,
                 south_player: south_player,
                 west_player: west_player,
@@ -626,7 +626,7 @@ function save_game_to_database(hands_array) {
     let north_player= Session.get("current_north");
 
     let game = {
-        timestamp: Date.now(),
+        timestamp: new Date(),
         east_player: east_player,
         south_player: south_player,
         west_player: west_player,

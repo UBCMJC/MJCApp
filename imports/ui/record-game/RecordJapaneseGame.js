@@ -253,7 +253,7 @@ Template.RecordJapaneseGame.helpers({
         }
 
         let game = {
-            timestamp: Date.now(),
+            timestamp: new Date(),
             east_player: eastPlayer,
             south_player: southPlayer,
             west_player: westPlayer,
@@ -473,7 +473,7 @@ Template.RecordJapaneseGame.events({
         let north_player= Session.get("current_north");
 
         let game = {
-            timestamp: Date.now(),
+            timestamp: new Date(),
             east_player: east_player,
             south_player: south_player,
             west_player: west_player,
