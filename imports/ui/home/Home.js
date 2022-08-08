@@ -55,6 +55,7 @@ Template.Home.events({
         if (game_type == Constants.GAME_TYPE.JAPANESE) {
             let game = InProgressJapaneseHands.findOne(event.currentTarget.dataset["game"]);
             Session.set("game_summary", game);
+            console.log(game);
             $("#jpn-game-modal").modal('show');
         } else {
             let game = InProgressHongKongHands.findOne(event.currentTarget.dataset["game"]);

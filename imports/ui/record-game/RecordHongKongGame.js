@@ -280,10 +280,10 @@ Template.RecordHongKongGame.events({
                 document.getElementById("hk_game_buttons").style.display = "block";
             } else {
                 window.alert("Please enter all 4 player names!");
+                return;
             }
         }
 
-        let position;
         let east_player = Session.get("current_east");
         let south_player= Session.get("current_south");
         let west_player = Session.get("current_west");
@@ -533,6 +533,9 @@ Template.RecordHongKongGame.events({
 
                     //Deletes all hands to reset to empty game
                     while (template.hands.pop()) {}
+
+                    GameRecordUtils.resetGameValues();
+
                     Session.set("east_score", Constants.HKG_START_POINTS);
                     Session.set("south_score", Constants.HKG_START_POINTS);
                     Session.set("west_score", Constants.HKG_START_POINTS);
@@ -585,6 +588,9 @@ Template.RecordHongKongGame.events({
 
             //Deletes all hands
             while (template.hands.pop()) {}
+
+            GameRecordUtils.resetGameValues();
+
             Session.set("east_score", Constants.HKG_START_POINTS);
             Session.set("south_score", Constants.HKG_START_POINTS);
             Session.set("west_score", Constants.HKG_START_POINTS);
