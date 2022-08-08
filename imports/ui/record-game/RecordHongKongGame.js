@@ -20,7 +20,7 @@ Template.RecordHongKongGame.onCreated( function() {
         if (localStorage.getItem("game_type") !== "hk") {
             return;
         }
-        Meteor.call('getInProgressHongKongGame', Session.get("game_id"), function (error, game) {
+        Meteor.call('canRetrieveInProgressHongKongGame', function (error, game) {
             for (let i = 0; i < game.all_hands.length; i++) {
                 let hand = game.all_hands[i];
                 self.hands.push({

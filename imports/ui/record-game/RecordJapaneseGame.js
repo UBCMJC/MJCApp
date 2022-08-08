@@ -55,7 +55,11 @@ Template.RecordJapaneseGame.onCreated( function() {
         if (localStorage.getItem("game_type") !== "jp") {
             return;
         }
-        Meteor.call('getInProgressJapaneseGame', Session.get("game_id"), function (error, game) {
+        Meteor.call('canRetrieveInProgressJapaneseGame', Session.get("game_id"), function (error, game) {
+            if (game === undefined) {
+                localStorage.clear();
+                return;
+            }
             for (let i = 0; i < game.all_hands.length; i++) {
                 let hand = game.all_hands[i];
                 self.hands.push({
@@ -72,7 +76,7 @@ Template.RecordJapaneseGame.onCreated( function() {
                 });
             }
 
-            Meteor.call('canRetrievePlayer', game.east_player, function (error, exists) {
+            Meteor.call('canRetrievePlayer', function (error) {
                 Session.set("current_east", game.east_player);
                 Session.set("current_south", game.south_player);
                 Session.set("current_west", game.west_player);
@@ -89,6 +93,7 @@ Template.RecordJapaneseGame.onCreated( function() {
 
             for (let i = 0; i < game.riichi_sum_history.length; i++) {
                 self.riichi_sum_history.push(game.riichi_sum_history[i]);
+                self.riichi_round_history.push(game.riichi_round_history[i]);
             }
             Session.set("free_riichi_sticks", game.free_riichi_sticks);
 
@@ -462,7 +467,6 @@ Template.RecordJapaneseGame.events({
             }
         }
 
-        let position;
         let east_player = Session.get("current_east");
         let south_player= Session.get("current_south");
         let west_player = Session.get("current_west");
@@ -482,6 +486,7 @@ Template.RecordJapaneseGame.events({
             current_bonus: 0,
             free_riichi_sticks: 0,
             riichi_sum_history: [],
+            riichi_round_history: [],
             all_hands: [],
             eastPlayerWins: 0,
             southPlayerWins: 0,
@@ -512,10 +517,13 @@ Template.RecordJapaneseGame.events({
             westPlayerDoraSum: 0,
             northPlayerDoraSum: 0,
         };
-        Session.set("game_id", InProgressJapaneseHands.insert(game));
-        localStorage.setItem("game_id", Session.get("game_id"));
-        localStorage.setItem("game_type", "jp");
-        localStorage.setItem("game_over", 0);
+        Meteor.call('insertInProgressJapaneseGame', game, function (error, game_id) {
+            Session.set("game_id", game_id);
+            localStorage.setItem("game_id", Session.get("game_id"));
+            localStorage.setItem("game_type", "jp");
+            localStorage.setItem("game_over", 0);
+        });
+
     },
 
     //Submission of a hand
@@ -624,49 +632,56 @@ Template.RecordJapaneseGame.events({
                     console.log(handType);
                     break;
                 };
-            }
-            else {
+            } else {
                 window.alert("You need to fill out the player information!");
                 return;
             }
 
             let current_hand = template.hands.get()[template.hands.get().length - 1];
-            InProgressJapaneseHands.update({_id: Session.get("game_id")},
-                        {$set:{all_hands: template.hands.get(),
-                               current_round: Session.get("current_round"),
-                               current_bonus: Session.get("current_bonus"),
-                               free_riichi_sticks: Session.get("free_riichi_sticks"),
-                               riichi_sum_history: template.riichi_sum_history,
-                               eastPlayerWins: Session.get("eastPlayerWins"),
-                               southPlayerWins: Session.get("southPlayerWins"),
-                               westPlayerWins: Session.get("westPlayerWins"),
-                               northPlayerWins: Session.get("northPlayerWins"),
-                               eastPlayerLosses: Session.get("eastPlayerLosses"),
-                               southPlayerLosses: Session.get("southPlayerLosses"),
-                               westPlayerLosses: Session.get("westPlayerLosses"),
-                               northPlayerLosses: Session.get("northPlayerLosses"),
-                               eastPlayerPointsWon: Session.get("eastPlayerPointsWon"),
-                               southPlayerPointsWon: Session.get("southPlayerPointsWon"),
-                               westPlayerPointsWon: Session.get("westPlayerPointsWon"),
-                               northPlayerPointsWon: Session.get("northPlayerPointsWon"),
-                               eastMistakeTotal: Session.get("eastMistakeTotal"),
-                               southMistakeTotal: Session.get("southMistakeTotal"),
-                               westMistakeTotal: Session.get("westMistakeTotal"),
-                               northMistakeTotal: Session.get("northMistakeTotal"),
-                               east_riichi_sum: Session.get("east_riichi_sum"),
-                               south_riichi_sum: Session.get("south_riichi_sum"),
-                               west_riichi_sum: Session.get("west_riichi_sum"),
-                               north_riichi_sum: Session.get("north_riichi_sum"),
-                               eastPlayerRiichisWon: Session.get("eastPlayerRiichisWon"),
-                               southPlayerRiichisWon: Session.get("southPlayerRiichisWon"),
-                               westPlayerRiichisWon: Session.get("westPlayerRiichisWon"),
-                               northPlayerRiichisWon: Session.get("northPlayerRiichisWon"),
-                               eastPlayerDoraSum: Session.get("eastPlayerDoraSum"),
-                               southPlayerDoraSum: Session.get("southPlayerDoraSum"),
-                               westPlayerDoraSum: Session.get("westPlayerDoraSum"),
-                               northPlayerDoraSum: Session.get("northPlayerDoraSum")},
-                        $inc: {east_score: current_hand.eastDelta, south_score: current_hand.southDelta,
-                               west_score: current_hand.westDelta, north_score: current_hand.northDelta}});
+
+            let game = {
+               game_id: Session.get("game_id"),
+               all_hands: template.hands.get(),
+               current_round: Session.get("current_round"),
+               current_bonus: Session.get("current_bonus"),
+               free_riichi_sticks: Session.get("free_riichi_sticks"),
+               riichi_sum_history: template.riichi_sum_history,
+               riichi_round_history: template.riichi_round_history,
+               eastPlayerWins: Session.get("eastPlayerWins"),
+               southPlayerWins: Session.get("southPlayerWins"),
+               westPlayerWins: Session.get("westPlayerWins"),
+               northPlayerWins: Session.get("northPlayerWins"),
+               eastPlayerLosses: Session.get("eastPlayerLosses"),
+               southPlayerLosses: Session.get("southPlayerLosses"),
+               westPlayerLosses: Session.get("westPlayerLosses"),
+               northPlayerLosses: Session.get("northPlayerLosses"),
+               eastPlayerPointsWon: Session.get("eastPlayerPointsWon"),
+               southPlayerPointsWon: Session.get("southPlayerPointsWon"),
+               westPlayerPointsWon: Session.get("westPlayerPointsWon"),
+               northPlayerPointsWon: Session.get("northPlayerPointsWon"),
+               eastMistakeTotal: Session.get("eastMistakeTotal"),
+               southMistakeTotal: Session.get("southMistakeTotal"),
+               westMistakeTotal: Session.get("westMistakeTotal"),
+               northMistakeTotal: Session.get("northMistakeTotal"),
+               east_riichi_sum: Session.get("east_riichi_sum"),
+               south_riichi_sum: Session.get("south_riichi_sum"),
+               west_riichi_sum: Session.get("west_riichi_sum"),
+               north_riichi_sum: Session.get("north_riichi_sum"),
+               eastPlayerRiichisWon: Session.get("eastPlayerRiichisWon"),
+               southPlayerRiichisWon: Session.get("southPlayerRiichisWon"),
+               westPlayerRiichisWon: Session.get("westPlayerRiichisWon"),
+               northPlayerRiichisWon: Session.get("northPlayerRiichisWon"),
+               eastPlayerDoraSum: Session.get("eastPlayerDoraSum"),
+               southPlayerDoraSum: Session.get("southPlayerDoraSum"),
+               westPlayerDoraSum: Session.get("westPlayerDoraSum"),
+               northPlayerDoraSum: Session.get("northPlayerDoraSum"),
+               eastDelta: current_hand.eastDelta,
+               southDelta: current_hand.southDelta,
+               westDelta: current_hand.westDelta,
+               northDelta: current_hand.northDelta
+            };
+
+            Meteor.call('updateInProgressJapaneseGame', game);
 
             // If game ending conditions are met, do not allow more hand submissions and allow game submission
             if (GameRecordUtils.japaneseGameOver(handType)) {
@@ -675,7 +690,6 @@ Template.RecordJapaneseGame.events({
                 $( ".submit_game_button" ).removeClass( "disabled" );
             }
         }
-
     },
     //Remove the last submitted hand
     'click .delete_hand_button'(event, template) {
@@ -694,7 +708,7 @@ Template.RecordJapaneseGame.events({
                 Session.set("current_round", del_hand.round);
 
                 //Set free riichi sticks to last round's value
-                Session.set("free_riichi_sticks", template.riichi_sum_history.pop())
+                Session.set("free_riichi_sticks", template.riichi_sum_history.pop());
 
                 let riichiHistory = template.riichi_round_history.pop();
                 if (riichiHistory.east == true)
@@ -731,45 +745,49 @@ Template.RecordJapaneseGame.events({
                     $( ".delete_hand_button" ).addClass( "disabled" );
                 }
 
-                InProgressJapaneseHands.update({_id: Session.get("game_id")},
-                            {$set:{all_hands: template.hands.get(),
-                                   current_round: Session.get("current_round"),
-                                   current_bonus: Session.get("current_bonus"),
-                                   free_riichi_sticks: Session.get("free_riichi_sticks"),
-                                   riichi_sum_history: template.riichi_sum_history,
-                                   east_score: Session.get("east_score"),
-                                   south_score: Session.get("south_score"),
-                                   west_score: Session.get("west_score"),
-                                   north_score: Session.get("north_score"),
-                                   eastPlayerWins: Session.get("eastPlayerWins"),
-                                  southPlayerWins: Session.get("southPlayerWins"),
-                                  westPlayerWins: Session.get("westPlayerWins"),
-                                  northPlayerWins: Session.get("northPlayerWins"),
-                                  eastPlayerLosses: Session.get("eastPlayerLosses"),
-                                  southPlayerLosses: Session.get("southPlayerLosses"),
-                                  westPlayerLosses: Session.get("westPlayerLosses"),
-                                  northPlayerLosses: Session.get("northPlayerLosses"),
-                                  eastPlayerPointsWon: Session.get("eastPlayerPointsWon"),
-                                  southPlayerPointsWon: Session.get("southPlayerPointsWon"),
-                                  westPlayerPointsWon: Session.get("westPlayerPointsWon"),
-                                  northPlayerPointsWon: Session.get("northPlayerPointsWon"),
-                                  eastMistakeTotal: Session.get("eastMistakeTotal"),
-                                  southMistakeTotal: Session.get("southMistakeTotal"),
-                                  westMistakeTotal: Session.get("westMistakeTotal"),
-                                  northMistakeTotal: Session.get("northMistakeTotal"),
-                                  east_riichi_sum: Session.get("east_riichi_sum"),
-                                  south_riichi_sum: Session.get("south_riichi_sum"),
-                                  west_riichi_sum: Session.get("west_riichi_sum"),
-                                  north_riichi_sum: Session.get("north_riichi_sum"),
-                                  eastPlayerRiichisWon: Session.get("eastPlayerRiichisWon"),
-                                  southPlayerRiichisWon: Session.get("southPlayerRiichisWon"),
-                                  westPlayerRiichisWon: Session.get("westPlayerRiichisWon"),
-                                  northPlayerRiichisWon: Session.get("northPlayerRiichisWon"),
-                                  eastPlayerDoraSum: Session.get("eastPlayerDoraSum"),
-                                  southPlayerDoraSum: Session.get("southPlayerDoraSum"),
-                                  westPlayerDoraSum: Session.get("westPlayerDoraSum"),
-                                  northPlayerDoraSum: Session.get("northPlayerDoraSum")}});
+                let game = {
+                   game_id: Session.get("game_id"),
+                   all_hands: template.hands.get(),
+                   current_round: Session.get("current_round"),
+                   current_bonus: Session.get("current_bonus"),
+                   free_riichi_sticks: Session.get("free_riichi_sticks"),
+                   riichi_sum_history: template.riichi_sum_history,
+                   riichi_round_history: template.riichi_round_history,
+                   eastPlayerWins: Session.get("eastPlayerWins"),
+                   southPlayerWins: Session.get("southPlayerWins"),
+                   westPlayerWins: Session.get("westPlayerWins"),
+                   northPlayerWins: Session.get("northPlayerWins"),
+                   eastPlayerLosses: Session.get("eastPlayerLosses"),
+                   southPlayerLosses: Session.get("southPlayerLosses"),
+                   westPlayerLosses: Session.get("westPlayerLosses"),
+                   northPlayerLosses: Session.get("northPlayerLosses"),
+                   eastPlayerPointsWon: Session.get("eastPlayerPointsWon"),
+                   southPlayerPointsWon: Session.get("southPlayerPointsWon"),
+                   westPlayerPointsWon: Session.get("westPlayerPointsWon"),
+                   northPlayerPointsWon: Session.get("northPlayerPointsWon"),
+                   eastMistakeTotal: Session.get("eastMistakeTotal"),
+                   southMistakeTotal: Session.get("southMistakeTotal"),
+                   westMistakeTotal: Session.get("westMistakeTotal"),
+                   northMistakeTotal: Session.get("northMistakeTotal"),
+                   east_riichi_sum: Session.get("east_riichi_sum"),
+                   south_riichi_sum: Session.get("south_riichi_sum"),
+                   west_riichi_sum: Session.get("west_riichi_sum"),
+                   north_riichi_sum: Session.get("north_riichi_sum"),
+                   eastPlayerRiichisWon: Session.get("eastPlayerRiichisWon"),
+                   southPlayerRiichisWon: Session.get("southPlayerRiichisWon"),
+                   westPlayerRiichisWon: Session.get("westPlayerRiichisWon"),
+                   northPlayerRiichisWon: Session.get("northPlayerRiichisWon"),
+                   eastPlayerDoraSum: Session.get("eastPlayerDoraSum"),
+                   southPlayerDoraSum: Session.get("southPlayerDoraSum"),
+                   westPlayerDoraSum: Session.get("westPlayerDoraSum"),
+                   northPlayerDoraSum: Session.get("northPlayerDoraSum"),
+                   eastDelta: - Number(del_hand.eastDelta),
+                   southDelta: - Number(del_hand.southDelta),
+                   westDelta: - Number(del_hand.westDelta),
+                   northDelta: - Number(del_hand.northDelta)
+                };
 
+                Meteor.call('updateInProgressJapaneseGame', game);
             }
         }
     },
@@ -784,7 +802,7 @@ Template.RecordJapaneseGame.events({
                     localStorage.clear();
 
                     //deletes game from in progress database
-                    InProgressJapaneseHands.remove({_id: Session.get("game_id")});
+                    Meteor.call('removeInProgressJapaneseGame', Session.get("game_id"));
 
                     //resets page UI
                     document.getElementById("jpn_names").style.display = "block";
@@ -947,8 +965,6 @@ Template.RecordJapaneseGame.events({
 
 // Save the currently recorded game to database and update player statistics
 function save_game_to_database(hands_array) {
-    let position;
-
     let east_player = Session.get("current_east");
     let south_player= Session.get("current_south");
     let west_player = Session.get("current_west");
@@ -973,102 +989,66 @@ function save_game_to_database(hands_array) {
                                                Constants.JPN_SCORE_ADJUSTMENT,
                                                game,
                                                Constants.GAME_TYPE.JAPANESE);
-    let east_elo_delta = jpn_elo_calculator.eloChange(east_player);
-    let south_elo_delta = jpn_elo_calculator.eloChange(south_player);
-    let west_elo_delta = jpn_elo_calculator.eloChange(west_player);
-    let north_elo_delta = jpn_elo_calculator.eloChange(north_player);
 
-    let east_id = Players.findOne({japaneseLeagueName: east_player}, {})._id;
-    let south_id = Players.findOne({japaneseLeagueName: south_player}, {})._id;
-    let west_id = Players.findOne({japaneseLeagueName: west_player}, {})._id;
-    let north_id = Players.findOne({japaneseLeagueName: north_player}, {})._id;
+    let game2 = {
+        positions: Constants.WINDS.map((wind) => ({ wind, score: Session.get(wind + "_score") })).sort((a, b) => b.score - a.score),
+        hands_array_length: hands_array.length,
+        east_elo_delta: jpn_elo_calculator.eloChange(east_player),
+        south_elo_delta: jpn_elo_calculator.eloChange(south_player),
+        west_elo_delta: jpn_elo_calculator.eloChange(west_player),
+        north_elo_delta: jpn_elo_calculator.eloChange(north_player),
+        east_id: Players.findOne({japaneseLeagueName: east_player}, {})._id,
+        south_id: Players.findOne({japaneseLeagueName: south_player}, {})._id,
+        west_id: Players.findOne({japaneseLeagueName: west_player}, {})._id,
+        north_id: Players.findOne({japaneseLeagueName: north_player}, {})._id,
+        east_score: Session.get("east_score"),
+        south_score: Session.get("south_score"),
+        west_score: Session.get("west_score"),
+        north_score: Session.get("north_score"),
+        eastPlayerWins: Session.get("eastPlayerWins"),
+        southPlayerWins: Session.get("southPlayerWins"),
+        westPlayerWins: Session.get("westPlayerWins"),
+        northPlayerWins: Session.get("northPlayerWins"),
+        eastPlayerLosses: Session.get("eastPlayerLosses"),
+        southPlayerLosses: Session.get("southPlayerLosses"),
+        westPlayerLosses: Session.get("westPlayerLosses"),
+        northPlayerLosses: Session.get("northPlayerLosses"),
+        eastMistakeTotal: Session.get("eastMistakeTotal"),
+        southMistakeTotal: Session.get("southMistakeTotal"),
+        westMistakeTotal: Session.get("westMistakeTotal"),
+        northMistakeTotal: Session.get("northMistakeTotal"),
+        eastPlayerPointsWon: Session.get("eastPlayerPointsWon"),
+        southPlayerPointsWon: Session.get("southPlayerPointsWon"),
+        westPlayerPointsWon: Session.get("westPlayerPointsWon"),
+        northPlayerPointsWon: Session.get("northPlayerPointsWon"),
+        eastMistakeTotal: Session.get("eastMistakeTotal"),
+        southMistakeTotal: Session.get("southMistakeTotal"),
+        westMistakeTotal: Session.get("westMistakeTotal"),
+        northMistakeTotal: Session.get("northMistakeTotal"),
+        east_riichi_sum: Session.get("east_riichi_sum"),
+        south_riichi_sum: Session.get("south_riichi_sum"),
+        west_riichi_sum: Session.get("west_riichi_sum"),
+        north_riichi_sum: Session.get("north_riichi_sum"),
+        eastPlayerRiichisWon: Session.get("eastPlayerRiichisWon"),
+        southPlayerRiichisWon: Session.get("southPlayerRiichisWon"),
+        westPlayerRiichisWon: Session.get("westPlayerRiichisWon"),
+        northPlayerRiichisWon: Session.get("northPlayerRiichisWon"),
+        eastPlayerDoraSum: Session.get("eastPlayerDoraSum"),
+        southPlayerDoraSum: Session.get("southPlayerDoraSum"),
+        westPlayerDoraSum: Session.get("westPlayerDoraSum"),
+        northPlayerDoraSum: Session.get("northPlayerDoraSum")
+    };
 
-    if (east_elo_delta != NaN && south_elo_delta != NaN && west_elo_delta != NaN && north_elo_delta != NaN) {
-        // Save ELO
-        Players.update({_id: east_id}, {$inc: {japaneseElo: Number(east_elo_delta)}});
-        Players.update({_id: south_id}, {$inc: {japaneseElo: Number(south_elo_delta)}});
-        Players.update({_id: west_id}, {$inc: {japaneseElo: Number(west_elo_delta)}});
-        Players.update({_id: north_id}, {$inc: {japaneseElo: Number(north_elo_delta)}});
+    let idMappings = { east: game2.east_id, south: game2.south_id, west: game2.west_id, north: game2.north_id };
 
-        // Update number of games
-        Players.update({_id: east_id}, {$inc: {japaneseGamesPlayed: 1}});
-        Players.update({_id: south_id}, {$inc: {japaneseGamesPlayed: 1}});
-        Players.update({_id: west_id}, {$inc: {japaneseGamesPlayed: 1}});
-        Players.update({_id: north_id}, {$inc: {japaneseGamesPlayed: 1}});
-
-        // Update bankruptcy count
-        if (Number(Session.get("east_score")) < 0)
-            Players.update({_id: east_id}, {$inc: {japaneseBankruptTotal: 1}});
-        if (Number(Session.get("south_score")) < 0)
-            Players.update({_id: south_id}, {$inc: {japaneseBankruptTotal: 1}});
-        if (Number(Session.get("west_score")) < 0)
-            Players.update({_id: west_id}, {$inc: {japaneseBankruptTotal: 1}});
-        if (Number(Session.get("north_score")) < 0)
-            Players.update({_id: north_id}, {$inc: {japaneseBankruptTotal: 1}});
-
-        // Save chombo counts
-        Players.update({_id: east_id}, {$inc: {japaneseChomboTotal: Number(Session.get("eastMistakeTotal"))}});
-        Players.update({_id: south_id}, {$inc: {japaneseChomboTotal: Number(Session.get("southMistakeTotal"))}});
-        Players.update({_id: west_id}, {$inc: {japaneseChomboTotal: Number(Session.get("westMistakeTotal"))}});
-        Players.update({_id: north_id}, {$inc: {japaneseChomboTotal: Number(Session.get("northMistakeTotal"))}});
-
-        // Update riichi count
-        Players.update({_id: east_id}, {$inc: {japaneseRiichiTotal: Number(Session.get("east_riichi_sum"))}});
-        Players.update({_id: south_id}, {$inc: {japaneseRiichiTotal: Number(Session.get("south_riichi_sum"))}});
-        Players.update({_id: west_id}, {$inc: {japaneseRiichiTotal: Number(Session.get("west_riichi_sum"))}});
-        Players.update({_id: north_id}, {$inc: {japaneseRiichiTotal: Number(Session.get("north_riichi_sum"))}});
-
-        // Update hands count (Includes chombos, do we want this?)
-        Players.update({_id: east_id}, {$inc: {japaneseHandsTotal: hands_array.length}});
-        Players.update({_id: south_id}, {$inc: {japaneseHandsTotal: hands_array.length}});
-        Players.update({_id: west_id}, {$inc: {japaneseHandsTotal: hands_array.length}});
-        Players.update({_id: north_id}, {$inc: {japaneseHandsTotal: hands_array.length}});
-
-        // Save number of hands won
-        Players.update({_id: east_id}, {$inc: {japaneseHandsWin: Number(Session.get("eastPlayerWins"))}});
-        Players.update({_id: south_id}, {$inc: {japaneseHandsWin: Number(Session.get("southPlayerWins"))}});
-        Players.update({_id: west_id}, {$inc: {japaneseHandsWin: Number(Session.get("westPlayerWins"))}});
-        Players.update({_id: north_id}, {$inc: {japaneseHandsWin: Number(Session.get("northPlayerWins"))}});
-
-        // Save number of points won
-        Players.update({_id: east_id}, {$inc: {japaneseWinPointsTotal: Number(Session.get("eastPlayerPointsWon"))}});
-        Players.update({_id: south_id}, {$inc: {japaneseWinPointsTotal: Number(Session.get("southPlayerPointsWon"))}});
-        Players.update({_id: west_id}, {$inc: {japaneseWinPointsTotal: Number(Session.get("westPlayerPointsWon"))}});
-        Players.update({_id: north_id}, {$inc: {japaneseWinPointsTotal: Number(Session.get("northPlayerPointsWon"))}});
-
-        // Update total dora
-        Players.update({_id: east_id}, {$inc: {japaneseWinDoraTotal: Number(Session.get("eastPlayerDoraSum"))}});
-        Players.update({_id: south_id}, {$inc: {japaneseWinDoraTotal: Number(Session.get("southPlayerDoraSum"))}});
-        Players.update({_id: west_id}, {$inc: {japaneseWinDoraTotal: Number(Session.get("westPlayerDoraSum"))}});
-        Players.update({_id: north_id}, {$inc: {japaneseWinDoraTotal: Number(Session.get("northPlayerDoraSum"))}});
-
-        // Save number of riichied hands won
-        Players.update({_id: east_id}, {$inc: {japaneseWinRiichiTotal: Number(Session.get("eastPlayerRiichisWon"))}});
-        Players.update({_id: south_id}, {$inc: {japaneseWinRiichiTotal: Number(Session.get("southPlayerRiichisWon"))}});
-        Players.update({_id: west_id}, {$inc: {japaneseWinRiichiTotal: Number(Session.get("westPlayerRiichisWon"))}});
-        Players.update({_id: north_id}, {$inc: {japaneseWinRiichiTotal: Number(Session.get("northPlayerRiichisWon"))}});
-
-        // Save number of hands lost
-        Players.update({_id: east_id}, {$inc: {japaneseHandsLose: Number(Session.get("eastPlayerLosses"))}});
-        Players.update({_id: south_id}, {$inc: {japaneseHandsLose: Number(Session.get("southPlayerLosses"))}});
-        Players.update({_id: west_id}, {$inc: {japaneseHandsLose: Number(Session.get("westPlayerLosses"))}});
-        Players.update({_id: north_id}, {$inc: {japaneseHandsLose: Number(Session.get("northPlayerLosses"))}});
-
-        // Calculates all positions quickly
-        let positions = Constants.WINDS.map((wind) => ({ wind, score: Session.get(wind + "_score") })).sort((a, b) => b.score - a.score);
-        let idMappings = { east: east_id, south: south_id, west: west_id, north: north_id };
-
-        Players.update({ _id: idMappings[positions[0].wind] }, { $inc: { japaneseFirstPlaceSum: 1 }});
-        Players.update({ _id: idMappings[positions[1].wind] }, { $inc: { japaneseSecondPlaceSum: 1 }});
-        Players.update({ _id: idMappings[positions[2].wind] }, { $inc: { japaneseThirdPlaceSum: 1 }});
-        Players.update({ _id: idMappings[positions[3].wind] }, { $inc: { japaneseFourthPlaceSum: 1 }});
-    }
+    //updates player info
+    Meteor.call('updatePlayers', game2, idMappings);
 
     //Save game to database
-    JapaneseHands.insert(game);
+    Meteor.call('insertJapaneseGame', game);
 
     //deletes game from in progress database
-    InProgressJapaneseHands.remove({_id: Session.get("game_id")});
+    Meteor.call('removeInProgressJapaneseGame', Session.get("game_id"));
 };
 
 function push_dealin_hand(template) {
