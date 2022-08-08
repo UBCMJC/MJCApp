@@ -319,10 +319,12 @@ Template.RecordHongKongGame.events({
                 westMistakeTotal: 0,
                 northMistakeTotal: 0
         };
-        Session.set("game_id", InProgressHongKongHands.insert(game));
-        localStorage.setItem("game_id", Session.get("game_id"));
-        localStorage.setItem("game_type", "hk");
-        localStorage.setItem("game_over", 0);
+        Meteor.call('insertInProgressHongKongGame', game, function (error, game_id) {
+            Session.set("game_id", game_id);
+            localStorage.setItem("game_id", Session.get("game_id"));
+            localStorage.setItem("game_type", "hk");
+            localStorage.setItem("game_over", 0);
+        });
     },
     //Submission of a hand
     'click .submit_hand_button'(event, template) {
@@ -405,28 +407,35 @@ Template.RecordHongKongGame.events({
             }
 
             let current_hand = template.hands.get()[template.hands.get().length - 1];
-            InProgressHongKongHands.update({_id: Session.get("game_id")},
-                        {$set:{all_hands: template.hands.get(),
-                               current_round: Session.get("current_round"),
-                               current_bonus: Session.get("current_bonus"),
-                               eastPlayerWins: Session.get("eastPlayerWins"),
-                               southPlayerWins: Session.get("southPlayerWins"),
-                               westPlayerWins: Session.get("westPlayerWins"),
-                               northPlayerWins: Session.get("northPlayerWins"),
-                               eastPlayerLosses: Session.get("eastPlayerLosses"),
-                               southPlayerLosses: Session.get("southPlayerLosses"),
-                               westPlayerLosses: Session.get("westPlayerLosses"),
-                               northPlayerLosses: Session.get("northPlayerLosses"),
-                               eastPlayerPointsWon: Session.get("eastPlayerPointsWon"),
-                               southPlayerPointsWon: Session.get("southPlayerPointsWon"),
-                               westPlayerPointsWon: Session.get("westPlayerPointsWon"),
-                               northPlayerPointsWon: Session.get("northPlayerPointsWon"),
-                               eastMistakeTotal: Session.get("eastMistakeTotal"),
-                               southMistakeTotal: Session.get("southMistakeTotal"),
-                               westMistakeTotal: Session.get("westMistakeTotal"),
-                               northMistakeTotal: Session.get("northMistakeTotal")},
-                        $inc: {east_score: current_hand.eastDelta, south_score: current_hand.southDelta,
-                               west_score: current_hand.westDelta, north_score: current_hand.northDelta}});
+
+            let game = {
+               game_id: Session.get("game_id"),
+               all_hands: template.hands.get(),
+               current_round: Session.get("current_round"),
+               current_bonus: Session.get("current_bonus"),
+               eastPlayerWins: Session.get("eastPlayerWins"),
+               southPlayerWins: Session.get("southPlayerWins"),
+               westPlayerWins: Session.get("westPlayerWins"),
+               northPlayerWins: Session.get("northPlayerWins"),
+               eastPlayerLosses: Session.get("eastPlayerLosses"),
+               southPlayerLosses: Session.get("southPlayerLosses"),
+               westPlayerLosses: Session.get("westPlayerLosses"),
+               northPlayerLosses: Session.get("northPlayerLosses"),
+               eastPlayerPointsWon: Session.get("eastPlayerPointsWon"),
+               southPlayerPointsWon: Session.get("southPlayerPointsWon"),
+               westPlayerPointsWon: Session.get("westPlayerPointsWon"),
+               northPlayerPointsWon: Session.get("northPlayerPointsWon"),
+               eastMistakeTotal: Session.get("eastMistakeTotal"),
+               southMistakeTotal: Session.get("southMistakeTotal"),
+               westMistakeTotal: Session.get("westMistakeTotal"),
+               northMistakeTotal: Session.get("northMistakeTotal"),
+               eastDelta: current_hand.eastDelta,
+               southDelta: current_hand.southDelta,
+               westDelta: current_hand.westDelta,
+               northDelta: current_hand.northDelta
+            }
+
+            Meteor.call('updateInProgressHongKongGame', game);
 
             if (GameRecordUtils.someoneBankrupt() ||
                 Session.get("current_round") > 16) {
@@ -473,32 +482,34 @@ Template.RecordHongKongGame.events({
                     $( ".delete_hand_button" ).addClass( "disabled" );
                 }
 
-                InProgressHongKongHands.update({_id: Session.get("game_id")},
-                        {$set:{all_hands: template.hands.get(),
-                               current_round: Session.get("current_round"),
-                               current_bonus: Session.get("current_bonus"),
-                               free_riichi_sticks: Session.get("free_riichi_sticks"),
-                               riichi_sum_history: template.riichi_sum_history,
-                               east_score: Session.get("east_score"),
-                               south_score: Session.get("south_score"),
-                               west_score: Session.get("west_score"),
-                               north_score: Session.get("north_score"),
-                               eastPlayerWins: Session.get("eastPlayerWins"),
-                               southPlayerWins: Session.get("southPlayerWins"),
-                               westPlayerWins: Session.get("westPlayerWins"),
-                               northPlayerWins: Session.get("northPlayerWins"),
-                               eastPlayerLosses: Session.get("eastPlayerLosses"),
-                               southPlayerLosses: Session.get("southPlayerLosses"),
-                               westPlayerLosses: Session.get("westPlayerLosses"),
-                               northPlayerLosses: Session.get("northPlayerLosses"),
-                               eastPlayerPointsWon: Session.get("eastPlayerPointsWon"),
-                               southPlayerPointsWon: Session.get("southPlayerPointsWon"),
-                               westPlayerPointsWon: Session.get("westPlayerPointsWon"),
-                               northPlayerPointsWon: Session.get("northPlayerPointsWon"),
-                               eastMistakeTotal: Session.get("eastMistakeTotal"),
-                               southMistakeTotal: Session.get("southMistakeTotal"),
-                               westMistakeTotal: Session.get("westMistakeTotal"),
-                               northMistakeTotal: Session.get("northMistakeTotal")}});
+                let game = {
+                   game_id: Session.get("game_id"),
+                   all_hands: template.hands.get(),
+                   current_round: Session.get("current_round"),
+                   current_bonus: Session.get("current_bonus"),
+                   eastPlayerWins: Session.get("eastPlayerWins"),
+                   southPlayerWins: Session.get("southPlayerWins"),
+                   westPlayerWins: Session.get("westPlayerWins"),
+                   northPlayerWins: Session.get("northPlayerWins"),
+                   eastPlayerLosses: Session.get("eastPlayerLosses"),
+                   southPlayerLosses: Session.get("southPlayerLosses"),
+                   westPlayerLosses: Session.get("westPlayerLosses"),
+                   northPlayerLosses: Session.get("northPlayerLosses"),
+                   eastPlayerPointsWon: Session.get("eastPlayerPointsWon"),
+                   southPlayerPointsWon: Session.get("southPlayerPointsWon"),
+                   westPlayerPointsWon: Session.get("westPlayerPointsWon"),
+                   northPlayerPointsWon: Session.get("northPlayerPointsWon"),
+                   eastMistakeTotal: Session.get("eastMistakeTotal"),
+                   southMistakeTotal: Session.get("southMistakeTotal"),
+                   westMistakeTotal: Session.get("westMistakeTotal"),
+                   northMistakeTotal: Session.get("northMistakeTotal"),
+                   eastDelta: - Number(del_hand.eastDelta),
+                   southDelta: - Number(del_hand.southDelta),
+                   westDelta: - Number(del_hand.westDelta),
+                   northDelta: - Number(del_hand.northDelta)
+                }
+
+                Meteor.call('updateInProgressHongKongGame', game);
             }
         }
     },
@@ -643,81 +654,52 @@ function save_game_to_database(hands_array) {
                                               Constants.HKG_SCORE_ADJUSTMENT,
                                               game,
                                               Constants.GAME_TYPE.HONG_KONG);
-    let east_elo_delta = hk_elo_calculator.eloChange(east_player);
-    let south_elo_delta = hk_elo_calculator.eloChange(south_player);
-    let west_elo_delta = hk_elo_calculator.eloChange(west_player);
-    let north_elo_delta = hk_elo_calculator.eloChange(north_player);
 
-    let east_id = Players.findOne({hongKongLeagueName: east_player}, {})._id;
-    let south_id = Players.findOne({hongKongLeagueName: south_player}, {})._id;
-    let west_id = Players.findOne({hongKongLeagueName: west_player}, {})._id;
-    let north_id = Players.findOne({hongKongLeagueName: north_player}, {})._id;
+    let game2 = {
+        positions: Constants.WINDS.map((wind) => ({ wind, score: Session.get(wind + "_score") })).sort((a, b) => b.score - a.score),
+        hands_array_length: hands_array.length,
+        east_elo_delta: hk_elo_calculator.eloChange(east_player),
+        south_elo_delta: hk_elo_calculator.eloChange(south_player),
+        west_elo_delta: hk_elo_calculator.eloChange(west_player),
+        north_elo_delta: hk_elo_calculator.eloChange(north_player),
+        east_player: east_player,
+        south_player: south_player,
+        west_player: west_player,
+        north_player: north_player,
+        east_score: Session.get("east_score"),
+        south_score: Session.get("south_score"),
+        west_score: Session.get("west_score"),
+        north_score: Session.get("north_score"),
+        eastPlayerWins: Session.get("eastPlayerWins"),
+        southPlayerWins: Session.get("southPlayerWins"),
+        westPlayerWins: Session.get("westPlayerWins"),
+        northPlayerWins: Session.get("northPlayerWins"),
+        eastPlayerLosses: Session.get("eastPlayerLosses"),
+        southPlayerLosses: Session.get("southPlayerLosses"),
+        westPlayerLosses: Session.get("westPlayerLosses"),
+        northPlayerLosses: Session.get("northPlayerLosses"),
+        eastMistakeTotal: Session.get("eastMistakeTotal"),
+        southMistakeTotal: Session.get("southMistakeTotal"),
+        westMistakeTotal: Session.get("westMistakeTotal"),
+        northMistakeTotal: Session.get("northMistakeTotal"),
+        eastPlayerPointsWon: Session.get("eastPlayerPointsWon"),
+        southPlayerPointsWon: Session.get("southPlayerPointsWon"),
+        westPlayerPointsWon: Session.get("westPlayerPointsWon"),
+        northPlayerPointsWon: Session.get("northPlayerPointsWon"),
+        eastMistakeTotal: Session.get("eastMistakeTotal"),
+        southMistakeTotal: Session.get("southMistakeTotal"),
+        westMistakeTotal: Session.get("westMistakeTotal"),
+        northMistakeTotal: Session.get("northMistakeTotal"),
+    };
 
-    if (east_elo_delta != NaN && south_elo_delta != NaN && west_elo_delta != NaN && north_elo_delta != NaN) {
-        // Save ELO
-        Players.update({_id: east_id}, {$inc: {hongKongElo: east_elo_delta}});
-        Players.update({_id: south_id}, {$inc: {hongKongElo: south_elo_delta}});
-        Players.update({_id: west_id}, {$inc: {hongKongElo: west_elo_delta}});
-        Players.update({_id: north_id}, {$inc: {hongKongElo: north_elo_delta}});
+    //updates player info
+    Meteor.call('updateHongKongPlayers', game2);
 
-        // Save number of games
-        Players.update({_id: east_id}, {$inc: {hongKongGamesPlayed: 1}});
-        Players.update({_id: south_id}, {$inc: {hongKongGamesPlayed: 1}});
-        Players.update({_id: west_id}, {$inc: {hongKongGamesPlayed: 1}});
-        Players.update({_id: north_id}, {$inc: {hongKongGamesPlayed: 1}});
+    //Save game to database
+    Meteor.call('insertHongKongGame', game);
 
-        // Save bankruptcy counts
-        if (Number(Session.get("east_score")) < 0)
-            Players.update({_id: east_id}, {$inc: {hongKongBankruptTotal: 1}});
-        if (Number(Session.get("south_score")) < 0)
-            Players.update({_id: south_id}, {$inc: {hongKongBankruptTotal: 1}});
-        if (Number(Session.get("west_score")) < 0)
-            Players.update({_id: west_id}, {$inc: {hongKongBankruptTotal: 1}});
-        if (Number(Session.get("north_score")) < 0)
-            Players.update({_id: north_id}, {$inc: {hongKongBankruptTotal: 1}});
-
-        // Save chombo counts
-        Players.update({_id: east_id}, {$inc: {hongKongChomboTotal: Number(Session.get("eastMistakeTotal"))}});
-        Players.update({_id: south_id}, {$inc: {hongKongChomboTotal: Number(Session.get("southMistakeTotal"))}});
-        Players.update({_id: west_id}, {$inc: {hongKongChomboTotal: Number(Session.get("westMistakeTotal"))}});
-        Players.update({_id: north_id}, {$inc: {hongKongChomboTotal: Number(Session.get("northMistakeTotal"))}});
-
-        // Save number of hands (includes chombos, do we want this?)
-        Players.update({_id: east_id}, {$inc: {hongKongHandsTotal: hands_array.length}});
-        Players.update({_id: south_id}, {$inc: {hongKongHandsTotal: hands_array.length}});
-        Players.update({_id: west_id}, {$inc: {hongKongHandsTotal: hands_array.length}});
-        Players.update({_id: north_id}, {$inc: {hongKongHandsTotal: hands_array.length}});
-
-        // Save number of hands won
-        Players.update({_id: east_id}, {$inc: {hongKongHandsWin: Number(Session.get("eastPlayerWins"))}});
-        Players.update({_id: south_id}, {$inc: {hongKongHandsWin: Number(Session.get("southPlayerWins"))}});
-        Players.update({_id: west_id}, {$inc: {hongKongHandsWin: Number(Session.get("westPlayerWins"))}});
-        Players.update({_id: north_id}, {$inc: {hongKongHandsWin: Number(Session.get("northPlayerWins"))}});
-
-        // Save number of points won
-        Players.update({_id: east_id}, {$inc: {hongKongWinPointsTotal: Number(Session.get("eastPlayerPointsWon"))}});
-        Players.update({_id: south_id}, {$inc: {hongKongWinPointsTotal: Number(Session.get("southPlayerPointsWon"))}});
-        Players.update({_id: west_id}, {$inc: {hongKongWinPointsTotal: Number(Session.get("westPlayerPointsWon"))}});
-        Players.update({_id: north_id}, {$inc: {hongKongWinPointsTotal: Number(Session.get("northPlayerPointsWon"))}});
-
-        // Save number of hands lost
-        Players.update({_id: east_id}, {$inc: {hongKongHandsLose: Number(Session.get("eastPlayerLosses"))}});
-        Players.update({_id: south_id}, {$inc: {hongKongHandsLose: Number(Session.get("southPlayerLosses"))}});
-        Players.update({_id: west_id}, {$inc: {hongKongHandsLose: Number(Session.get("westPlayerLosses"))}});
-        Players.update({_id: north_id}, {$inc: {hongKongHandsLose: Number(Session.get("northPlayerLosses"))}});
-
-        // Calculates all positions quickly
-        let positions = Constants.WINDS.map((wind) => ({ wind, score: Session.get(wind + "_score") })).sort((a, b) => b.score - a.score);
-        let idMappings = { east: east_id, south: south_id, west: west_id, north: north_id };
-
-        Players.update({ _id: idMappings[positions[0].wind] }, { $inc: { hongKongFirstPlaceSum: 1 }});
-        Players.update({ _id: idMappings[positions[1].wind] }, { $inc: { hongKongSecondPlaceSum: 1 }});
-        Players.update({ _id: idMappings[positions[2].wind] }, { $inc: { hongKongThirdPlaceSum: 1 }});
-        Players.update({ _id: idMappings[positions[3].wind] }, { $inc: { hongKongFourthPlaceSum: 1 }});
-
-        //Save game to database
-        HongKongHands.insert(game);
-    }
+    //deletes game from in progress database
+    Meteor.call('removeInProgressHongKongGame', Session.get("game_id"));
 };
 
 function push_dealin_hand(template) {

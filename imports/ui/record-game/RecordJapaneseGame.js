@@ -997,10 +997,10 @@ function save_game_to_database(hands_array) {
         south_elo_delta: jpn_elo_calculator.eloChange(south_player),
         west_elo_delta: jpn_elo_calculator.eloChange(west_player),
         north_elo_delta: jpn_elo_calculator.eloChange(north_player),
-        east_id: Players.findOne({japaneseLeagueName: east_player}, {})._id,
-        south_id: Players.findOne({japaneseLeagueName: south_player}, {})._id,
-        west_id: Players.findOne({japaneseLeagueName: west_player}, {})._id,
-        north_id: Players.findOne({japaneseLeagueName: north_player}, {})._id,
+        east_player: east_player,
+        south_player: south_player,
+        west_player: west_player,
+        north_player: north_player,
         east_score: Session.get("east_score"),
         south_score: Session.get("south_score"),
         west_score: Session.get("west_score"),
@@ -1039,10 +1039,8 @@ function save_game_to_database(hands_array) {
         northPlayerDoraSum: Session.get("northPlayerDoraSum")
     };
 
-    let idMappings = { east: game2.east_id, south: game2.south_id, west: game2.west_id, north: game2.north_id };
-
     //updates player info
-    Meteor.call('updatePlayers', game2, idMappings);
+    Meteor.call('updateJapanesePlayers', game2);
 
     //Save game to database
     Meteor.call('insertJapaneseGame', game);
