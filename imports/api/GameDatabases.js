@@ -8,8 +8,8 @@ export const InProgressHongKongHands = new Mongo.Collection('inProgressHongKongH
 export const InProgressJapaneseHands = new Mongo.Collection('inProgressJapaneseHands');
 
 if (Meteor.isServer){
-   InProgressJapaneseHands.createIndex( { "timestamp": 1}, { expireAfterSeconds: 21600} ); // TTL is 6 hours
-   InProgressHongKongHands.createIndex( { "timestamp": 1}, { expireAfterSeconds: 21600} );
+   InProgressJapaneseHands.createIndex( { "timestamp": 1}, { expireAfterSeconds: 86400} );
+   InProgressHongKongHands.createIndex( { "timestamp": 1}, { expireAfterSeconds: 86400} );
 }
 
 Meteor.methods({
