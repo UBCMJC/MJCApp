@@ -463,7 +463,8 @@ Template.RecordJapaneseGame.events({
                 document.getElementById("jpn_names").style.display = "none";
                 document.getElementById("jpn_game_buttons").style.display = "block";
             } else {
-                window.alert("please enter all 4 player names!");
+                window.alert("Please enter all 4 player names!");
+                return;
             }
         }
 
@@ -817,6 +818,8 @@ Template.RecordJapaneseGame.events({
                     //Deletes all hands to reset to empty game
                     while (template.hands.pop()) {}
 
+                    GameRecordUtils.resetGameValues();
+
                     Session.set("east_score", Constants.JPN_START_POINTS);
                     Session.set("south_score", Constants.JPN_START_POINTS);
                     Session.set("west_score", Constants.JPN_START_POINTS);
@@ -903,6 +906,8 @@ Template.RecordJapaneseGame.events({
 
                 //Deletes all hands to reset to empty game
                 while (template.hands.pop()) {}
+
+                GameRecordUtils.resetGameValues();
 
                 Session.set("east_score", Constants.JPN_START_POINTS);
                 Session.set("south_score", Constants.JPN_START_POINTS);

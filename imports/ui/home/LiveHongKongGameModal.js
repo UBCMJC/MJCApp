@@ -2,7 +2,7 @@ import { Template } from 'meteor/templating';
 import Constants from '../../api/Constants';
 import GameRecordUtils from '../../api/utils/GameRecordUtils';
 
-import { InProgressJapaneseHands, InProgressHongKongHands, Players} from '../../api/GameDatabases';
+import { Players } from '../../api/GameDatabases';
 
 import './LiveHongKongGameModal.html';
 
@@ -63,6 +63,12 @@ Template.LiveHongKongGameModal.helpers({
             case Constants.NORTH:
                 return Session.get("game_summary").north_score;
         }
+    },
+    get_round() {
+        return Session.get("game_summary").current_round;
+    },
+    get_bonus() {
+        return Session.get("game_summary").current_bonus;
     },
     // Return a string of the round wind for Hong Kong style
     displayRoundWind(round) {
