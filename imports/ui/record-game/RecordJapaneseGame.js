@@ -112,7 +112,7 @@ Template.RecordJapaneseGame.helpers({
     get_player_score_final(direction) {
         retval = GameRecordUtils.getDirectionScore(direction);
 
-        let winScore = Math.max(Number(Session.get("east_score")),
+        const winScore = Math.max(Number(Session.get("east_score")),
                                 Number(Session.get("south_score")),
                                 Number(Session.get("west_score")),
                                 Number(Session.get("north_score")));
@@ -473,11 +473,11 @@ Template.RecordJapaneseGame.events({
     //Remove the last submitted hand
     'click .delete_hand_button'(event, template) {
         if ( !$(event.target ).hasClass( "disabled" )) {
-            let r = confirm("Are you sure you want to delete the last hand?");
+            const r = confirm("Are you sure you want to delete the last hand?");
             // Reset game to last hand state
             if (r === true) {
                 // Deletes last hand
-                let del_hand = Template.instance().hands.pop();
+                const del_hand = Template.instance().hands.pop();
 
                 Session.set("east_score", Number(Session.get("east_score")) - Number(del_hand.eastDelta));
                 Session.set("south_score", Number(Session.get("south_score")) - Number(del_hand.southDelta));
@@ -489,7 +489,7 @@ Template.RecordJapaneseGame.events({
                 //Set free riichi sticks to last round's value
                 Session.set("free_riichi_sticks", template.riichi_sum_history.pop());
 
-                let riichiHistory = template.riichi_round_history.pop();
+                const riichiHistory = template.riichi_round_history.pop();
                 if (riichiHistory.east === true)
                     Session.set("east_riichi_sum", Number(Session.get("east_riichi_sum")) - 1);
                 if (riichiHistory.south === true)
@@ -532,9 +532,9 @@ Template.RecordJapaneseGame.events({
     //Submit a game to the database
     'click .submit_game_button'(event, template) {
         if ( !$(event.target ).hasClass( "disabled" )) {
-            let r = confirm("Are you sure you want to submit this game?");
+            const r = confirm("Are you sure you want to submit this game?");
             if (r === true) {
-                let winScore = Math.max(Number(Session.get("east_score")),
+                const winScore = Math.max(Number(Session.get("east_score")),
                                         Number(Session.get("south_score")),
                                         Number(Session.get("west_score")),
                                         Number(Session.get("north_score")));
@@ -614,10 +614,10 @@ Template.RecordJapaneseGame.events({
 
 // Save the currently recorded game to database and update player statistics
 function save_game_to_database(hands_array) {
-    let east_player = Session.get("current_east");
-    let south_player= Session.get("current_south");
-    let west_player = Session.get("current_west");
-    let north_player= Session.get("current_north");
+    const east_player = Session.get("current_east");
+    const south_player= Session.get("current_south");
+    const west_player = Session.get("current_west");
+    const north_player= Session.get("current_north");
 
     // Initialise game to be saved
     let game = {
@@ -633,20 +633,20 @@ function save_game_to_database(hands_array) {
     };
 
     // Initialise ELO calculator to update player ELO
-    let jpn_elo_calculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
+    const jpn_elo_calculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
                                                Constants.ELO_CALCULATOR_EXP,
                                                Constants.JPN_SCORE_ADJUSTMENT,
                                                game,
                                                Constants.GAME_TYPE.JAPANESE);
-    var east_elo_delta = jpn_elo_calculator.eloChange(east_player);
-    var south_elo_delta = jpn_elo_calculator.eloChange(south_player);
-    var west_elo_delta = jpn_elo_calculator.eloChange(west_player);
-    var north_elo_delta = jpn_elo_calculator.eloChange(north_player);
+    const east_elo_delta = jpn_elo_calculator.eloChange(east_player);
+    const south_elo_delta = jpn_elo_calculator.eloChange(south_player);
+    const west_elo_delta = jpn_elo_calculator.eloChange(west_player);
+    const north_elo_delta = jpn_elo_calculator.eloChange(north_player);
 
-    var east_id = Players.findOne({japaneseLeagueName: east_player}, {})._id;
-    var south_id = Players.findOne({japaneseLeagueName: south_player}, {})._id;
-    var west_id = Players.findOne({japaneseLeagueName: west_player}, {})._id;
-    var north_id = Players.findOne({japaneseLeagueName: north_player}, {})._id;
+    let east_id = Players.findOne({japaneseLeagueName: east_player}, {})._id;
+    let south_id = Players.findOne({japaneseLeagueName: south_player}, {})._id;
+    let west_id = Players.findOne({japaneseLeagueName: west_player}, {})._id;
+    let north_id = Players.findOne({japaneseLeagueName: north_player}, {})._id;
 
     if (east_elo_delta !== NaN && south_elo_delta !== NaN && west_elo_delta !== NaN && north_elo_delta !== NaN) {
         // Save ELO
@@ -734,13 +734,13 @@ function save_game_to_database(hands_array) {
 };
 
 function push_dealin_hand(template) {
-    let points = Number(Session.get("current_points"));
-    let fu = Number(Session.get("current_fu"));
-    let dora = Number(Session.get("current_dora"));
-    let dealerWind = GameRecordUtils.roundToDealerDirection(Number(Session.get("current_round")));
-    let winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
-    let loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
-    let riichiSum = Session.get("free_riichi_sticks");
+    const points = Number(Session.get("current_points"));
+    const fu = Number(Session.get("current_fu"));
+    const dora = Number(Session.get("current_dora"));
+    const dealerWind = GameRecordUtils.roundToDealerDirection(Number(Session.get("current_round")));
+    const winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
+    const loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
+    const riichiSum = Session.get("free_riichi_sticks");
     let seatDeltas = {};
     Constants.WINDS.forEach(w => seatDeltas[w] = 0);
 
@@ -839,12 +839,12 @@ function push_dealin_hand(template) {
 };
 
 function push_selfdraw_hand(template) {
-    let points = Number(Session.get("current_points"));
-    let fu = Number(Session.get("current_fu"));
-    let dora = Number(Session.get("current_dora"));
-    let dealerWind = GameRecordUtils.roundToDealerDirection(Number(Session.get("current_round")));
-    let winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
-    let riichiSum = Session.get("free_riichi_sticks");
+    const points = Number(Session.get("current_points"));
+    const fu = Number(Session.get("current_fu"));
+    const dora = Number(Session.get("current_dora"));
+    const dealerWind = GameRecordUtils.roundToDealerDirection(Number(Session.get("current_round")));
+    const winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
+    const riichiSum = Session.get("free_riichi_sticks");
     let seatDeltas = {};
     Constants.WINDS.forEach(w => seatDeltas[w] = 0);
 
@@ -1053,14 +1053,14 @@ function push_mistake_hand(template) {
 };
 
 function push_split_pao_hand(template) {
-    let points = Number(Session.get("current_points"));
-    let fu = Number(Session.get("current_fu"));
-    let dora = Number(Session.get("current_dora"));
-    let dealerWind = GameRecordUtils.roundToDealerDirection(Number(Session.get("current_round")));
-    let winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
-    let loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
-    let paoWind = GameRecordUtils.playerToDirection(Session.get("round_pao_player"));
-    let riichiSum = Session.get("free_riichi_sticks");
+    const points = Number(Session.get("current_points"));
+    const fu = Number(Session.get("current_fu"));
+    const dora = Number(Session.get("current_dora"));
+    const dealerWind = GameRecordUtils.roundToDealerDirection(Number(Session.get("current_round")));
+    const winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
+    const loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
+    const paoWind = GameRecordUtils.playerToDirection(Session.get("round_pao_player"));
+    const riichiSum = Session.get("free_riichi_sticks");
     let seatDeltas = {};
     Constants.WINDS.forEach(w => seatDeltas[w] = 0);
 
