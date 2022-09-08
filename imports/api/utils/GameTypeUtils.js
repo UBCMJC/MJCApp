@@ -70,6 +70,8 @@ function standardizePlayerStatistics(format, player) {
     /* Calculate standard statistics */
     /* We can always assume gamesPlayed and totalHands both > 0, but not other stats */
     formatPlayer["name"] = player[format + "LeagueName"];
+    let name = player["name"].split(" ");
+    formatPlayer["preferredName"] = name[0];
     formatPlayer["elo"] = player[format + "Elo"];
     formatPlayer["gamesPlayed"] = gamesPlayed;
     formatPlayer["handWinRate"] = (wonHands / totalHands * 100).toFixed(2);
