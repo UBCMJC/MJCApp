@@ -40,11 +40,11 @@ export default class EloCalculator {
         /**
          * The k-value is a multiplier to add more weight initially when no games have been played
          *
-         * First 10 games: -1 each game
-         * Next 10 games: -2 each game
-         * After: stops decreasing; levels at 70
+         * Doing a convex decrease, and decreases initial multiplier to 85.
+         * After 75 games plateaus very slowly.
+         * Stabilizes to 68 after many games.
          */
-        const k = 100 - Math.min(gamesPlayed, 10) - Math.min(Math.max(gamesPlayed - 10, 0), 10) * 2;
+        const k = 68 + 170/(gamesPlayed+10);
 
         return (k * (adjustedScores[index] - expectedScores[index]));
     }
