@@ -691,11 +691,7 @@ function save_game_to_database(hands_array) {
         eastPlayerPointsWon: Session.get("eastPlayerPointsWon"),
         southPlayerPointsWon: Session.get("southPlayerPointsWon"),
         westPlayerPointsWon: Session.get("westPlayerPointsWon"),
-        northPlayerPointsWon: Session.get("northPlayerPointsWon"),
-        eastMistakeTotal: Session.get("eastMistakeTotal"),
-        southMistakeTotal: Session.get("southMistakeTotal"),
-        westMistakeTotal: Session.get("westMistakeTotal"),
-        northMistakeTotal: Session.get("northMistakeTotal"),
+        northPlayerPointsWon: Session.get("northPlayerPointsWon")
     };
 
     //updates player info

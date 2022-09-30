@@ -213,7 +213,7 @@ Template.RecordJapaneseGame.helpers({
     },
     // Show what a player's score will look like if game is ended now
     get_player_score_final(direction) {
-        retval = GameRecordUtils.getDirectionScore(direction);
+        let retval = GameRecordUtils.getDirectionScore(direction);
 
         let winScore = Math.max(Number(Session.get("east_score")),
                                 Number(Session.get("south_score")),
@@ -1026,10 +1026,6 @@ function save_game_to_database(hands_array) {
         southPlayerPointsWon: Session.get("southPlayerPointsWon"),
         westPlayerPointsWon: Session.get("westPlayerPointsWon"),
         northPlayerPointsWon: Session.get("northPlayerPointsWon"),
-        eastMistakeTotal: Session.get("eastMistakeTotal"),
-        southMistakeTotal: Session.get("southMistakeTotal"),
-        westMistakeTotal: Session.get("westMistakeTotal"),
-        northMistakeTotal: Session.get("northMistakeTotal"),
         east_riichi_sum: Session.get("east_riichi_sum"),
         south_riichi_sum: Session.get("south_riichi_sum"),
         west_riichi_sum: Session.get("west_riichi_sum"),
