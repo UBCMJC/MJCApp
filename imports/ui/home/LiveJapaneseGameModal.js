@@ -9,20 +9,20 @@ import './LiveJapaneseGameModal.html';
 Template.LiveJapaneseGameModal.helpers({
     // Return all recorded hands for a game as an array
     hands() {
-        return Session.get("game_summary").all_hands;
+        return Session.get("game_summary")?.all_hands;
     },
 
     get_east_player() {
-        return Session.get("game_summary").east_player;
+        return Session.get("game_summary")?.east_player;
     },
     get_south_player() {
-        return Session.get("game_summary").south_player;
+        return Session.get("game_summary")?.south_player;
     },
     get_west_player() {
-        return Session.get("game_summary").west_player;
+        return Session.get("game_summary")?.west_player;
     },
     get_north_player() {
-        return Session.get("game_summary").north_player;
+        return Session.get("game_summary")?.north_player;
     },
 
     // Show what a player's +/- is
@@ -30,13 +30,13 @@ Template.LiveJapaneseGameModal.helpers({
         let score = 0;
         switch (direction) {
             case Constants.EAST:
-                score = Session.get("game_summary").east_score;
+                score = Session.get("game_summary")?.east_score;
             case Constants.SOUTH:
-                score = Session.get("game_summary").south_score;
+                score = Session.get("game_summary")?.south_score;
             case Constants.WEST:
-                score = Session.get("game_summary").west_score;
+                score = Session.get("game_summary")?.west_score;
             case Constants.NORTH:
-                score = Session.get("game_summary").north_score;
+                score = Session.get("game_summary")?.north_score;
         }
         return (score - Constants.JPN_START_POINTS);
     },
@@ -44,13 +44,13 @@ Template.LiveJapaneseGameModal.helpers({
     get_player_score(direction) {
         switch (direction) {
             case Constants.EAST:
-                return Session.get("game_summary").east_score;
+                return Session.get("game_summary")?.east_score;
             case Constants.SOUTH:
-                return Session.get("game_summary").south_score;
+                return Session.get("game_summary")?.south_score;
             case Constants.WEST:
-                return Session.get("game_summary").west_score;
+                return Session.get("game_summary")?.west_score;
             case Constants.NORTH:
-                return Session.get("game_summary").north_score;
+                return Session.get("game_summary")?.north_score;
         }
     },
     // Show what a player's score will look like if game is ended now
@@ -58,45 +58,45 @@ Template.LiveJapaneseGameModal.helpers({
         let retval = 0;
         switch (direction) {
             case Constants.EAST:
-                retval = Session.get("game_summary").east_score;
+                retval = Session.get("game_summary")?.east_score;
                 break;
             case Constants.SOUTH:
-                retval = Session.get("game_summary").south_score;
+                retval = Session.get("game_summary")?.south_score;
                 break;
             case Constants.WEST:
-                retval = Session.get("game_summary").west_score;
+                retval = Session.get("game_summary")?.west_score;
                 break;
             case Constants.NORTH:
-                retval = Session.get("game_summary").north_score;
+                retval = Session.get("game_summary")?.north_score;
                 break;
         }
 
-        let winScore = Math.max(Session.get("game_summary").east_score,
-                                Session.get("game_summary").south_score,
-                                Session.get("game_summary").west_score,
-                                Session.get("game_summary").north_score);
+        let winScore = Math.max(Session.get("game_summary")?.east_score,
+                                Session.get("game_summary")?.south_score,
+                                Session.get("game_summary")?.west_score,
+                                Session.get("game_summary")?.north_score);
 
-        if (winScore == Session.get("game_summary").east_score) {
+        if (winScore == Session.get("game_summary")?.east_score) {
             if (direction == Constants.EAST)
-                retval += Constants.JPN_RIICHI_POINTS * Number(Session.get("game_summary").free_riichi_sticks);
-        } else if (winScore == Session.get("game_summary").south_score) {
+                retval += Constants.JPN_RIICHI_POINTS * Number(Session.get("game_summary")?.free_riichi_sticks);
+        } else if (winScore == Session.get("game_summary")?.south_score) {
             if (direction == Constants.SOUTH)
-                retval += Constants.JPN_RIICHI_POINTS * Number(Session.get("game_summary").free_riichi_sticks);
-        } else if (winScore == Session.get("game_summary").west_score) {
+                retval += Constants.JPN_RIICHI_POINTS * Number(Session.get("game_summary")?.free_riichi_sticks);
+        } else if (winScore == Session.get("game_summary")?.west_score) {
             if (direction == Constants.WEST)
-                retval += Constants.JPN_RIICHI_POINTS * Number(Session.get("game_summary").free_riichi_sticks);
-        } else if (winScore == Session.get("game_summary").north_score) {
+                retval += Constants.JPN_RIICHI_POINTS * Number(Session.get("game_summary")?.free_riichi_sticks);
+        } else if (winScore == Session.get("game_summary")?.north_score) {
             if (direction == Constants.NORTH)
-                retval += Constants.JPN_RIICHI_POINTS * Number(Session.get("game_summary").free_riichi_sticks);
+                retval += Constants.JPN_RIICHI_POINTS * Number(Session.get("game_summary")?.free_riichi_sticks);
         }
 
         return retval;
     },
     get_round() {
-        return Session.get("game_summary").current_round;
+        return Session.get("game_summary")?.current_round;
     },
     get_bonus() {
-        return Session.get("game_summary").current_bonus;
+        return Session.get("game_summary")?.current_bonus;
     },
     // Return a string of the round wind for Japanese style
     displayRoundWind(round) {

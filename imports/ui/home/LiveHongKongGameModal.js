@@ -8,20 +8,20 @@ import './LiveHongKongGameModal.html';
 
 Template.LiveHongKongGameModal.helpers({
     hands() {
-        return Session.get("game_summary").all_hands;
+        return Session.get("game_summary")?.all_hands;
     },
 
     get_east_player() {
-        return Session.get("game_summary").east_player;
+        return Session.get("game_summary")?.east_player;
     },
     get_south_player() {
-        return Session.get("game_summary").south_player;
+        return Session.get("game_summary")?.south_player;
     },
     get_west_player() {
-        return Session.get("game_summary").west_player;
+        return Session.get("game_summary")?.west_player;
     },
     get_north_player() {
-        return Session.get("game_summary").north_player;
+        return Session.get("game_summary")?.north_player;
     },
 
     // Show what a player's +/- is
@@ -29,13 +29,13 @@ Template.LiveHongKongGameModal.helpers({
         let score = 0;
         switch (direction) {
             case Constants.EAST:
-                score = Session.get("game_summary").east_score;
+                score = Session.get("game_summary")?.east_score;
             case Constants.SOUTH:
-                score = Session.get("game_summary").south_score;
+                score = Session.get("game_summary")?.south_score;
             case Constants.WEST:
-                score = Session.get("game_summary").west_score;
+                score = Session.get("game_summary")?.west_score;
             case Constants.NORTH:
-                score = Session.get("game_summary").north_score;
+                score = Session.get("game_summary")?.north_score;
         }
         return (score - Constants.HKG_START_POINTS);
     },
@@ -43,32 +43,32 @@ Template.LiveHongKongGameModal.helpers({
     get_player_score(direction) {
         switch (direction) {
             case Constants.EAST:
-                return Session.get("game_summary").east_score;
+                return Session.get("game_summary")?.east_score;
             case Constants.SOUTH:
-                return Session.get("game_summary").south_score;
+                return Session.get("game_summary")?.south_score;
             case Constants.WEST:
-                return Session.get("game_summary").west_score;
+                return Session.get("game_summary")?.west_score;
             case Constants.NORTH:
-                return Session.get("game_summary").north_score;
+                return Session.get("game_summary")?.north_score;
         }
     },
     get_player_score_final(direction) {
         switch (direction) {
             case Constants.EAST:
-                return Session.get("game_summary").east_score;
+                return Session.get("game_summary")?.east_score;
             case Constants.SOUTH:
-                return Session.get("game_summary").south_score;
+                return Session.get("game_summary")?.south_score;
             case Constants.WEST:
-                return Session.get("game_summary").west_score;
+                return Session.get("game_summary")?.west_score;
             case Constants.NORTH:
-                return Session.get("game_summary").north_score;
+                return Session.get("game_summary")?.north_score;
         }
     },
     get_round() {
-        return Session.get("game_summary").current_round;
+        return Session.get("game_summary")?.current_round;
     },
     get_bonus() {
-        return Session.get("game_summary").current_bonus;
+        return Session.get("game_summary")?.current_bonus;
     },
     // Return a string of the round wind for Hong Kong style
     displayRoundWind(round) {
