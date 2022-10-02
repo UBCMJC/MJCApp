@@ -39,12 +39,28 @@ export default class EloCalculator {
 
         /**
          * The k-value is a multiplier to add more weight initially when no games have been played
-         *
+	 * 2 design reasons for k-value:
+	 * 1. ELO calculation accuracy depends on players having close to their correct ELO
+	 *    At the start of a player's season we should attempt matchmaking to place player in appropriate ELO
+	 *    Issues with no k-value are:
+         *      Incentive to farm "expected lower ELO" players and avoid "expected higher ELO players"
+	 *      ELO changes at start of season are relatively random and do not accurately represent skill level
+	 *   Some players may lose ELO at the beginning at a higher rate, but statistically this should 
+	 *   primarly happen to players that are expected to lose ELO. Outliers will occur. Ignore their complaints.
+	 * 2. Players may require many games to reach their "correct" ELO
+	 *    In a perfect world, all players play infinite games for their ELO to stabilize around a "correct" value
+	 *    This is impossible, and players will all play a different number of games
+	 *    Issues with no k-value are:
+	 *      Players who "should" be in playoffs but do not have the ability to play may not be able to climb
+	 *  
          * First 10 games: -1 each game
          * Next 10 games: -2 each game
          * After: stops decreasing; levels at 70
          */
-        const k = 100 - Math.min(gamesPlayed, 10) - Math.min(Math.max(gamesPlayed - 10, 0), 10) * 2;
+	// HACK: Remove this to appease the masses -> All above issues can be assumed to exist.
+	// TODO: Add this back later
+        // const k = 100 - Math.min(gamesPlayed, 10) - Math.min(Math.max(gamesPlayed - 10, 0), 10) * 2;
+	const k = 70;
 
         return (k * (adjustedScores[index] - expectedScores[index]));
     }
