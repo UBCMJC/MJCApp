@@ -1,0 +1,50 @@
+.game-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.summary-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  margin: 8px;
+  border: 3px solid black;
+  border-radius: 8px;
+  font-family: "Helvetica Neue";
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.summary-container:hover {
+  background-color: #eee;
+}
+
+.summary-column-container {
+  display: flex;
+  margin: 12px 0;
+}
+
+.summary-column-container > div {
+  margin: 0 8px;
+}
+
+.winds {
+  text-align: left;
+}
+
+.points {
+  text-align: right;
+}
+
+.username {
+  width: 180px;
+}
+
+.username > div {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

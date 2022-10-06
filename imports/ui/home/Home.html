@@ -1,0 +1,44 @@
+<template name="Home">
+  <h2>Home</h2>
+    {{ > LiveJapaneseGameModal }}
+    {{ > LiveHongKongGameModal }}
+  <div class="game-list">
+    {{#each jpn_game in jpn_games}}
+      {{> game_summary game=jpn_game name="Riichi" type="japanese"}}
+    {{/each}}
+    {{#each hk_game in hk_games}}
+      {{> game_summary game=hk_game name="Hong Kong" type="hongKong"}}
+    {{/each}}
+  </div>
+</template>
+
+<template name="game_summary">
+  <div class="summary-container"
+       data-game="{{ game._id }}"
+       data-type="{{ type }}" >
+    <div>{{name}}</div>
+    <div class="summary-column-container">
+      <div class="winds">
+        <div>East</div>
+        <div>South</div>
+        <div>West</div>
+        <div>North</div>
+      </div>
+      <div class="username">
+        <div>{{game.east_player}}</div>
+        <div>{{game.south_player}}</div>
+        <div>{{game.west_player}}</div>
+        <div>{{game.north_player}}</div>
+      </div>
+      <div class="points">
+        <div>{{displayScore game.east_score type}}</div>
+        <div>{{displayScore game.south_score type}}</div>
+        <div>{{displayScore game.west_score type}}</div>
+        <div>{{displayScore game.north_score type}}</div>
+      </div>
+    </div>
+    <div>
+      {{displayRoundWind game.current_round type}} {{displayRoundNumber game.current_round type}} Bonus {{game.current_bonus}}
+    </div>
+  </div>
+</template>

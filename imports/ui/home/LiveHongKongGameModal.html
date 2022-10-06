@@ -1,0 +1,104 @@
+<template name="LiveHongKongGameModal">
+    <div class="modal fade" id="hk-game-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" style="width:90%" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h2 class="modal-title">Live Game</h2>
+                </div>
+                <div class="modal-body" style="overflow: scroll">
+                    <table style="width:100%">
+                        <tr>
+                            <th colspan="3"></th>
+                            <th>{{get_east_player}}</th>
+                            <th>{{get_south_player}}</th>
+                            <th>{{get_west_player}}</th>
+                            <th>{{get_north_player}}</th>
+                        </tr>
+                        <tr>
+                            <th>Round</th>
+                            <th>Bonus</th>
+                            <th>Points</th>
+                            <th>{{HKG_START_POINTS}}</th>
+                            <th>{{HKG_START_POINTS}}</th>
+                            <th>{{HKG_START_POINTS}}</th>
+                            <th>{{HKG_START_POINTS}}</th>
+                        </tr>
+                        {{#each hands}}
+                        {{> hk_render_hand}}
+                        {{/each}}
+                        <tr>
+                            <td>
+                                {{displayRoundWind get_round}} {{displayRoundNumber get_round}}
+                            </td>
+                            <td>B {{get_bonus}}</td>
+                        </tr>
+                        <tr>
+                            <th colspan="3">Transaction total:</th>
+                            <td>{{get_player_delta EAST}}</td>
+                            <td>{{get_player_delta SOUTH}}</td>
+                            <td>{{get_player_delta WEST}}</td>
+                            <td>{{get_player_delta NORTH}}</td>
+                        </tr>
+                        <tr>
+                            <th colspan="3">Current score:</th>
+                            <td>{{get_player_score EAST}}</td>
+                            <td>{{get_player_score SOUTH}}</td>
+                            <td>{{get_player_score WEST}}</td>
+                            <td>{{get_player_score NORTH}}</td>
+                        </tr>
+                        <tr>
+                            <th colspan="3">End score:</th>
+                            <td>{{get_player_score_final EAST}}</td>
+                            <td>{{get_player_score_final SOUTH}}</td>
+                            <td>{{get_player_score_final WEST}}</td>
+                            <td>{{get_player_score_final NORTH}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+
+<template name="hk_render_hand">
+    <tr>
+        <td>
+            {{displayRoundWind round}} {{displayRoundNumber round}}
+        </td>
+        <td>B {{bonus}}</td>
+
+        {{#if is_dealin handType}}
+        <td>{{points}}</td>
+        <td>{{eastDelta}}</td>
+        <td>{{southDelta}}</td>
+        <td>{{westDelta}}</td>
+        <td>{{northDelta}}</td>
+        {{/if}}
+
+        {{#if is_selfdraw handType}}
+        <td>{{points}}</td>
+        <td>{{eastDelta}}</td>
+        <td>{{southDelta}}</td>
+        <td>{{westDelta}}</td>
+        <td>{{northDelta}}</td>
+        {{/if}}
+
+        {{#if is_nowin handType}}
+        <td>No win!</td>
+        {{/if}}
+
+        {{#if is_restart handType}}
+        <td>Reshuffle!</td>
+        {{/if}}
+
+        {{#if is_mistake handType}}
+        <td>Mistake!</td>
+        <td>{{eastDelta}}</td>
+        <td>{{southDelta}}</td>
+        <td>{{westDelta}}</td>
+        <td>{{northDelta}}</td>
+        {{/if}}
+    </tr>
+</template>

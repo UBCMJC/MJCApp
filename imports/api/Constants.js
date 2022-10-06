@@ -109,8 +109,8 @@ const Constants = {
     DEAL_IN: "dealin",
     SELF_DRAW: "selfdraw",
     NO_WIN: "nowin",
-    RESTART: "restart",
     PAO: "pao",
+    RESTART: "restart",
     MISTAKE: "mistake",
 
     // Direction Constants

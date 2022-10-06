@@ -92,3 +92,7 @@ tr:nth-of-type(even){
 .names th, td {
     text-align: center;
 }
+
+table th {
+    text-align: center;
+}

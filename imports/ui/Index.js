@@ -1,13 +1,25 @@
 import './static/About.html';
-import './static/Home.html';
 import './Index.html';
 
+import './home/Home';
 import './record-game/RecordHongKongGame';
 import './record-game/RecordJapaneseGame';
 import './ranking/Ranking';
 
 Template.Index.onCreated( function() {
-    this.currentTab = new ReactiveVar( "Home" );
+    if (localStorage.getItem("game_id") !== null) {
+        if (localStorage.getItem("game_type") === "jp") {
+            this.currentTab = new ReactiveVar( "RecordJapaneseGame" );
+        } else if (localStorage.getItem("game_type") === "hk") {
+            this.currentTab = new ReactiveVar( "RecordHongKongGame" );
+        }
+    } else {
+        this.currentTab = new ReactiveVar( "Home" );
+    }
+});
+
+Template.Index.onRendered( function() {
+    $("#" + this.currentTab.curValue).addClass( "active" );
 });
 
 Template.Index.helpers({

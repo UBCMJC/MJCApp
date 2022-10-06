@@ -1,134 +1,146 @@
 <template name="RecordJapaneseGame">
   <h2>Riichi Japanese Mahjong Game Sheet</h2>
 
-  <section class="game_input_form container">
-    <div class="player-block">
-      <div class="player-entry col-lg-3 col-xs-6">
-        <p>East</p>
-        <select name="east_player">
-          <option disabled selected value> -- Select East Player (東) -- </option>
-          {{#each players}}
-          {{> jpn_player_select_east}}
-          {{/each}}
-        </select>
-      </div>
-      <div class="player-entry col-lg-3 col-xs-6">
-        <p>South</p>
-        <select name="south_player">
-          <option disabled selected value> -- Select South Player (南) -- </option>
-          {{#each players}}
-          {{> jpn_player_select_south}}
-          {{/each}}
-        </select>
-      </div>
-      <div class="player-entry col-lg-3 col-xs-6">
-        <p>West</p>
-        <select name="west_player">
-          <option disabled selected value> -- Select West Player (西) -- </option>
-          {{#each players}}
-          {{> jpn_player_select_west}}
-          {{/each}}
-        </select>
-      </div>
-      <div class="player-entry col-lg-3 col-xs-6">
-        <p>North</p>
-        <select name="north_player">
-          <option disabled selected value> -- Select North Player (北) -- </option>
-          {{#each players}}
-          {{> jpn_player_select_north}}
-          {{/each}}
-        </select>
-      </div>
+  <section id="jpn_container" class="game_input_form container">
+    <div id = "jpn_names">
+        <div class="player-block">
+          <div class="player-entry col-lg-3 col-xs-6">
+            <p>East</p>
+            <select id="east_player" name="east_player">
+              <option disabled selected value> -- Select East Player (東) -- </option>
+              {{#each players}}
+              {{> jpn_player_select_east}}
+              {{/each}}
+            </select>
+          </div>
+          <div class="player-entry col-lg-3 col-xs-6">
+            <p>South</p>
+            <select name="south_player">
+              <option disabled selected value> -- Select South Player (南) -- </option>
+              {{#each players}}
+              {{> jpn_player_select_south}}
+              {{/each}}
+            </select>
+          </div>
+          <div class="player-entry col-lg-3 col-xs-6">
+            <p>West</p>
+            <select name="west_player">
+              <option disabled selected value> -- Select West Player (西) -- </option>
+              {{#each players}}
+              {{> jpn_player_select_west}}
+              {{/each}}
+            </select>
+          </div>
+          <div class="player-entry col-lg-3 col-xs-6">
+            <p>North</p>
+            <select name="north_player">
+              <option disabled selected value> -- Select North Player (北) -- </option>
+              {{#each players}}
+              {{> jpn_player_select_north}}
+              {{/each}}
+            </select>
+          </div>
+        </div>
+        <div class ="nav-block">
+          <input type="button" value="Submit Names" class="btn btn-primary btn-block submit_names_button">
+        </div>
     </div>
-    <div class="nav-block">
-      <u1 class="nav nav-pills nav-justified">
-        <li data-template="jpn_dealin" role="presentation" class="active">
-          <a data-toggle="pill" href="#">Deal in (Ron ロン)</a>
-        </li>
-        <li data-template="jpn_selfdraw" role="presentation">
-          <a data-toggle="pill" href="#">Self draw (Tsumo ツモ)</a>
-        </li>
-        <li data-template="jpn_nowin" role="presentation">
-          <a data-toggle="pill" href="#">Deck out (Tenpai 聴牌)</a>
-        </li>
-        <li data-template="jpn_restart" role="presentation">
-          <a data-toggle="pill" href="#">Reshuffle (Ryuukyoku 流局)</a>
-        </li>
-        <li data-template="jpn_mistake" role="presentation">
-          <a data-toggle="pill" href="#">Mistake! (Chombo チョンボ)</a>
-        </li>
-        <li data-template="jpn_dealin_pao" role="presentation">
-          <a data-toggle="pill" href="#">Deal In Pao! (Pao パオ)</a>
-        </li>
-      </u1>
+    <div id="jpn_game_buttons" style="display:none">
+        <div class="nav-block">
+          <u1 class="nav nav-pills nav-justified">
+            <li data-template="jpn_dealin" role="presentation" class="active">
+              <a data-toggle="pill" href="#">Deal in (Ron ロン)</a>
+            </li>
+            <li data-template="jpn_selfdraw" role="presentation">
+              <a data-toggle="pill" href="#">Self draw (Tsumo ツモ)</a>
+            </li>
+            <li data-template="jpn_nowin" role="presentation">
+              <a data-toggle="pill" href="#">Deck out (Tenpai 聴牌)</a>
+            </li>
+            <li data-template="jpn_restart" role="presentation">
+              <a data-toggle="pill" href="#">Reshuffle (Ryuukyoku 流局)</a>
+            </li>
+            <li data-template="jpn_mistake" role="presentation">
+              <a data-toggle="pill" href="#">Mistake! (Chombo チョンボ)</a>
+            </li>
+            <li data-template="jpn_dealin_pao" role="presentation">
+              <a data-toggle="pill" href="#">Deal In Pao! (Pao パオ)</a>
+            </li>
+          </u1>
+        </div>
+        <!-- Dynamically use different HTML templates for different hand types
+             By changing the hand_type variable you can select between the different
+             template names.
+          -->
+        <div>
+          {{> Template.dynamic template=hand_type }}
+        </div>
+        <div>
+          <input type="button" value="Submit Hand" class="btn btn-primary btn-block submit_hand_button">
+
+          <table style="width:100%">
+            <tr>
+              <th colspan="4"></th>
+              <th>{{get_east}} ({{get_jpn_elo get_east}})</th>
+              <th>{{get_south}} ({{get_jpn_elo get_south}})</th>
+              <th>{{get_west}} ({{get_jpn_elo get_west}})</th>
+              <th>{{get_north}} ({{get_jpn_elo get_north}})</th>
+            </tr>
+            <tr>
+              <th>Round</th>
+              <th>P</th>
+              <th>F</th>
+              <th>D</th>
+              <th>{{JPN_START_POINTS}}</th>
+              <th>{{JPN_START_POINTS}}</th>
+              <th>{{JPN_START_POINTS}}</th>
+              <th>{{JPN_START_POINTS}}</th>
+            </tr>
+            {{#each hands}}
+            {{> jpn_render_hand}}
+            {{/each}}
+            <tr>
+              <td>
+                {{displayRoundWind get_round}} {{displayRoundNumber get_round}} B{{get_bonus}}
+              </td>
+            </tr>
+            <tr>
+              <th colspan="4">Transaction total:</th>
+              <td>{{get_player_delta EAST}}</td>
+              <td>{{get_player_delta SOUTH}}</td>
+              <td>{{get_player_delta WEST}}</td>
+              <td>{{get_player_delta NORTH}}</td>
+            </tr>
+            <tr>
+              <th colspan="4">Current score:</th>
+              <td>{{get_player_score EAST}}</td>
+              <td>{{get_player_score SOUTH}}</td>
+              <td>{{get_player_score WEST}}</td>
+              <td>{{get_player_score NORTH}}</td>
+            </tr>
+            <tr>
+              <th colspan="4">End score:</th>
+              <td>{{get_player_score_final EAST}}</td>
+              <td>{{get_player_score_final SOUTH}}</td>
+              <td>{{get_player_score_final WEST}}</td>
+              <td>{{get_player_score_final NORTH}}</td>
+            </tr>
+            <tr>
+              <th colspan="4">ELO change:</th>
+              <td>{{get_expected_elo_change EAST}}</td>
+              <td>{{get_expected_elo_change SOUTH}}</td>
+              <td>{{get_expected_elo_change WEST}}</td>
+              <td>{{get_expected_elo_change NORTH}}</td>
+            </tr>
+          </table>
+
+          <input type="button" value="Delete last Hand" class="btn btn-primary btn-block delete_hand_button disabled">
+
+          <input type="button" value="!! Delete Game !!" class="btn btn-primary btn-block delete_game_button">
+
+          <input type="button" value="Submit game!" class="btn btn-primary btn-block disabled submit_game_button">
+        </div>
     </div>
-    <!-- Dynamically use different HTML templates for different hand types
-         By changing the hand_type variable you can select between the different
-         template names.
-      -->
-    {{> Template.dynamic template=hand_type }}
-
-    <input type="button" value="Submit Hand" class="btn btn-primary btn-block submit_hand_button">
-
-    <table style="width:100%">
-      <tr>
-        <th colspan="4"></th>
-        <th>{{get_east}} ({{get_jpn_elo get_east}})</th>
-        <th>{{get_south}} ({{get_jpn_elo get_south}})</th>
-        <th>{{get_west}} ({{get_jpn_elo get_west}})</th>
-        <th>{{get_north}} ({{get_jpn_elo get_north}})</th>
-      </tr>
-      <tr>
-        <th>Round</th>
-        <th>P</th>
-        <th>F</th>
-        <th>D</th>
-        <th>{{JPN_START_POINTS}}</th>
-        <th>{{JPN_START_POINTS}}</th>
-        <th>{{JPN_START_POINTS}}</th>
-        <th>{{JPN_START_POINTS}}</th>
-      </tr>
-      {{#each hands}}
-      {{> jpn_render_hand}}
-      {{/each}}
-      <tr>
-        <td>
-          {{displayRoundWind get_round}} {{displayRoundNumber get_round}} B{{get_bonus}}
-        </td>
-      </tr>
-      <tr>
-        <th colspan="4">Transaction total:</th>
-        <td>{{get_player_delta EAST}}</td>
-        <td>{{get_player_delta SOUTH}}</td>
-        <td>{{get_player_delta WEST}}</td>
-        <td>{{get_player_delta NORTH}}</td>
-      </tr>
-      <tr>
-        <th colspan="4">Current score:</th>
-        <td>{{get_player_score EAST}}</td>
-        <td>{{get_player_score SOUTH}}</td>
-        <td>{{get_player_score WEST}}</td>
-        <td>{{get_player_score NORTH}}</td>
-      </tr>
-      <tr>
-        <th colspan="4">End score:</th>
-        <td>{{get_player_score_final EAST}}</td>
-        <td>{{get_player_score_final SOUTH}}</td>
-        <td>{{get_player_score_final WEST}}</td>
-        <td>{{get_player_score_final NORTH}}</td>
-      </tr>
-      <tr>
-        <th colspan="4">ELO change:</th>
-        <td>{{get_expected_elo_change EAST}}</td>
-        <td>{{get_expected_elo_change SOUTH}}</td>
-        <td>{{get_expected_elo_change WEST}}</td>
-        <td>{{get_expected_elo_change NORTH}}</td>
-      </tr>
-    </table>
-
-    <input type="button" value="Delete last Hand" class="btn btn-primary btn-block delete_hand_button disabled">
-
-    <input type="button" value="Submit game!" class="btn btn-primary btn-block disabled submit_game_button">
   </section>
 </template>
 

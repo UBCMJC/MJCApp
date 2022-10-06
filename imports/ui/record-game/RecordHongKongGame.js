@@ -1,6 +1,6 @@
 //Databases
 import Players from '../../api/Players';
-import { HongKongHands } from '../../api/GameDatabases';
+import { HongKongHands, InProgressHongKongHands } from '../../api/GameDatabases';
 
 import Constants from '../../api/Constants';
 import EloCalculator from '../../api/EloCalculator';
@@ -13,6 +13,83 @@ Template.RecordHongKongGame.onCreated( function() {
     this.hands = new ReactiveArray();
 
     GameRecordUtils.resetGameValues(Constants.HKG_START_POINTS);
+
+    let self = this;
+    if (localStorage.getItem("game_id") !== null) {
+        Session.set("game_id", localStorage.getItem("game_id"));
+        if (localStorage.getItem("game_type") !== "hk") {
+            return;
+        }
+        Meteor.call('canRetrieveInProgressHongKongGame', function (error, game) {
+            for (let i = 0; i < game.all_hands.length; i++) {
+                let hand = game.all_hands[i];
+                self.hands.push({
+                    handType: hand.handType,
+                    round: hand.round,
+                    bonus: hand.bonus,
+                    points: hand.points,
+                    eastDelta: hand.eastDelta,
+                    southDelta: hand.southDelta,
+                    westDelta: hand.westDelta,
+                    northDelta: hand.northDelta,
+                });
+            }
+
+            Meteor.call('canRetrievePlayer', game.east_player, function (error, exists) {
+                Session.set("current_east", game.east_player);
+                Session.set("current_south", game.south_player);
+                Session.set("current_west", game.west_player);
+                Session.set("current_north", game.north_player);
+            });
+
+            Session.set("east_score", game.east_score);
+            Session.set("south_score", game.south_score);
+            Session.set("west_score", game.west_score);
+            Session.set("north_score", game.north_score);
+
+            Session.set("current_round", game.current_round);
+            Session.set("current_bonus", game.current_bonus);
+
+            Session.set("eastPlayerWins", game.eastPlayerWins);
+            Session.set("southPlayerWins", game.southPlayerWins);
+            Session.set("westPlayerWins", game.westPlayerWins);
+            Session.set("northPlayerWins", game.northPlayerWins);
+
+            Session.set("eastPlayerLosses", game.eastPlayerLosses);
+            Session.set("southPlayerLosses", game.southPlayerLosses);
+            Session.set("westPlayerLosses", game.westPlayerLosses);
+            Session.set("northPlayerLosses", game.northPlayerLosses);
+
+            Session.set("eastPlayerPointsWon", game.eastPlayerPointsWon);
+            Session.set("southPlayerPointsWon", game.southPlayerPointsWon);
+            Session.set("westPlayerPointsWon", game.westPlayerPointsWon);
+            Session.set("northPlayerPointsWon", game.northPlayerPointsWon);
+
+            Session.set("eastMistakeTotal", game.eastMistakeTotal);
+            Session.set("southMistakeTotal", game.southMistakeTotal);
+            Session.set("westMistakeTotal", game.westMistakeTotal);
+            Session.set("northMistakeTotal", game.northMistakeTotal);
+        });
+    }
+});
+
+Template.RecordHongKongGame.onRendered( function() {
+    if (localStorage.getItem("game_id") !== null) {
+        if (localStorage.getItem("game_type") !== "hk") {
+            document.getElementById("hk_container").style.display = "none";
+            window.alert("Please submit games in progress before starting a new game!");
+            return;
+        }
+        document.getElementById("hk_names").style.display = "none";
+        document.getElementById("hk_game_buttons").style.display = "block";
+        if (localStorage.getItem("game_over") == 1) {
+            $( ".submit_hand_button" ).addClass( "disabled" );
+            $( ".submit_game_button" ).removeClass( "disabled" );
+            $( ".delete_hand_button" ).removeClass( "disabled" );
+        } else if (Session.get("current_round") > 0) {
+            $( ".delete_hand_button" ).removeClass( "disabled" );
+        }
+    }
 });
 
 Template.RecordHongKongGame.helpers({
@@ -50,7 +127,7 @@ Template.RecordHongKongGame.helpers({
         }
 
         let game = {
-            timestamp: Date.now(),
+            timestamp: new Date(),
             east_player: eastPlayer,
             south_player: southPlayer,
             west_player: westPlayer,
@@ -195,6 +272,60 @@ Template.RecordHongKongGame.events({
             }
         }
     },
+
+    'click .submit_names_button'(event, template) {
+        if ( !$( event.target ).hasClass( "disabled")) {
+            if (GameRecordUtils.allPlayersSelected()) {
+                document.getElementById("hk_names").style.display = "none";
+                document.getElementById("hk_game_buttons").style.display = "block";
+            } else {
+                window.alert("Please enter all 4 player names!");
+                return;
+            }
+        }
+
+        let east_player = Session.get("current_east");
+        let south_player= Session.get("current_south");
+        let west_player = Session.get("current_west");
+        let north_player= Session.get("current_north");
+
+        let game = {
+                timestamp: new Date(),
+                east_player: east_player,
+                south_player: south_player,
+                west_player: west_player,
+                north_player: north_player,
+                east_score: Constants.HKG_START_POINTS,
+                south_score: Constants.HKG_START_POINTS,
+                west_score: Constants.HKG_START_POINTS,
+                north_score: Constants.HKG_START_POINTS,
+                current_round: 1,
+                current_bonus: 0,
+                all_hands: [],
+                eastPlayerWins: 0,
+                southPlayerWins: 0,
+                westPlayerWins: 0,
+                northPlayerWins: 0,
+                eastPlayerLosses: 0,
+                southPlayerLosses: 0,
+                westPlayerLosses: 0,
+                northPlayerLosses: 0,
+                eastPlayerPointsWon: 0,
+                southPlayerPointsWon: 0,
+                westPlayerPointsWon: 0,
+                northPlayerPointsWon: 0,
+                eastMistakeTotal: 0,
+                southMistakeTotal: 0,
+                westMistakeTotal: 0,
+                northMistakeTotal: 0
+        };
+        Meteor.call('insertInProgressHongKongGame', game, function (error, game_id) {
+            Session.set("game_id", game_id);
+            localStorage.setItem("game_id", Session.get("game_id"));
+            localStorage.setItem("game_type", "hk");
+            localStorage.setItem("game_over", 0);
+        });
+    },
     //Submission of a hand
     'click .submit_hand_button'(event, template) {
 
@@ -274,9 +405,40 @@ Template.RecordHongKongGame.events({
                 window.alert("You need to fill out the player information!");
             }
 
+            let current_hand = template.hands.get()[template.hands.get().length - 1];
+
+            let game = {
+               game_id: Session.get("game_id"),
+               all_hands: template.hands.get(),
+               current_round: Session.get("current_round"),
+               current_bonus: Session.get("current_bonus"),
+               eastPlayerWins: Session.get("eastPlayerWins"),
+               southPlayerWins: Session.get("southPlayerWins"),
+               westPlayerWins: Session.get("westPlayerWins"),
+               northPlayerWins: Session.get("northPlayerWins"),
+               eastPlayerLosses: Session.get("eastPlayerLosses"),
+               southPlayerLosses: Session.get("southPlayerLosses"),
+               westPlayerLosses: Session.get("westPlayerLosses"),
+               northPlayerLosses: Session.get("northPlayerLosses"),
+               eastPlayerPointsWon: Session.get("eastPlayerPointsWon"),
+               southPlayerPointsWon: Session.get("southPlayerPointsWon"),
+               westPlayerPointsWon: Session.get("westPlayerPointsWon"),
+               northPlayerPointsWon: Session.get("northPlayerPointsWon"),
+               eastMistakeTotal: Session.get("eastMistakeTotal"),
+               southMistakeTotal: Session.get("southMistakeTotal"),
+               westMistakeTotal: Session.get("westMistakeTotal"),
+               northMistakeTotal: Session.get("northMistakeTotal"),
+               eastDelta: current_hand.eastDelta,
+               southDelta: current_hand.southDelta,
+               westDelta: current_hand.westDelta,
+               northDelta: current_hand.northDelta
+            }
+
+            Meteor.call('updateInProgressHongKongGame', game);
+
             if (GameRecordUtils.someoneBankrupt() ||
                 Session.get("current_round") > 16) {
-
+                localStorage.setItem("game_over", 1);
                 $( event.target ).addClass( "disabled");
                 $( ".submit_game_button" ).removeClass( "disabled" );
             }
@@ -286,9 +448,9 @@ Template.RecordHongKongGame.events({
     //Remove the last submitted hand
     'click .delete_hand_button'(event, template) {
         if ( !$( event.target ).hasClass( "disabled" )) {
-            var r = confirm("Are you sure you want to delete the last hand?");
+            let r = confirm("Are you sure you want to delete the last hand?");
             if (r == true) {
-                var del_hand = Template.instance().hands.pop();
+                let del_hand = Template.instance().hands.pop();
 
                 Session.set("east_score", Number(Session.get("east_score")) - Number(del_hand.eastDelta));
                 Session.set("south_score", Number(Session.get("south_score")) - Number(del_hand.southDelta));
@@ -318,17 +480,116 @@ Template.RecordHongKongGame.events({
                 if (Template.instance().hands.get().length === 0) {
                     $( ".delete_hand_button" ).addClass( "disabled" );
                 }
+
+                let game = {
+                   game_id: Session.get("game_id"),
+                   all_hands: template.hands.get(),
+                   current_round: Session.get("current_round"),
+                   current_bonus: Session.get("current_bonus"),
+                   eastPlayerWins: Session.get("eastPlayerWins"),
+                   southPlayerWins: Session.get("southPlayerWins"),
+                   westPlayerWins: Session.get("westPlayerWins"),
+                   northPlayerWins: Session.get("northPlayerWins"),
+                   eastPlayerLosses: Session.get("eastPlayerLosses"),
+                   southPlayerLosses: Session.get("southPlayerLosses"),
+                   westPlayerLosses: Session.get("westPlayerLosses"),
+                   northPlayerLosses: Session.get("northPlayerLosses"),
+                   eastPlayerPointsWon: Session.get("eastPlayerPointsWon"),
+                   southPlayerPointsWon: Session.get("southPlayerPointsWon"),
+                   westPlayerPointsWon: Session.get("westPlayerPointsWon"),
+                   northPlayerPointsWon: Session.get("northPlayerPointsWon"),
+                   eastMistakeTotal: Session.get("eastMistakeTotal"),
+                   southMistakeTotal: Session.get("southMistakeTotal"),
+                   westMistakeTotal: Session.get("westMistakeTotal"),
+                   northMistakeTotal: Session.get("northMistakeTotal"),
+                   eastDelta: - Number(del_hand.eastDelta),
+                   southDelta: - Number(del_hand.southDelta),
+                   westDelta: - Number(del_hand.westDelta),
+                   northDelta: - Number(del_hand.northDelta)
+                }
+
+                Meteor.call('updateInProgressHongKongGame', game);
             }
         }
     },
+    //Delete a game from the database
+
+    'click .delete_game_button'(event, template) {
+        if ( !$(event.target ).hasClass( "disabled" )) {
+            let r = confirm("Are you sure you want to delete this game?");
+            if (r == true) {
+                let r2 = confirm("Are you sure sure you want to delete this game?");
+                if (r2 == true) {
+                    localStorage.clear();
+
+                    //deletes game from database
+                    InProgressHongKongHands.remove({_id: Session.get("game_id")});
+
+                    //resets page UI
+                    document.getElementById("hk_names").style.display = "block";
+                    document.getElementById("hk_game_buttons").style.display = "none";
+
+
+                    //Deletes all hands to reset to empty game
+                    while (template.hands.pop()) {}
+
+                    GameRecordUtils.resetGameValues();
+
+                    Session.set("east_score", Constants.HKG_START_POINTS);
+                    Session.set("south_score", Constants.HKG_START_POINTS);
+                    Session.set("west_score", Constants.HKG_START_POINTS);
+                    Session.set("north_score", Constants.HKG_START_POINTS);
+
+                    Session.set("current_round", 1);
+                    Session.set("current_bonus", 0);
+
+                    Session.set("eastMistakeTotal", 0);
+                    Session.set("southMistakeTotal", 0);
+                    Session.set("westMistakeTotal", 0);
+                    Session.set("northMistakeTotal", 0);
+
+                    Session.set("eastPlayerWins", 0);
+                    Session.set("southPlayerWins", 0);
+                    Session.set("westPlayerWins", 0);
+                    Session.set("northPlayerWins", 0);
+
+                    Session.set("eastPlayerPointsWon", 0);
+                    Session.set("southPlayerPointsWon", 0);
+                    Session.set("westPlayerPointsWon", 0);
+                    Session.set("northPlayerPointsWon", 0);
+
+                    Session.set("eastPlayerLosses", 0);
+                    Session.set("southPlayerLosses", 0);
+                    Session.set("westPlayerLosses", 0);
+                    Session.set("northPlayerLosses", 0);
+
+                    resetRoundStats();
+
+                    $( ".submit_hand_button" ).removeClass( "disabled" );
+                    $( ".submit_game_button" ).addClass( "disabled" );
+                    $( ".delete_hand_button" ).addClass( "disabled" );
+                }
+            }
+
+        }
+    },
+
     //Submit a game to the database
     'click .submit_game_button'(event, template) {
-        var r = confirm("Are you sure you want to submit this game?");
+        let r = confirm("Are you sure you want to submit this game?");
         if (r == true) {
+            localStorage.clear();
             save_game_to_database(template.hands.get());
+
+            //resets page UI
+            document.getElementById("hk_names").style.display = "block";
+            document.getElementById("hk_game_buttons").style.display = "none";
 
             //Deletes all hands
             while (template.hands.pop()) {}
+
+            GameRecordUtils.resetGameValues();
+
             Session.set("east_score", Constants.HKG_START_POINTS);
             Session.set("south_score", Constants.HKG_START_POINTS);
             Session.set("west_score", Constants.HKG_START_POINTS);
@@ -364,7 +625,7 @@ Template.RecordHongKongGame.events({
     },
     //Toggle between different round types
     'click .nav-pills li'( event, template ) {
-        var hand_type = $( event.target ).closest( "li" );
+        let hand_type = $( event.target ).closest( "li" );
 
         hand_type.addClass( "active" );
         $( ".nav-pills li" ).not( hand_type ).removeClass( "active" );
@@ -375,13 +636,13 @@ Template.RecordHongKongGame.events({
 
 function save_game_to_database(hands_array) {
 
-    var east_player = Session.get("current_east");
-    var south_player= Session.get("current_south");
-    var west_player = Session.get("current_west");
-    var north_player= Session.get("current_north");
+    let east_player = Session.get("current_east");
+    let south_player= Session.get("current_south");
+    let west_player = Session.get("current_west");
+    let north_player= Session.get("current_north");
 
-    var game = {
-        timestamp: Date.now(),
+    let game = {
+        timestamp: new Date(),
         east_player: east_player,
         south_player: south_player,
         west_player: west_player,
@@ -393,98 +654,64 @@ function save_game_to_database(hands_array) {
         all_hands: hands_array,
     };
 
-
-    var hk_elo_calculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
+    let hk_elo_calculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
                                               Constants.ELO_CALCULATOR_EXP,
                                               Constants.HKG_SCORE_ADJUSTMENT,
                                               game,
                                               Constants.GAME_TYPE.HONG_KONG);
-    var east_elo_delta = hk_elo_calculator.eloChange(east_player);
-    var south_elo_delta = hk_elo_calculator.eloChange(south_player);
-    var west_elo_delta = hk_elo_calculator.eloChange(west_player);
-    var north_elo_delta = hk_elo_calculator.eloChange(north_player);
 
-    var east_id = Players.findOne({hongKongLeagueName: east_player}, {})._id;
-    var south_id = Players.findOne({hongKongLeagueName: south_player}, {})._id;
-    var west_id = Players.findOne({hongKongLeagueName: west_player}, {})._id;
-    var north_id = Players.findOne({hongKongLeagueName: north_player}, {})._id;
+    let game2 = {
+        positions: Constants.WINDS.map((wind) => ({ wind, score: Session.get(wind + "_score") })).sort((a, b) => b.score - a.score),
+        hands_array_length: hands_array.length,
+        east_elo_delta: hk_elo_calculator.eloChange(east_player),
+        south_elo_delta: hk_elo_calculator.eloChange(south_player),
+        west_elo_delta: hk_elo_calculator.eloChange(west_player),
+        north_elo_delta: hk_elo_calculator.eloChange(north_player),
+        east_player: east_player,
+        south_player: south_player,
+        west_player: west_player,
+        north_player: north_player,
+        east_score: Session.get("east_score"),
+        south_score: Session.get("south_score"),
+        west_score: Session.get("west_score"),
+        north_score: Session.get("north_score"),
+        eastPlayerWins: Session.get("eastPlayerWins"),
+        southPlayerWins: Session.get("southPlayerWins"),
+        westPlayerWins: Session.get("westPlayerWins"),
+        northPlayerWins: Session.get("northPlayerWins"),
+        eastPlayerLosses: Session.get("eastPlayerLosses"),
+        southPlayerLosses: Session.get("southPlayerLosses"),
+        westPlayerLosses: Session.get("westPlayerLosses"),
+        northPlayerLosses: Session.get("northPlayerLosses"),
+        eastMistakeTotal: Session.get("eastMistakeTotal"),
+        southMistakeTotal: Session.get("southMistakeTotal"),
+        westMistakeTotal: Session.get("westMistakeTotal"),
+        northMistakeTotal: Session.get("northMistakeTotal"),
+        eastPlayerPointsWon: Session.get("eastPlayerPointsWon"),
+        southPlayerPointsWon: Session.get("southPlayerPointsWon"),
+        westPlayerPointsWon: Session.get("westPlayerPointsWon"),
+        northPlayerPointsWon: Session.get("northPlayerPointsWon")
+    };
 
-    if (east_elo_delta != NaN && south_elo_delta != NaN && west_elo_delta != NaN && north_elo_delta != NaN) {
-        // Save ELO
-        Players.update({_id: east_id}, {$inc: {hongKongElo: east_elo_delta}});
-        Players.update({_id: south_id}, {$inc: {hongKongElo: south_elo_delta}});
-        Players.update({_id: west_id}, {$inc: {hongKongElo: west_elo_delta}});
-        Players.update({_id: north_id}, {$inc: {hongKongElo: north_elo_delta}});
+    //updates player info
+    Meteor.call('updateHongKongPlayers', game2);
 
-        // Save number of games
-        Players.update({_id: east_id}, {$inc: {hongKongGamesPlayed: 1}});
-        Players.update({_id: south_id}, {$inc: {hongKongGamesPlayed: 1}});
-        Players.update({_id: west_id}, {$inc: {hongKongGamesPlayed: 1}});
-        Players.update({_id: north_id}, {$inc: {hongKongGamesPlayed: 1}});
+    //Save game to database
+    Meteor.call('insertHongKongGame', game);
 
-        // Save bankruptcy counts
-        if (Number(Session.get("east_score")) < 0)
-            Players.update({_id: east_id}, {$inc: {hongKongBankruptTotal: 1}});
-        if (Number(Session.get("south_score")) < 0)
-            Players.update({_id: south_id}, {$inc: {hongKongBankruptTotal: 1}});
-        if (Number(Session.get("west_score")) < 0)
-            Players.update({_id: west_id}, {$inc: {hongKongBankruptTotal: 1}});
-        if (Number(Session.get("north_score")) < 0)
-            Players.update({_id: north_id}, {$inc: {hongKongBankruptTotal: 1}});
-
-        // Save chombo counts
-        Players.update({_id: east_id}, {$inc: {hongKongChomboTotal: Number(Session.get("eastMistakeTotal"))}});
-        Players.update({_id: south_id}, {$inc: {hongKongChomboTotal: Number(Session.get("southMistakeTotal"))}});
-        Players.update({_id: west_id}, {$inc: {hongKongChomboTotal: Number(Session.get("westMistakeTotal"))}});
-        Players.update({_id: north_id}, {$inc: {hongKongChomboTotal: Number(Session.get("northMistakeTotal"))}});
-
-        // Save number of hands (includes chombos, do we want this?)
-        Players.update({_id: east_id}, {$inc: {hongKongHandsTotal: hands_array.length}});
-        Players.update({_id: south_id}, {$inc: {hongKongHandsTotal: hands_array.length}});
-        Players.update({_id: west_id}, {$inc: {hongKongHandsTotal: hands_array.length}});
-        Players.update({_id: north_id}, {$inc: {hongKongHandsTotal: hands_array.length}});
-
-        // Save number of hands won
-        Players.update({_id: east_id}, {$inc: {hongKongHandsWin: Number(Session.get("eastPlayerWins"))}});
-        Players.update({_id: south_id}, {$inc: {hongKongHandsWin: Number(Session.get("southPlayerWins"))}});
-        Players.update({_id: west_id}, {$inc: {hongKongHandsWin: Number(Session.get("westPlayerWins"))}});
-        Players.update({_id: north_id}, {$inc: {hongKongHandsWin: Number(Session.get("northPlayerWins"))}});
-
-        // Save number of points won
-        Players.update({_id: east_id}, {$inc: {hongKongWinPointsTotal: Number(Session.get("eastPlayerPointsWon"))}});
-        Players.update({_id: south_id}, {$inc: {hongKongWinPointsTotal: Number(Session.get("southPlayerPointsWon"))}});
-        Players.update({_id: west_id}, {$inc: {hongKongWinPointsTotal: Number(Session.get("westPlayerPointsWon"))}});
-        Players.update({_id: north_id}, {$inc: {hongKongWinPointsTotal: Number(Session.get("northPlayerPointsWon"))}});
-
-        // Save number of hands lost
-        Players.update({_id: east_id}, {$inc: {hongKongHandsLose: Number(Session.get("eastPlayerLosses"))}});
-        Players.update({_id: south_id}, {$inc: {hongKongHandsLose: Number(Session.get("southPlayerLosses"))}});
-        Players.update({_id: west_id}, {$inc: {hongKongHandsLose: Number(Session.get("westPlayerLosses"))}});
-        Players.update({_id: north_id}, {$inc: {hongKongHandsLose: Number(Session.get("northPlayerLosses"))}});
-
-        // Calculates all positions quickly
-        let positions = Constants.WINDS.map((wind) => ({ wind, score: Session.get(wind + "_score") })).sort((a, b) => b.score - a.score);
-        let idMappings = { east: east_id, south: south_id, west: west_id, north: north_id };
-
-        Players.update({ _id: idMappings[positions[0].wind] }, { $inc: { hongKongFirstPlaceSum: 1 }});
-        Players.update({ _id: idMappings[positions[1].wind] }, { $inc: { hongKongSecondPlaceSum: 1 }});
-        Players.update({ _id: idMappings[positions[2].wind] }, { $inc: { hongKongThirdPlaceSum: 1 }});
-        Players.update({ _id: idMappings[positions[3].wind] }, { $inc: { hongKongFourthPlaceSum: 1 }});
-
-        //Save game to database
-        HongKongHands.insert(game);
-    }
+    //deletes game from in progress database
+    Meteor.call('removeInProgressHongKongGame', Session.get("game_id"));
 };
 
 function push_dealin_hand(template) {
-    var points = Number(Session.get("current_points"));
-    var winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
-    var loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
+    let points = Number(Session.get("current_points"));
+    let winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
+    let loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
 
-    var eastDelta = dealin_delta(points, Constants.EAST, winnerWind, loserWind);
-    var southDelta = dealin_delta(points, Constants.SOUTH, winnerWind, loserWind);
-    var westDelta = dealin_delta(points, Constants.WEST, winnerWind, loserWind);
-    var northDelta = dealin_delta(points, Constants.NORTH, winnerWind, loserWind);
+    let eastDelta = dealin_delta(points, Constants.EAST, winnerWind, loserWind);
+    let southDelta = dealin_delta(points, Constants.SOUTH, winnerWind, loserWind);
+    let westDelta = dealin_delta(points, Constants.WEST, winnerWind, loserWind);
+    let northDelta = dealin_delta(points, Constants.NORTH, winnerWind, loserWind);
 
     if          (winnerWind == Constants.EAST) {
         Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
@@ -523,13 +750,13 @@ function push_dealin_hand(template) {
 };
 
 function push_selfdraw_hand(template) {
-    var points = Number(Session.get("current_points"));
-    var winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
+    let points = Number(Session.get("current_points"));
+    let winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
 
-    var eastDelta = selfdraw_delta(points, Constants.EAST, winnerWind);
-    var southDelta = selfdraw_delta(points, Constants.SOUTH, winnerWind);
-    var westDelta = selfdraw_delta(points, Constants.WEST, winnerWind);
-    var northDelta = selfdraw_delta(points, Constants.NORTH, winnerWind);
+    let eastDelta = selfdraw_delta(points, Constants.EAST, winnerWind);
+    let southDelta = selfdraw_delta(points, Constants.SOUTH, winnerWind);
+    let westDelta = selfdraw_delta(points, Constants.WEST, winnerWind);
+    let northDelta = selfdraw_delta(points, Constants.NORTH, winnerWind);
 
     if          (winnerWind == Constants.EAST) {
         Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
@@ -612,12 +839,12 @@ function push_restart_hand(template) {
 };
 
 function push_mistake_hand(template) {
-    var loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
+    let loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
 
-    var eastDelta = mistake_delta(Constants.EAST, loserWind);
-    var southDelta = mistake_delta(Constants.SOUTH, loserWind);
-    var westDelta = mistake_delta(Constants.WEST, loserWind);
-    var northDelta = mistake_delta(Constants.NORTH, loserWind);
+    let eastDelta = mistake_delta(Constants.EAST, loserWind);
+    let southDelta = mistake_delta(Constants.SOUTH, loserWind);
+    let westDelta = mistake_delta(Constants.WEST, loserWind);
+    let northDelta = mistake_delta(Constants.NORTH, loserWind);
 
     if          (loserWind == Constants.EAST)  Session.set("eastMistakeTotal",  Number(Session.get("eastMistakeTotal"))  + 1);
     else if (loserWind == Constants.SOUTH) Session.set("southMistakeTotal", Number(Session.get("southMistakeTotal")) + 1);
@@ -696,7 +923,7 @@ function pao_delta(points, playerWind, winnerWind, paoWind) {
     if (playerWind != winnerWind && playerWind != paoWind) {
         return 0;
     }
-    
+
     switch (points) {
     case 3: retval = -24; break;
     case 4: retval = -48; break;
