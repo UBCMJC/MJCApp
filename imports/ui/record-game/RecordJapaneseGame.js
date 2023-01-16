@@ -110,24 +110,24 @@ Template.RecordJapaneseGame.helpers({
     },
     // Show what a player's score will look like if game is ended now
     get_player_score_final(direction) {
-        retval = GameRecordUtils.getDirectionScore(direction);
+        let retval = GameRecordUtils.getDirectionScore(direction);
 
-        var winScore = Math.max(Number(Session.get("east_score")),
+        const winScore = Math.max(Number(Session.get("east_score")),
                                 Number(Session.get("south_score")),
                                 Number(Session.get("west_score")),
                                 Number(Session.get("north_score")));
 
-        if (winScore == Session.get("east_score")) {
-            if (direction == Constants.EAST)
+        if (winScore === Session.get("east_score")) {
+            if (direction === Constants.EAST)
                 retval += Constants.JPN_RIICHI_POINTS * Number(Session.get("free_riichi_sticks"));
-        } else if (winScore == Session.get("south_score")) {
-            if (direction == Constants.SOUTH)
+        } else if (winScore === Session.get("south_score")) {
+            if (direction === Constants.SOUTH)
                 retval += Constants.JPN_RIICHI_POINTS * Number(Session.get("free_riichi_sticks"));
-        } else if (winScore == Session.get("west_score")) {
-            if (direction == Constants.WEST)
+        } else if (winScore === Session.get("west_score")) {
+            if (direction === Constants.WEST)
                 retval += Constants.JPN_RIICHI_POINTS * Number(Session.get("free_riichi_sticks"));
-        } else if (winScore == Session.get("north_score")) {
-            if (direction == Constants.NORTH)
+        } else if (winScore === Session.get("north_score")) {
+            if (direction === Constants.NORTH)
                 retval += Constants.JPN_RIICHI_POINTS * Number(Session.get("free_riichi_sticks"));
         }
 
@@ -289,6 +289,9 @@ Template.RecordJapaneseGame.events({
     //Selecting who the north player is
     'change select[name="north_player"]'(event) {
         Session.set("current_north", event.target.value);
+    },
+    'change input'(event) {
+        Session.set("upperJapaneseGame", event.target.checked);
     },
     //Selecting who the winner is for a dealin or tsumo
     'click .winner'(event) {
@@ -724,6 +727,108 @@ function save_game_to_database(hands_array) {
 
         //Save game to database
         JapaneseHands.insert(game);
+        if (Session.get("upperJapaneseGame")) {
+            // Initialise ELO calculator to update player ELO
+            var upper_jpn_elo_calculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
+                Constants.ELO_CALCULATOR_EXP,
+                Constants.JPN_SCORE_ADJUSTMENT,
+                game,
+                Constants.GAME_TYPE.UPPER_JAPANESE);
+            var upper_east_elo_delta = upper_jpn_elo_calculator.eloChange(east_player);
+            var upper_south_elo_delta = upper_jpn_elo_calculator.eloChange(south_player);
+            var upper_west_elo_delta = upper_jpn_elo_calculator.eloChange(west_player);
+            var upper_north_elo_delta = upper_jpn_elo_calculator.eloChange(north_player);
+
+            var upper_east_id = Players.findOne({japaneseLeagueName: east_player}, {})._id;
+            var upper_south_id = Players.findOne({japaneseLeagueName: south_player}, {})._id;
+            var upper_west_id = Players.findOne({japaneseLeagueName: west_player}, {})._id;
+            var upper_north_id = Players.findOne({japaneseLeagueName: north_player}, {})._id;
+
+            if (upper_east_elo_delta != NaN && upper_south_elo_delta != NaN && upper_west_elo_delta != NaN && upper_north_elo_delta != NaN) {
+                // Save ELO
+                Players.update({_id: upper_east_id}, {$inc: {upperJapaneseElo: Number(upper_east_elo_delta)}});
+                Players.update({_id: upper_south_id}, {$inc: {upperJapaneseElo: Number(upper_south_elo_delta)}});
+                Players.update({_id: upper_west_id}, {$inc: {upperJapaneseElo: Number(upper_west_elo_delta)}});
+                Players.update({_id: upper_north_id}, {$inc: {upperJapaneseElo: Number(upper_north_elo_delta)}});
+
+                // Update number of games
+                Players.update({_id: upper_east_id}, {$inc: {upperJapaneseGamesPlayed: 1}});
+                Players.update({_id: upper_south_id}, {$inc: {upperJapaneseGamesPlayed: 1}});
+                Players.update({_id: upper_west_id}, {$inc: {upperJapaneseGamesPlayed: 1}});
+                Players.update({_id: upper_north_id}, {$inc: {upperJapaneseGamesPlayed: 1}});
+
+                // Update bankruptcy count
+                if (Number(Session.get("east_score")) < 0)
+                    Players.update({_id: upper_east_id}, {$inc: {upperJapaneseBankruptTotal: 1}});
+                if (Number(Session.get("south_score")) < 0)
+                    Players.update({_id: upper_south_id}, {$inc: {upperJapaneseBankruptTotal: 1}});
+                if (Number(Session.get("west_score")) < 0)
+                    Players.update({_id: upper_west_id}, {$inc: {upperJapaneseBankruptTotal: 1}});
+                if (Number(Session.get("north_score")) < 0)
+                    Players.update({_id: upper_north_id}, {$inc: {upperJapaneseBankruptTotal: 1}});
+
+                // Save chombo counts
+                Players.update({_id: upper_east_id}, {$inc: {upperJapaneseChomboTotal: Number(Session.get("eastMistakeTotal"))}});
+                Players.update({_id: upper_south_id}, {$inc: {upperJapaneseChomboTotal: Number(Session.get("southMistakeTotal"))}});
+                Players.update({_id: upper_west_id}, {$inc: {upperJapaneseChomboTotal: Number(Session.get("westMistakeTotal"))}});
+                Players.update({_id: upper_north_id}, {$inc: {upperJapaneseChomboTotal: Number(Session.get("northMistakeTotal"))}});
+
+                // Update riichi count
+                Players.update({_id: upper_east_id}, {$inc: {upperJapaneseRiichiTotal: Number(Session.get("east_riichi_sum"))}});
+                Players.update({_id: upper_south_id}, {$inc: {upperJapaneseRiichiTotal: Number(Session.get("south_riichi_sum"))}});
+                Players.update({_id: upper_west_id}, {$inc: {upperJapaneseRiichiTotal: Number(Session.get("west_riichi_sum"))}});
+                Players.update({_id: upper_north_id}, {$inc: {upperJapaneseRiichiTotal: Number(Session.get("north_riichi_sum"))}});
+
+                // Update hands count (Includes chombos, do we want this?)
+                Players.update({_id: upper_east_id}, {$inc: {upperJapaneseHandsTotal: hands_array.length}});
+                Players.update({_id: upper_south_id}, {$inc: {upperJapaneseHandsTotal: hands_array.length}});
+                Players.update({_id: upper_west_id}, {$inc: {upperJapaneseHandsTotal: hands_array.length}});
+                Players.update({_id: upper_north_id}, {$inc: {upperJapaneseHandsTotal: hands_array.length}});
+
+                // Save number of hands won
+                Players.update({_id: upper_east_id}, {$inc: {upperJapaneseHandsWin: Number(Session.get("eastPlayerWins"))}});
+                Players.update({_id: upper_south_id}, {$inc: {upperJapaneseHandsWin: Number(Session.get("southPlayerWins"))}});
+                Players.update({_id: upper_west_id}, {$inc: {upperJapaneseHandsWin: Number(Session.get("westPlayerWins"))}});
+                Players.update({_id: upper_north_id}, {$inc: {upperJapaneseHandsWin: Number(Session.get("northPlayerWins"))}});
+
+                // Save number of points won
+                Players.update({_id: upper_east_id}, {$inc: {upperJapaneseWinPointsTotal: Number(Session.get("eastPlayerPointsWon"))}});
+                Players.update({_id: upper_south_id}, {$inc: {upperJapaneseWinPointsTotal: Number(Session.get("southPlayerPointsWon"))}});
+                Players.update({_id: upper_west_id}, {$inc: {upperJapaneseWinPointsTotal: Number(Session.get("westPlayerPointsWon"))}});
+                Players.update({_id: upper_north_id}, {$inc: {upperJapaneseWinPointsTotal: Number(Session.get("northPlayerPointsWon"))}});
+
+                // Update total dora
+                Players.update({_id: upper_east_id}, {$inc: {upperJapaneseWinDoraTotal: Number(Session.get("eastPlayerDoraSum"))}});
+                Players.update({_id: upper_south_id}, {$inc: {upperJapaneseWinDoraTotal: Number(Session.get("southPlayerDoraSum"))}});
+                Players.update({_id: upper_west_id}, {$inc: {upperJapaneseWinDoraTotal: Number(Session.get("westPlayerDoraSum"))}});
+                Players.update({_id: upper_north_id}, {$inc: {upperJapaneseWinDoraTotal: Number(Session.get("northPlayerDoraSum"))}});
+
+                // Save number of riichied hands won
+                Players.update({_id: upper_east_id}, {$inc: {upperJapaneseWinRiichiTotal: Number(Session.get("eastPlayerRiichisWon"))}});
+                Players.update({_id: upper_south_id}, {$inc: {upperJapaneseWinRiichiTotal: Number(Session.get("southPlayerRiichisWon"))}});
+                Players.update({_id: upper_west_id}, {$inc: {upperJapaneseWinRiichiTotal: Number(Session.get("westPlayerRiichisWon"))}});
+                Players.update({_id: upper_north_id}, {$inc: {upperJapaneseWinRiichiTotal: Number(Session.get("northPlayerRiichisWon"))}});
+
+                // Save number of hands lost
+                Players.update({_id: upper_east_id}, {$inc: {upperJapaneseHandsLose: Number(Session.get("eastPlayerLosses"))}});
+                Players.update({_id: upper_south_id}, {$inc: {upperJapaneseHandsLose: Number(Session.get("southPlayerLosses"))}});
+                Players.update({_id: upper_west_id}, {$inc: {upperJapaneseHandsLose: Number(Session.get("westPlayerLosses"))}});
+                Players.update({_id: upper_north_id}, {$inc: {upperJapaneseHandsLose: Number(Session.get("northPlayerLosses"))}});
+
+                // Calculates all positions quickly
+                let positions = Constants.WINDS.map((wind) => ({
+                    wind,
+                    score: Session.get(wind + "_score")
+                })).sort((a, b) => b.score - a.score);
+                let idMappings = {east: upper_east_id, south: upper_south_id, west: upper_west_id, north: upper_north_id};
+
+                Players.update({_id: idMappings[positions[0].wind]}, {$inc: {upperJapaneseFirstPlaceSum: 1}});
+                Players.update({_id: idMappings[positions[1].wind]}, {$inc: {upperJapaneseSecondPlaceSum: 1}});
+                Players.update({_id: idMappings[positions[2].wind]}, {$inc: {upperJapaneseThirdPlaceSum: 1}});
+                Players.update({_id: idMappings[positions[3].wind]}, {$inc: {upperJapaneseFourthPlaceSum: 1}});
+            }
+            UpperJapaneseHands.insert(game);
+        }
     }
 };
 
