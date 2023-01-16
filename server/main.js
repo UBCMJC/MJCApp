@@ -46,6 +46,8 @@ Meteor.startup(() => {
 		japaneseSecondPlaceSum: (2 === i + 1) ? 1 : 0,
 		japaneseThirdPlaceSum: (3 === i + 1) ? 1 : 0,
 		japaneseFourthPlaceSum: (4 === i + 1) ? 1 : 0,
+		japaneseDealInTotal: 0,
+		japaneseDealInAfterRiichiTotal: 0,
 
 		upperJapanese: true,
 		upperJapaneseElo: 1498.5 + i,
@@ -64,6 +66,8 @@ Meteor.startup(() => {
 		upperJapaneseSecondPlaceSum: (2 === i + 1) ? 1 : 0,
 		upperJapaneseThirdPlaceSum: (3 === i + 1) ? 1 : 0,
 		upperJapaneseFourthPlaceSum: (4 === i + 1) ? 1 : 0,
+		upperJapaneseDealInTotal: 0,
+		upperJapaneseDealInAfterRiichiTotal: 0,
 	    });
 	}
     }

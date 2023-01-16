@@ -59,6 +59,8 @@ Template.Admin.events({
                 japaneseSecondPlaceSum: 0,
                 japaneseThirdPlaceSum: 0,
                 japaneseFourthPlaceSum: 0,
+                japaneseDealInTotal: 0,
+                japaneseDealInAfterRiichiTotal: 0,
 
                 upperJapanese: upperJapanese.checked,
                 upperJapaneseElo: 1500,
@@ -77,6 +79,8 @@ Template.Admin.events({
                 upperJapaneseSecondPlaceSum: 0,
                 upperJapaneseThirdPlaceSum: 0,
                 upperJapaneseFourthPlaceSum: 0,
+                upperJapaneseDealInTotal: 0,
+                upperJapaneseDealInAfterRiichiTotal: 0,
             });
 
             name.value = '';

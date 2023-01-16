@@ -57,7 +57,9 @@ Template.Ranking.helpers({
         const japaneseStatisticsList = [
             {value: "averageHandDora", displayText: "Avg Hand Dora"},
             {value: "riichiRate", displayText: "Riichi %"},
-            {value: "riichiWinRate", displayText: "Riichi Win %"}
+            {value: "riichiWinRate", displayText: "Riichi Win %"},
+            {value: "averageDealInSize", displayText: "Avg Deal In Size"},
+            {value: "dealInAfterRiichiRate", displayText: "Deal in After Riichi %"}
         ];
 
 	// Filter out excluded statistics and non-format statistics
@@ -148,5 +150,7 @@ function getStatisticUnit(statistic) {
 	    "dealinRate",
 	    "flyRate",
 	    "riichiRate",
-	    "riichiWinRate"].includes(statistic) ? " %" : "";
+	    "riichiWinRate",
+        "averageDealInSize",
+        "dealInAfterRiichiRate"].includes(statistic) ? " %" : "";
 }
