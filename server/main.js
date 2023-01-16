@@ -46,6 +46,24 @@ Meteor.startup(() => {
 		japaneseSecondPlaceSum: (2 === i + 1) ? 1 : 0,
 		japaneseThirdPlaceSum: (3 === i + 1) ? 1 : 0,
 		japaneseFourthPlaceSum: (4 === i + 1) ? 1 : 0,
+
+		upperJapanese: true,
+		upperJapaneseElo: 1498.5 + i,
+		upperJapaneseGamesPlayed: 1,
+		upperJapanesePositionSum: 0,
+		upperJapaneseHandsWin: 0,
+		upperJapaneseHandsLose: 0,
+		upperJapaneseHandsTotal: 0,
+		upperJapaneseWinPointsTotal: 0,
+		upperJapaneseWinDoraTotal: 0,
+		upperJapaneseRiichiTotal: 0,
+		upperJapaneseWinRiichiTotal: 0,
+		upperJapaneseChomboTotal: 0,
+		upperJapaneseBankruptTotal: 0,
+		upperJapaneseFirstPlaceSum: (1 === i + 1) ? 1 : 0,
+		upperJapaneseSecondPlaceSum: (2 === i + 1) ? 1 : 0,
+		upperJapaneseThirdPlaceSum: (3 === i + 1) ? 1 : 0,
+		upperJapaneseFourthPlaceSum: (4 === i + 1) ? 1 : 0,
 	    });
 	}
     }
