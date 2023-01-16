@@ -1,6 +1,7 @@
 //Databases
 import Players from '../../api/Players';
 import { JapaneseHands } from '../../api/GameDatabases';
+import { UpperJapaneseHands } from '../../api/GameDatabases';
 
 import Constants from '../../api/Constants';
 import EloCalculator from '../../api/EloCalculator';
