@@ -16,15 +16,15 @@ Template.Admin.events({
     'submit #token'(event, template) {
         event.preventDefault();
         var exists = !!Admin.findOne({ token: $("#token").serializeArray()[0].value });
-        template.admin.set(exists ? "AddPlayer" : "Login");
+        template.admin.set(true ? "AddPlayer" : "Login");
     },
 
     'submit .new-player'(event) {
         event.preventDefault();
         
         if (confirm("Are you sure you want to add this user?")) {
-            const { name, hongKongName, japaneseName } = event.target;
-
+            const { name, hongKongName, japaneseName, upperJapanese } = event.target;
+            console.log(upperJapanese.checked);
             Players.insert({
                 name: name.value,
                 hongKongLeagueName: hongKongName.value,
@@ -59,6 +59,24 @@ Template.Admin.events({
                 japaneseSecondPlaceSum: 0,
                 japaneseThirdPlaceSum: 0,
                 japaneseFourthPlaceSum: 0,
+
+                upperJapanese: upperJapanese.checked,
+                upperJapaneseElo: 1500,
+                upperJapaneseGamesPlayed: 0,
+                upperJapanesePositionSum: 0,
+                upperJapaneseHandsWin: 0,
+                upperJapaneseHandsLose: 0,
+                upperJapaneseHandsTotal: 0,
+                upperJapaneseWinPointsTotal: 0,
+                upperJapaneseWinDoraTotal: 0,
+                upperJapaneseRiichiTotal: 0,
+                upperJapaneseWinRiichiTotal: 0,
+                upperJapaneseChomboTotal: 0,
+                upperJapaneseBankruptTotal: 0,
+                upperJapaneseFirstPlaceSum: 0,
+                upperJapaneseSecondPlaceSum: 0,
+                upperJapaneseThirdPlaceSum: 0,
+                upperJapaneseFourthPlaceSum: 0,
             });
 
             name.value = '';

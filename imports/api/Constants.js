@@ -102,7 +102,9 @@ const Constants = {
         // Hong Kong Old Style
         HONG_KONG: "hongKong",
         // Japanese Riichi Style
-        JAPANESE: "japanese"
+        JAPANESE: "japanese",
+        // Japanese Riichi upper league
+        UPPER_JAPANESE: "upperJapanese"
     },
 
     // Round End Conditions

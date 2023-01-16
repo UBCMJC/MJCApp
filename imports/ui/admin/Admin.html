@@ -41,6 +41,8 @@
         <input required id="japaneseName" name="japaneseName" class="form-control" placeholder="Japanese League Name...">
       </div>
     </div>
+    <label for="upperJapanese">Qualifies for Upper Riichi League? </label>
+    <input id="upperJapanese" name="upperJapanese" type="checkbox">
     <button type="submit" class="btn btn-primary">Add Player</button>
   </form>
   <br>
@@ -59,6 +61,7 @@
           <td>{{ player.name}}</td>
           <td>{{ player.japaneseLeagueName}}</td>
           <td>{{ player.hongKongLeagueName}}</td>
+          <td>{{ player.upperJapanese}}</td>
         </tr>
         {{ /each }}
       </tbody>

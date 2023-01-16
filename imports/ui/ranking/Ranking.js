@@ -4,6 +4,7 @@ import Constants from '../../api/Constants';
 import '../statistics/PlayerModal';
 import './HongKongRanking';
 import './JapaneseRanking';
+import './UpperJapaneseRanking';
 import './Ranking.html';
 
 Template.Ranking.onCreated(
