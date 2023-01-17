@@ -151,5 +151,6 @@ function getStatisticUnit(statistic) {
 	    "flyRate",
 	    "riichiRate",
 	    "riichiWinRate",
-        "dealInAfterRiichiRate"].includes(statistic) ? " %" : "";
+        "dealInAfterRiichiRate",
+        "selfDrawRate"].includes(statistic) ? " %" : "";
 }
