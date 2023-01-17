@@ -9,7 +9,7 @@
     <div class="player-block">
       <div class="player-entry col-lg-3 col-xs-6">
         <p>East</p>
-        <select name="east_player">
+        <select name="east_player" id="east_player_dropdown">
           <option disabled selected value> -- Select East Player (東) -- </option>
           {{#each players}}
           {{> jpn_player_select_east}}
@@ -18,7 +18,7 @@
       </div>
       <div class="player-entry col-lg-3 col-xs-6">
         <p>South</p>
-        <select name="south_player">
+        <select name="south_player" id="south_player_dropdown">
           <option disabled selected value> -- Select South Player (南) -- </option>
           {{#each players}}
           {{> jpn_player_select_south}}
@@ -27,7 +27,7 @@
       </div>
       <div class="player-entry col-lg-3 col-xs-6">
         <p>West</p>
-        <select name="west_player">
+        <select name="west_player" id="west_player_dropdown">
           <option disabled selected value> -- Select West Player (西) -- </option>
           {{#each players}}
           {{> jpn_player_select_west}}
@@ -36,7 +36,7 @@
       </div>
       <div class="player-entry col-lg-3 col-xs-6">
         <p>North</p>
-        <select name="north_player">
+        <select name="north_player" id="north_player_dropdown">
           <option disabled selected value> -- Select North Player (北) -- </option>
           {{#each players}}
           {{> jpn_player_select_north}}
