@@ -61,6 +61,7 @@ Template.Admin.events({
                 japaneseDealInTotal: 0,
                 japaneseDealInAfterRiichiTotal: 0,
                 japaneseSelfDrawTotal: 0,
+                japaneseRiichiEV: 0,
 
                 upperJapanese: upperJapanese.checked,
                 upperJapaneseElo: 1500,
@@ -82,6 +83,7 @@ Template.Admin.events({
                 upperJapaneseDealInTotal: 0,
                 upperJapaneseDealInAfterRiichiTotal: 0,
                 upperJapaneseSelfDrawTotal: 0,
+                upperJapaneseRiichiEV: 0,
             });
 
             name.value = '';

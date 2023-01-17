@@ -59,14 +59,16 @@ Template.Ranking.helpers({
             {value: "riichiRate", displayText: "Riichi %"},
             {value: "riichiWinRate", displayText: "Riichi Win %"},
             {value: "averageDealInSize", displayText: "Avg Deal In Size"},
-            {value: "dealInAfterRiichiRate", displayText: "Deal in After Riichi %"}
+            {value: "dealInAfterRiichiRate", displayText: "Deal in After Riichi %"},
+            {value: "selfDrawRate", displayText: "Self Draw %"},
+            {value: "riichiEV", displayText: "Riichi EV"}
         ];
 
 	// Filter out excluded statistics and non-format statistics
 	return [...defaultStatisticsList, ...japaneseStatisticsList].filter(
 	    (statistic) =>
 		!exclusions.find((exclusion) => exclusion.value === statistic.value) &&
-	        !(japaneseStatisticsList.includes(statistic) && format !== Constants.GAME_TYPE.JAPANESE));
+	        !(japaneseStatisticsList.includes(statistic) && (format !== Constants.GAME_TYPE.JAPANESE) && (format !== Constants.GAME_TYPE.UPPER_JAPANESE)));
     },
 
     /**

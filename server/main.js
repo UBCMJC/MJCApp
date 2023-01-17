@@ -49,6 +49,7 @@ Meteor.startup(() => {
 		japaneseDealInTotal: 0,
 		japaneseDealInAfterRiichiTotal: 0,
 		japaneseSelfDrawTotal: 0,
+		japaneseRiichiEV: 0,
 
 		upperJapanese: true,
 		upperJapaneseElo: 1498.5 + i,
@@ -70,6 +71,7 @@ Meteor.startup(() => {
 		upperJapaneseDealInTotal: 0,
 		upperJapaneseDealInAfterRiichiTotal: 0,
 		upperJapaneseSelfDrawTotal: 0,
+		upperJapaneseRiichiEV: 0,
 	    });
 	}
     }

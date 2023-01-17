@@ -97,6 +97,7 @@ function standardizePlayerStatistics(format, player) {
         formatPlayer["averageDealInSize"] = ((dealinHands > 0) ? player[format + "DealInTotal"]/dealinHands : 0).toFixed(2);
         formatPlayer["dealInAfterRiichiRate"] = ((riichiTotal > 0) ? player[format + "DealInAfterRiichiTotal"]/riichiTotal * 100 : 0).toFixed(2);
         formatPlayer["selfDrawRate"] = ((wonHands > 0) ? player[format + "SelfDrawTotal"] / wonHands * 100 : 0).toFixed(2);
+        formatPlayer["riichiEV"] = ((riichiTotal > 0) ? (player[format + "RiichiEV"] / riichiTotal) : 0).toFixed(2);
     }
     formatPlayer["id"] = player["_id"];
     return formatPlayer;
