@@ -24,7 +24,6 @@ Template.Admin.events({
         
         if (confirm("Are you sure you want to add this user?")) {
             const { name, hongKongName, japaneseName, upperJapanese } = event.target;
-            console.log(upperJapanese.checked);
             Players.insert({
                 name: name.value,
                 hongKongLeagueName: hongKongName.value,

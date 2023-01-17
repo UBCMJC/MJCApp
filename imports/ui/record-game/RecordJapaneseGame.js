@@ -95,7 +95,11 @@ Template.RecordJapaneseGame.helpers({
     },
     // Choose player to select from dropdown menus
     players() {
-        return Players.find({}, {sort: { japaneseLeagueName: 1}});
+        if (Session.get("upperJapaneseGame")) {
+            return Players.find({upperJapanese: {$eq: true}}, {sort: { japaneseLeagueName: 1}});
+        } else {
+            return Players.find({}, {sort: { japaneseLeagueName: 1}});
+        }
     },
     // Return all recorded hands for a game as an array
     hands() {
@@ -529,6 +533,12 @@ Template.RecordJapaneseGame.events({
         if ( !$(event.target ).hasClass( "disabled" )) {
             var r = confirm("Are you sure you want to submit this game?");
             if (r == true) {
+                if (Session.get("upperJapaneseGame")) {
+                    var r2 = confirm("Are you sure this is an upper ranked game?");
+                    if (r2 != true) {
+                        return;
+                    }
+                }
                 var winScore = Math.max(Number(Session.get("east_score")),
                                         Number(Session.get("south_score")),
                                         Number(Session.get("west_score")),
