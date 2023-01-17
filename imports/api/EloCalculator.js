@@ -64,11 +64,7 @@ export default class EloCalculator {
 	// TODO: Add this back later
         // const k = 100 - Math.min(gamesPlayed, 10) - Math.min(Math.max(gamesPlayed - 10, 0), 10) * 2;
 	    const k = 70;
-        if (this.gameType == Constants.GAME_TYPE.UPPER_JAPANESE) {
-            return 100 * (adjustedScores[index] - expectedScores[index]);
-        } else {
-            return (k * (adjustedScores[index] - expectedScores[index]));
-        }
+        return (k * (adjustedScores[index] - expectedScores[index]));
     }
 
     // Return expected scores for players based off table's ELO's
@@ -175,7 +171,7 @@ export default class EloCalculator {
             criteria["japaneseLeagueName"] = player;
             break;
         case Constants.GAME_TYPE.UPPER_JAPANESE:
-            criteria["upperJapanese"] = true;
+            criteria["japaneseLeagueName"] = player;
             break;
         }
 
