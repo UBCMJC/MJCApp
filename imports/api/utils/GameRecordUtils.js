@@ -189,7 +189,7 @@ export default {
     },
 
     rollbackHandWinStat(lastHand) {
-        if              (Number(lastHand.eastDelta) > 0)
+        if (Number(lastHand.eastDelta) > 0)
             Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) - 1);
         else if (Number(lastHand.southDelta) > 0)
             Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) - 1);

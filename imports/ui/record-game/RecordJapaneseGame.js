@@ -519,14 +519,22 @@ Template.RecordJapaneseGame.events({
                 Session.set("free_riichi_sticks", template.riichi_sum_history.pop())
 
                 var riichiHistory = template.riichi_round_history.pop();
-                if (riichiHistory.east == true)
+                if (riichiHistory.east == true) {
                     Session.set("east_riichi_sum", Number(Session.get("east_riichi_sum")) - 1);
-                if (riichiHistory.south == true)
+                    Session.set("eastPlayerRiichiEV", Number(Session.get("eastPlayerRiichiEV")) - del_hand.eastDelta);
+                }
+                if (riichiHistory.south == true) {
                     Session.set("south_riichi_sum", Number(Session.get("south_riichi_sum")) - 1);
-                if (riichiHistory.west == true)
+                    Session.set("southPlayerRiichiEV", Number(Session.get("southPlayerRiichiEV")) - del_hand.southDelta);
+                }
+                if (riichiHistory.west == true) {
                     Session.set("west_riichi_sum", Number(Session.get("west_riichi_sum")) - 1);
-                if (riichiHistory.north == true)
+                    Session.set("westPlayerRiichiEV", Number(Session.get("westPlayerRiichiEV")) - del_hand.westDelta);
+                }
+                if (riichiHistory.north == true) {
                     Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) - 1);
+                    Session.set("northPlayerRiichiEV", Number(Session.get("northPlayerRiichiEV")) - del_hand.northDelta);
+                }
 
                 // Rollback chombo stat
                 if (del_hand.handType == Constants.MISTAKE)
@@ -545,6 +553,47 @@ Template.RecordJapaneseGame.events({
 
                     // loss stat -> may occur when pao selfdraw
                     GameRecordUtils.rollbackHandDealinStat(del_hand);
+
+                    Session.set("eastPlayerDoraSum", Number(Session.get("eastPlayerDoraSum")) - del_hand.dora);
+                    Session.set("southPlayerDoraSum", Number(Session.get("southPlayerDoraSum")) - del_hand.dora);
+                    Session.set("westPlayerDoraSum", Number(Session.get("westPlayerDoraSum")) - del_hand.dora);
+                    Session.set("northPlayerDoraSum", Number(Session.get("northPlayerDoraSum")) - del_hand.dora);
+
+                    if (del_hand.handType == Constants.DEAL_IN) {
+                        if (del_hand.eastDelta < 0) {
+                            Session.set("eastPlayerDealInTotal", Number(Session.get("eastPlayerDealInTotal")) - 1);
+                            if (riichiHistory.east == true) {
+                                Session.set("eastPlayerDealInAfterRiichiTotal", Number(Session.get("eastPlayerDealInAfterRiichiTotal")) - 1);
+                            }
+                        } else if (del_hand.southDelta < 0) {
+                            Session.set("southPlayerDealInTotal", Number(Session.get("southPlayerDealInTotal")) - 1);
+                            if (riichiHistory.south == true) {
+                                Session.set("southPlayerDealInAfterRiichiTotal", Number(Session.get("southPlayerDealInAfterRiichiTotal")) - 1);
+                            }
+                        } else if (del_hand.westDelta < 0) {
+                            Session.set("westPlayerDealInTotal", Number(Session.get("westPlayerDealInTotal")) - 1);
+                            if (riichiHistory.west == true) {
+                                Session.set("westPlayerDealInAfterRiichiTotal", Number(Session.get("westPlayerDealInAfterRiichiTotal")) - 1);
+                            }
+                        } else if (del_hand.northDelta < 0) {
+                            Session.set("northPlayerDealInTotal", Number(Session.get("northPlayerDealInTotal")) - 1);
+                            if (riichiHistory.north == true) {
+                                Session.set("northPlayerDealInAfterRiichiTotal", Number(Session.get("northPlayerDealInAfterRiichiTotal")) - 1);
+                            }
+                        }
+                    }
+
+                    if (del_hand.handType == Constants.SELF_DRAW) {
+                        if (del_hand.eastDelta > 0) {
+                            Session.set("eastPlayerSelfDrawTotal", Number(Session.get("eastPlayerSelfDrawTotal")) - 1);
+                        } else if (del_hand.southDelta > 0) {
+                            Session.set("southPlayerSelfDrawTotal", Number(Session.get("southPlayerSelfDrawTotal")) - 1);
+                        } else if (del_hand.westDelta > 0) {
+                            Session.set("westPlayerSelfDrawTotal", Number(Session.get("westPlayerSelfDrawTotal")) - 1);
+                        } else if (del_hand.northDelta > 0) {
+                            Session.set("northPlayerSelfDrawTotal", Number(Session.get("northPlayerSelfDrawTotal")) - 1);
+                        }
+                    }
                 }
 
                 $( ".submit_hand_button" ).removeClass( "disabled" );
