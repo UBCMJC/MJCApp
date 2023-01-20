@@ -16,7 +16,7 @@ Template.Admin.events({
     'submit #token'(event, template) {
         event.preventDefault();
         var exists = !!Admin.findOne({ token: $("#token").serializeArray()[0].value });
-        template.admin.set(true ? "AddPlayer" : "Login");
+        template.admin.set(exists ? "AddPlayer" : "Login");
     },
 
     'submit .new-player'(event) {

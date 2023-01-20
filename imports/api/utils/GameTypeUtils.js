@@ -99,6 +99,9 @@ function standardizePlayerStatistics(format, player) {
         formatPlayer["selfDrawRate"] = ((wonHands > 0) ? player[format + "SelfDrawTotal"] / wonHands * 100 : 0).toFixed(2);
         formatPlayer["riichiEV"] = ((riichiTotal > 0) ? (player[format + "RiichiEV"] / riichiTotal) : 0).toFixed(2);
     }
+    if (format === Constants.GAME_TYPE.UPPER_JAPANESE) {
+        formatPlayer["softCappedElo"] = Number(1500 + ((player[format + "Elo"] - 1500) * (25/(Math.max(gamesPlayed, 25))))).toFixed(3);
+    }
     formatPlayer["id"] = player["_id"];
     return formatPlayer;
 };

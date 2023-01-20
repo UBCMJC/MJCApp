@@ -49,7 +49,7 @@ Template.Ranking.helpers({
             {value: "gamesPlayed", displayText: "Games"},
             {value: "handWinRate", displayText: "Hand Win %"},
             {value: "dealinRate", displayText: "Deal-in %"},
-            {value: "averageHandSize", displayText: "Avg Hand Size"},
+            {value: "averageHandSize", displayText: "Avg Hand Score"},
             {value: "averagePosition", displayText: "Avg Position"},
             {value: "flyRate", displayText: "Bankrupt %"},
             {value: "chomboTotal", displayText: "Chombos"}
@@ -58,17 +58,21 @@ Template.Ranking.helpers({
             {value: "averageHandDora", displayText: "Avg Hand Dora"},
             {value: "riichiRate", displayText: "Riichi %"},
             {value: "riichiWinRate", displayText: "Riichi Win %"},
-            {value: "averageDealInSize", displayText: "Avg Deal In Size"},
+            {value: "averageDealInSize", displayText: "Avg Deal In Score"},
             {value: "dealInAfterRiichiRate", displayText: "Deal in After Riichi %"},
             {value: "selfDrawRate", displayText: "Self Draw %"},
             {value: "riichiEV", displayText: "Riichi EV"}
         ];
+        const upperJapaneseStatisticsList = [
+            {value: "softCappedElo", displayText: "Soft Capped Elo"}
+        ]
 
 	// Filter out excluded statistics and non-format statistics
-	return [...defaultStatisticsList, ...japaneseStatisticsList].filter(
+	return [...defaultStatisticsList, ...japaneseStatisticsList, ...upperJapaneseStatisticsList].filter(
 	    (statistic) =>
 		!exclusions.find((exclusion) => exclusion.value === statistic.value) &&
-	        !(japaneseStatisticsList.includes(statistic) && (format !== Constants.GAME_TYPE.JAPANESE) && (format !== Constants.GAME_TYPE.UPPER_JAPANESE)));
+	        !(japaneseStatisticsList.includes(statistic) && (format !== Constants.GAME_TYPE.JAPANESE) && (format !== Constants.GAME_TYPE.UPPER_JAPANESE)) &&
+            !(upperJapaneseStatisticsList.includes(statistic) && (format !== Constants.GAME_TYPE.UPPER_JAPANESE)));
     },
 
     /**
