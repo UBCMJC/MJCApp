@@ -20,7 +20,14 @@ Template.RecordHongKongGame.helpers({
         return Template.instance().hand_type.get();
     },
     players() {
-        return Players.find({}, {sort: { hongKongLeagueName: 1}});
+        let playerNames = [];
+        Players.find({}).forEach((val) => {
+            playerNames.push({hongKongLeagueName: val.hongKongLeagueName});
+        });
+        playerNames.sort((a, b) => {
+            return a.hongKongLeagueName.toLowerCase().localeCompare(b.hongKongLeagueName.toLowerCase());
+        });
+        return playerNames;
     },
     hands() {
         return Template.instance().hands.get();
@@ -696,7 +703,7 @@ function pao_delta(points, playerWind, winnerWind, paoWind) {
     if (playerWind != winnerWind && playerWind != paoWind) {
         return 0;
     }
-    
+
     switch (points) {
     case 3: retval = -24; break;
     case 4: retval = -48; break;

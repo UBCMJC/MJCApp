@@ -115,11 +115,20 @@ Template.RecordJapaneseGame.helpers({
     },
     // Choose player to select from dropdown menus
     players() {
+        let playerNames = [];
         if (Session.get("upperJapaneseGame")) {
-            return Players.find({upperJapanese: {$eq: true}}, {sort: { japaneseLeagueName: 1}});
+            Players.find({upperJapanese: {$eq: true}}).forEach((val) => {
+                playerNames.push({japaneseLeagueName: val.japaneseLeagueName});
+            });
         } else {
-            return Players.find({}, {sort: { japaneseLeagueName: 1}});
+            Players.find({}).forEach((val) => {
+                playerNames.push({japaneseLeagueName: val.japaneseLeagueName});
+            });
         }
+        playerNames.sort((a, b) => {
+            return a.japaneseLeagueName.toLowerCase().localeCompare(b.japaneseLeagueName.toLowerCase());
+        });
+        return playerNames;
     },
     // Return all recorded hands for a game as an array
     hands() {
