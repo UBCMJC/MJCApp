@@ -200,7 +200,7 @@ export default {
     },
 
     rollbackHandRiichiStat(lastHand, riichiHistory) {
-        if              (Number(lastHand.eastDelta) > 0) {
+        if (Number(lastHand.eastDelta) > 0) {
             if (riichiHistory.east == true)
                 Session.set("eastPlayerRiichisWon", Number(Session.get("eastPlayerRiichisWon")) - 1);
         }
@@ -220,7 +220,7 @@ export default {
     },
 
     rollbackTotalPointsStat(lastHand) {
-        if              (Number(lastHand.eastDelta) > 0)
+        if (Number(lastHand.eastDelta) > 0)
             Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) - lastHand.eastDelta);
         else if (Number(lastHand.southDelta) > 0)
             Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) - lastHand.southDelta);
