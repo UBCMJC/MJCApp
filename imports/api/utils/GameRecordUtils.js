@@ -158,7 +158,7 @@ export default {
     },
 
     noIllegalSelfdrawJapaneseHands() {
-        var retval = this.noIllegalJapaneseHands();
+        let retval = this.noIllegalJapaneseHands();
 
         retval = retval && !(Session.get("current_points") == 2 && Session.get("current_fu") == 25);
 
@@ -166,7 +166,7 @@ export default {
     },
 
     noIllegalJapaneseHands() {
-        var retval = true;
+        let retval = true;
 
         retval = retval && (Session.get("current_points") != 0);
         retval = retval && (Session.get("current_fu") != 0 || Session.get("current_points") > 4);
