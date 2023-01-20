@@ -35,6 +35,9 @@ export default class EloCalculator {
         case Constants.GAME_TYPE.JAPANESE:
             gamesPlayed = Number(Players.findOne({ japaneseLeagueName: player }).japaneseGamesPlayed)
             break;
+        case Constants.GAME_TYPE.UPPER_JAPANESE:
+            gamesPlayed = Number(Players.findOne({ japaneseLeagueName: player }).upperJapaneseGamesPlayed)
+            break;
         }
 
         /**
@@ -60,8 +63,7 @@ export default class EloCalculator {
 	// HACK: Remove this to appease the masses -> All above issues can be assumed to exist.
 	// TODO: Add this back later
         // const k = 100 - Math.min(gamesPlayed, 10) - Math.min(Math.max(gamesPlayed - 10, 0), 10) * 2;
-	const k = 70;
-
+	    const k = 70;
         return (k * (adjustedScores[index] - expectedScores[index]));
     }
 
@@ -166,6 +168,9 @@ export default class EloCalculator {
             criteria["hongKongLeagueName"] = player;
             break;
         case Constants.GAME_TYPE.JAPANESE:
+            criteria["japaneseLeagueName"] = player;
+            break;
+        case Constants.GAME_TYPE.UPPER_JAPANESE:
             criteria["japaneseLeagueName"] = player;
             break;
         }

@@ -29,6 +29,14 @@
                 <td>Riichi rate: {{ player.riichiRate }}%</td>
                 <td>Riichi win rate: {{ player.riichiWinRate }}%</td>
               </tr>
+              <tr>
+                <td>Average deal in size: {{ player.averageDealInSize }}</td>
+                <td>Deal in after riichi rate: {{ player.dealInAfterRiichiRate }}%</td>
+              </tr>
+              <tr>
+                <td>Self draw rate: {{ player.selfDrawRate }}%</td>
+                <td>Riichi EV: {{ player.riichiEV }}</td>
+              </tr>
               {{ /if }}
             </tbody>
           </table>

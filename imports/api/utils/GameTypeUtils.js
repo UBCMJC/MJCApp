@@ -6,6 +6,8 @@ export default {
         switch (format) {
         case Constants.GAME_TYPE.JAPANESE:
             return "Japanese";
+        case Constants.GAME_TYPE.UPPER_JAPANESE:
+            return "Upper Japanese";
         case Constants.GAME_TYPE.HONG_KONG:
             return "Hong Kong";
         default:
@@ -30,13 +32,15 @@ export default {
         case Constants.GAME_TYPE.JAPANESE:
             hasPlayedGames["japaneseGamesPlayed"] = { $gt: 0 };
             break;
+        case Constants.GAME_TYPE.UPPER_JAPANESE:
+            hasPlayedGames["upperJapaneseGamesPlayed"] = { $gt: 0 };
+            break;
         case Constants.GAME_TYPE.HONG_KONG:
             hasPlayedGames["hongKongGamesPlayed"] = { $gt: 0 };
             break;
         default:
             logInvalidFormat(format);
         }
-
         return Players.find(hasPlayedGames, { sort: rankingSort }).map((player) => standardizePlayerStatistics(format, player));
     }
 }
@@ -69,7 +73,11 @@ function standardizePlayerStatistics(format, player) {
 
     /* Calculate standard statistics */
     /* We can always assume gamesPlayed and totalHands both > 0, but not other stats */
-    formatPlayer["name"] = player[format + "LeagueName"];
+    if (format === Constants.GAME_TYPE.JAPANESE || format === Constants.GAME_TYPE.UPPER_JAPANESE) {
+        formatPlayer["name"] = player["japaneseLeagueName"];
+    } else {
+        formatPlayer["name"] = player["hongKongLeagueName"];
+    }
     let name = player["name"].split(" ");
     formatPlayer["preferredName"] = name[0];
     formatPlayer["elo"] = player[format + "Elo"];
@@ -81,17 +89,19 @@ function standardizePlayerStatistics(format, player) {
     formatPlayer["flyRate"] = (player[format + "BankruptTotal"] / gamesPlayed * 100).toFixed(2);
     formatPlayer["chomboTotal"] = player[format + "ChomboTotal"];
 
-    switch (format) {
-    case Constants.GAME_TYPE.JAPANESE:
+    if (format === Constants.GAME_TYPE.JAPANESE || format === Constants.GAME_TYPE.UPPER_JAPANESE){
         let riichiTotal = player[format + "RiichiTotal"];
         formatPlayer["riichiRate"] = (riichiTotal / totalHands * 100).toFixed(2);
         formatPlayer["riichiWinRate"] = ((riichiTotal > 0) ? (player[format + "WinRiichiTotal"] / riichiTotal * 100) : 0).toFixed(2);
         formatPlayer["averageHandDora"] = ((wonHands > 0) ? player[format + "WinDoraTotal"] / wonHands : 0).toFixed(2);
-        break;
-    default:
-        break;
+        formatPlayer["averageDealInSize"] = ((dealinHands > 0) ? player[format + "DealInTotal"]/dealinHands : 0).toFixed(2);
+        formatPlayer["dealInAfterRiichiRate"] = ((riichiTotal > 0) ? player[format + "DealInAfterRiichiTotal"]/riichiTotal * 100 : 0).toFixed(2);
+        formatPlayer["selfDrawRate"] = ((wonHands > 0) ? player[format + "SelfDrawTotal"] / wonHands * 100 : 0).toFixed(2);
+        formatPlayer["riichiEV"] = ((riichiTotal > 0) ? (player[format + "RiichiEV"] / riichiTotal) : 0).toFixed(2);
     }
-
+    if (format === Constants.GAME_TYPE.UPPER_JAPANESE) {
+        formatPlayer["softCappedElo"] = Number(1500 + ((player[format + "Elo"] - 1500) * (25/(Math.max(gamesPlayed, 25))))).toFixed(3);
+    }
     formatPlayer["id"] = player["_id"];
     return formatPlayer;
 };

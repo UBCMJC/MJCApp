@@ -23,8 +23,7 @@ Template.Admin.events({
         event.preventDefault();
         
         if (confirm("Are you sure you want to add this user?")) {
-            const { name, hongKongName, japaneseName } = event.target;
-
+            const { name, hongKongName, japaneseName, upperJapanese } = event.target;
             Players.insert({
                 name: name.value,
                 hongKongLeagueName: hongKongName.value,
@@ -59,6 +58,32 @@ Template.Admin.events({
                 japaneseSecondPlaceSum: 0,
                 japaneseThirdPlaceSum: 0,
                 japaneseFourthPlaceSum: 0,
+                japaneseDealInTotal: 0,
+                japaneseDealInAfterRiichiTotal: 0,
+                japaneseSelfDrawTotal: 0,
+                japaneseRiichiEV: 0,
+
+                upperJapanese: upperJapanese.checked,
+                upperJapaneseElo: 1500,
+                upperJapaneseGamesPlayed: 0,
+                upperJapanesePositionSum: 0,
+                upperJapaneseHandsWin: 0,
+                upperJapaneseHandsLose: 0,
+                upperJapaneseHandsTotal: 0,
+                upperJapaneseWinPointsTotal: 0,
+                upperJapaneseWinDoraTotal: 0,
+                upperJapaneseRiichiTotal: 0,
+                upperJapaneseWinRiichiTotal: 0,
+                upperJapaneseChomboTotal: 0,
+                upperJapaneseBankruptTotal: 0,
+                upperJapaneseFirstPlaceSum: 0,
+                upperJapaneseSecondPlaceSum: 0,
+                upperJapaneseThirdPlaceSum: 0,
+                upperJapaneseFourthPlaceSum: 0,
+                upperJapaneseDealInTotal: 0,
+                upperJapaneseDealInAfterRiichiTotal: 0,
+                upperJapaneseSelfDrawTotal: 0,
+                upperJapaneseRiichiEV: 0,
             });
 
             name.value = '';
