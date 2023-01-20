@@ -221,13 +221,13 @@ export default {
 
     rollbackTotalPointsStat(lastHand) {
         if              (Number(lastHand.eastDelta) > 0)
-            Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) - lastHand.points);
+            Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) - lastHand.eastDelta);
         else if (Number(lastHand.southDelta) > 0)
-            Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) - lastHand.points);
+            Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) - lastHand.southDelta);
         else if (Number(lastHand.westDelta) > 0)
-            Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) - lastHand.points);
+            Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) - lastHand.westDelta);
         else if (Number(lastHand.northDelta) > 0)
-            Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) - lastHand.points);
+            Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) - lastHand.northDelta);
     },
 
     rollbackHandDealinStat(lastHand) {
