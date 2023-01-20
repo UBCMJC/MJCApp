@@ -92,3 +92,23 @@ tr:nth-of-type(even){
 .names th, td {
     text-align: center;
 }
+
+.game_input_form .cool:hover {
+    background-color: orange;
+    border-color: orange;
+}
+
+.game_input_form .cool.active {
+    background-color: orangered;
+    border-color: orangered;
+}
+
+.cool:focus {
+    outline: none !important;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+}
+
+.game_input_form .cool.disabled {
+    pointer-events: none !important;
+}
