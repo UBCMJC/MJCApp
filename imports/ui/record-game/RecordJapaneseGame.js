@@ -1226,6 +1226,19 @@ function push_selfdraw_hand(template) {
         }
     }
 
+    if (loserWind != Constants.EAST && winnerWind != Constants.EAST && Session.get("east_riichi") == true) {
+        Session.set("eastPlayerRiichiEV", Number(Session.get("eastPlayerRiichiEV")) - 1000);
+    }
+    if (loserWind != Constants.SOUTH && winnerWind != Constants.SOUTH && Session.get("south_riichi") == true) {
+        Session.set("southPlayerRiichiEV", Number(Session.get("southPlayerRiichiEV")) - 1000);
+    }
+    if (loserWind != Constants.WEST && winnerWind != Constants.WEST && Session.get("west_riichi") == true) {
+        Session.set("westPlayerRiichiEV", Number(Session.get("westPlayerRiichiEV")) - 1000);
+    }
+    if (loserWind != Constants.NORTH && winnerWind != Constants.NORTH && Session.get("north_riichi") == true) {
+        Session.set("northPlayerRiichiEV", Number(Session.get("northPlayerRiichiEV")) - 1000);
+    }
+
     pushHand(template,
              Constants.SELF_DRAW,
              seatDeltas[Constants.EAST],
@@ -1494,6 +1507,19 @@ function push_split_pao_hand(template) {
         if (Session.get("north_riichi") == true) {
             Session.set("northlayerRiichiEV", Number(Session.get("northPlayerRiichiEV")) + seatDeltas["north"]);
         }
+    }
+
+    if (loserWind != Constants.EAST && winnerWind != Constants.EAST && paoWind == Constants.EAST && Session.get("east_riichi") == true) {
+        Session.set("eastPlayerRiichiEV", Number(Session.get("eastPlayerRiichiEV")) - 1000);
+    }
+    if (loserWind != Constants.SOUTH && winnerWind != Constants.SOUTH && paoWind == Constants.SOUTH && Session.get("south_riichi") == true) {
+        Session.set("southPlayerRiichiEV", Number(Session.get("southPlayerRiichiEV")) - 1000);
+    }
+    if (loserWind != Constants.WEST && winnerWind != Constants.WEST && paoWind == Constants.WEST && Session.get("west_riichi") == true) {
+        Session.set("westPlayerRiichiEV", Number(Session.get("westPlayerRiichiEV")) - 1000);
+    }
+    if (loserWind != Constants.NORTH && winnerWind != Constants.NORTH && paoWind == Constants.NORTH && Session.get("north_riichi") == true) {
+        Session.set("northPlayerRiichiEV", Number(Session.get("northPlayerRiichiEV")) - 1000);
     }
 
     Session.set("free_riichi_sticks", 0);
