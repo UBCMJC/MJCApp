@@ -49,17 +49,17 @@ Template.Ranking.helpers({
             {value: "gamesPlayed", displayText: "Games"},
             {value: "handWinRate", displayText: "Hand Win %"},
             {value: "dealinRate", displayText: "Deal-in %"},
-            {value: "averageHandSize", displayText: "Avg Hand Score"},
+            {value: "averageHandScore", displayText: "Avg Hand Score"},
             {value: "averagePosition", displayText: "Avg Position"},
-            {value: "flyRate", displayText: "Bankrupt %"},
+            {value: "flyRate", displayText: "Fly %"},
             {value: "chomboTotal", displayText: "Chombos"}
         ];
         const japaneseStatisticsList = [
             {value: "averageHandDora", displayText: "Avg Hand Dora"},
             {value: "riichiRate", displayText: "Riichi %"},
             {value: "riichiWinRate", displayText: "Riichi Win %"},
-            {value: "averageDealInSize", displayText: "Avg Deal In Score"},
-            {value: "dealInAfterRiichiRate", displayText: "Deal in After Riichi %"},
+            {value: "averageDealInSize", displayText: "Avg DealIn Score"},
+            {value: "dealInAfterRiichiRate", displayText: "Riichi->DealIn %"},
             {value: "selfDrawRate", displayText: "Self Draw %"},
             {value: "riichiEV", displayText: "Riichi EV"}
         ];
@@ -117,7 +117,7 @@ Template.Ranking.helpers({
     orderSort(a, b) {
         return ((a, b) => {
             let sortBy = Session.get("sortStatistic");
-            let sortOrder = (["dealinRate", "averagePosition"].includes(sortBy)) ? 1 : -1;
+            let sortOrder = (["dealinRate", "averagePosition","averageDealInScore","dealInAfterRiichiRate"].includes(sortBy)) ? 1 : -1;
             let first = Number(a[sortBy]);
             let second = Number(b[sortBy]);
             return (first > second) ? sortOrder : ((second > first) ? -sortOrder : 0)

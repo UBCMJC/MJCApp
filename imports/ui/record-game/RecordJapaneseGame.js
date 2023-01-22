@@ -604,8 +604,6 @@ Template.RecordJapaneseGame.events({
                             Session.set("northPlayerSelfDrawTotal", Number(Session.get("northPlayerSelfDrawTotal")) - 1);
                         }
                     }
-                    console.log(Session.get("eastPlayerRiichiEV"));
-                    console.log(Session.get("eastPlayerPointsWon"));
                 }
 
                 $( ".submit_hand_button" ).removeClass( "disabled" );

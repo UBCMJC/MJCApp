@@ -314,7 +314,14 @@ Template.RecordHongKongGame.events({
                     GameRecordUtils.rollbackHandWinStat(del_hand);
 
                     // points stat
-                    GameRecordUtils.rollbackTotalPointsStat(del_hand);
+                    if (Number(del_hand.eastDelta) > 0)
+                        Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) - del_hand.points);
+                    else if (Number(del_hand.southDelta) > 0)
+                        Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) - del_hand.points);
+                    else if (Number(del_hand.westDelta) > 0)
+                        Session.set("westPlayerPointsWon", Number(Session.get("westPlayerPointsWon")) - del_hand.points);
+                    else if (Number(del_hand.northDelta) > 0)
+                        Session.set("northPlayerPointsWon", Number(Session.get("northPlayerPointsWon")) - del_hand.points);
 
                     // loss stat -> may occur when pao selfdraw
                     GameRecordUtils.rollbackHandDealinStat(del_hand);
@@ -540,7 +547,7 @@ function push_selfdraw_hand(template) {
 
     if          (winnerWind == Constants.EAST) {
         Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
-        Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) + points);
+        Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) + eastDelta);
     }
     else if (winnerWind == Constants.SOUTH) {
         Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) + 1);
