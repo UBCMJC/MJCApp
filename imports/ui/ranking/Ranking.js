@@ -117,7 +117,7 @@ Template.Ranking.helpers({
     orderSort(a, b) {
         return ((a, b) => {
             let sortBy = Session.get("sortStatistic");
-            let sortOrder = (["dealinRate", "averagePosition","averageDealInScore","dealInAfterRiichiRate"].includes(sortBy)) ? 1 : -1;
+            let sortOrder = (["dealinRate", "averagePosition","flyRate","averageDealInScore","dealInAfterRiichiRate"].includes(sortBy)) ? 1 : -1;
             let first = Number(a[sortBy]);
             let second = Number(b[sortBy]);
             return (first > second) ? sortOrder : ((second > first) ? -sortOrder : 0)
