@@ -561,7 +561,6 @@ Template.RecordJapaneseGame.events({
                     GameRecordUtils.rollbackHandRiichiStat(del_hand, riichiHistory);
 
                     // points stat
-                    console.log(Session.get("eastPlayerPointsWon"));
                     GameRecordUtils.rollbackTotalPointsStat(del_hand);
 
                     // loss stat -> may occur when pao selfdraw
