@@ -250,6 +250,9 @@ Template.jpn_render_hand.helpers({
     is_mistake(hand_type) {
         return hand_type == Constants.MISTAKE;
     },
+    is_pao(hand_type) {
+        return hand_type == Constants.PAO;
+    },
     // Return a string of the round wind for Japanese style
     displayRoundWind(round) {
         return GameRecordUtils.displayRoundWind(round, Constants.GAME_TYPE.JAPANESE);
@@ -558,7 +561,6 @@ Template.RecordJapaneseGame.events({
                     GameRecordUtils.rollbackHandRiichiStat(del_hand, riichiHistory);
 
                     // points stat
-                    console.log(Session.get("eastPlayerPointsWon"));
                     GameRecordUtils.rollbackTotalPointsStat(del_hand);
 
                     // loss stat -> may occur when pao selfdraw
@@ -604,8 +606,6 @@ Template.RecordJapaneseGame.events({
                             Session.set("northPlayerSelfDrawTotal", Number(Session.get("northPlayerSelfDrawTotal")) - 1);
                         }
                     }
-                    console.log(Session.get("eastPlayerRiichiEV"));
-                    console.log(Session.get("eastPlayerPointsWon"));
                 }
 
                 $( ".submit_hand_button" ).removeClass( "disabled" );
@@ -1124,14 +1124,18 @@ function push_dealin_hand(template) {
         Session.set("northPlayerRiichiEV", Number(Session.get("northPlayerRiichiEV")) - 1000);
     }
 
-    Session.set("free_riichi_sticks", 0);
-
     pushHand(template,
-             Constants.DEAL_IN,
-             seatDeltas[Constants.EAST],
-             seatDeltas[Constants.SOUTH],
-             seatDeltas[Constants.WEST],
-             seatDeltas[Constants.NORTH]);
+        Constants.DEAL_IN,
+        seatDeltas[Constants.EAST],
+        seatDeltas[Constants.SOUTH],
+        seatDeltas[Constants.WEST],
+        seatDeltas[Constants.NORTH],
+        {east: Session.get("east_riichi"),
+            south: Session.get("south_riichi"),
+            west: Session.get("west_riichi"),
+            north: Session.get("north_riichi")});
+
+    Session.set("free_riichi_sticks", 0);
 
     if (winnerWind == dealerWind) {
         Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
@@ -1191,22 +1195,22 @@ function push_selfdraw_hand(template) {
 
     if (Session.get("east_riichi") == true) {
         if (winnerWind != Constants.EAST) {
-            Session.set("eastPlayerRiichiEV", Number(Session.get("eastPlayerRiichiEV")) + seatDeltas["east"] - 1000);
+            Session.set("eastPlayerRiichiEV", Number(Session.get("eastPlayerRiichiEV")) + seatDeltas["east"]);
         }
     }
     if (Session.get("south_riichi") == true) {
         if (winnerWind != Constants.SOUTH) {
-            Session.set("southPlayerRiichiEV", Number(Session.get("southPlayerRiichiEV")) + seatDeltas["south"] - 1000);
+            Session.set("southPlayerRiichiEV", Number(Session.get("southPlayerRiichiEV")) + seatDeltas["south"]);
         }
     }
     if (Session.get("west_riichi") == true) {
         if (winnerWind != Constants.WEST) {
-            Session.set("westPlayerRiichiEV", Number(Session.get("westPlayerRiichiEV")) + seatDeltas["west"] - 1000);
+            Session.set("westPlayerRiichiEV", Number(Session.get("westPlayerRiichiEV")) + seatDeltas["west"]);
         }
     }
     if (Session.get("north_riichi") == true) {
         if (winnerWind != Constants.NORTH) {
-            Session.set("northPlayerRiichiEV", Number(Session.get("northPlayerRiichiEV")) + seatDeltas["north"] - 1000);
+            Session.set("northPlayerRiichiEV", Number(Session.get("northPlayerRiichiEV")) + seatDeltas["north"]);
         }
     }
 
@@ -1256,7 +1260,11 @@ function push_selfdraw_hand(template) {
              seatDeltas[Constants.EAST],
              seatDeltas[Constants.SOUTH],
              seatDeltas[Constants.WEST],
-             seatDeltas[Constants.NORTH]);
+             seatDeltas[Constants.NORTH],
+            {east: Session.get("east_riichi"),
+                south: Session.get("south_riichi"),
+                west: Session.get("west_riichi"),
+                north: Session.get("north_riichi")});
 
     Session.set("free_riichi_sticks", 0);
 
@@ -1318,7 +1326,11 @@ function push_nowin_hand(template) {
 
     Session.set("free_riichi_sticks", Number(Session.get("free_riichi_sticks")) + riichiSum);
 
-    pushHand(template, Constants.NO_WIN, eastDelta, southDelta, westDelta, northDelta);
+    pushHand(template, Constants.NO_WIN, eastDelta, southDelta, westDelta, northDelta,
+        {east: Session.get("east_riichi"),
+            south: Session.get("south_riichi"),
+            west: Session.get("west_riichi"),
+            north: Session.get("north_riichi")});
 
     if (Session.get(GameRecordUtils.roundToDealerDirection(Session.get("current_round")) + "_tenpai") == true)
         Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
@@ -1364,7 +1376,11 @@ function push_restart_hand(template) {
 
     Session.set("free_riichi_sticks", Number(Session.get("free_riichi_sticks")) + riichiSum);
 
-    pushHand(template, Constants.RESTART, eastDelta, southDelta, westDelta, northDelta);
+    pushHand(template, Constants.RESTART, eastDelta, southDelta, westDelta, northDelta,
+        {east: Session.get("east_riichi"),
+            south: Session.get("south_riichi"),
+            west: Session.get("west_riichi"),
+            north: Session.get("north_riichi")});
 
     Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
 
@@ -1393,7 +1409,11 @@ function push_mistake_hand(template) {
              handDeltas[Constants.EAST],
              handDeltas[Constants.SOUTH],
              handDeltas[Constants.WEST],
-             handDeltas[Constants.NORTH]);
+             handDeltas[Constants.NORTH],
+            {east: Session.get("east_riichi"),
+                south: Session.get("south_riichi"),
+                west: Session.get("west_riichi"),
+                north: Session.get("north_riichi")});
 
     template.riichi_round_history.push({east: false,
                                         south: false,
@@ -1425,15 +1445,6 @@ function push_split_pao_hand(template) {
         value += 100;
     }
 
-    // Accumulate hand deltas for this round
-    for (const wind of Constants.WINDS) {
-        if (wind === winnerWind) {
-            seatDeltas[wind] += value + riichiSum * Constants.JPN_RIICHI_POINTS;
-        } else if (wind === loserWind || wind === paoWind) {
-            seatDeltas[wind] -= value / 2;
-        }
-    }
-
     if (Session.get("east_riichi") == true) {
         seatDeltas[Constants.EAST] -= Constants.JPN_RIICHI_POINTS;
         riichiSum++;
@@ -1456,6 +1467,15 @@ function push_split_pao_hand(template) {
         seatDeltas[Constants.NORTH] -= Constants.JPN_RIICHI_POINTS;
         riichiSum++;
         Session.set("north_riichi_sum", Number(Session.get("north_riichi_sum")) + 1);
+    }
+
+    // Accumulate hand deltas for this round
+    for (const wind of Constants.WINDS) {
+        if (wind === winnerWind) {
+            seatDeltas[wind] += value + riichiSum * Constants.JPN_RIICHI_POINTS;
+        } else if (wind === loserWind || wind === paoWind) {
+            seatDeltas[wind] -= value / 2;
+        }
     }
 
     if (winnerWind == Constants.EAST) {
@@ -1541,7 +1561,11 @@ function push_split_pao_hand(template) {
              seatDeltas[Constants.EAST],
              seatDeltas[Constants.SOUTH],
              seatDeltas[Constants.WEST],
-             seatDeltas[Constants.NORTH]);
+             seatDeltas[Constants.NORTH],
+            {east: Session.get("east_riichi"),
+                south: Session.get("south_riichi"),
+                west: Session.get("west_riichi"),
+                north: Session.get("north_riichi")});
 
     if (winnerWind == dealerWind)
         Session.set("current_bonus", Number(Session.get("current_bonus")) + 1);
@@ -1556,7 +1580,7 @@ function push_split_pao_hand(template) {
                                         north: Session.get("north_riichi")});
 };
 
-function pushHand(template, handType, eastDelta, southDelta, westDelta, northDelta) {
+function pushHand(template, handType, eastDelta, southDelta, westDelta, northDelta, riichiLog) {
     template.hands.push(
         {
             handType: handType,
@@ -1569,6 +1593,7 @@ function pushHand(template, handType, eastDelta, southDelta, westDelta, northDel
             southDelta: southDelta,
             westDelta: westDelta,
             northDelta: northDelta,
+            riichiLog: riichiLog
         });
 
     Session.set("east_score", Number(Session.get("east_score")) + eastDelta);

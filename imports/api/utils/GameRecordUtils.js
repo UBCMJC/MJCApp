@@ -236,13 +236,13 @@ export default {
             return -1;
 
         if              (Number(lastHand.eastDelta) < 0)
-            Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) - 1);
+            Session.set("eastPlayerLosses", Number(Session.get("eastPlayerLosses")) - 1);
         else if (Number(lastHand.southDelta) < 0)
-            Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) - 1);
+            Session.set("southPlayerLosses", Number(Session.get("southPlayerLosses")) - 1);
         else if (Number(lastHand.westDelta) < 0)
-            Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) - 1);
+            Session.set("westPlayerLosses", Number(Session.get("westPlayerLosses")) - 1);
         else if (Number(lastHand.northDelta) < 0)
-            Session.set("northPlayerWins", Number(Session.get("northPlayerWins")) - 1);
+            Session.set("northPlayerLosses", Number(Session.get("northPlayerLosses")) - 1);
     },
 
     getDirectionScore(direction) {
