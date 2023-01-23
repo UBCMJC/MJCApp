@@ -1195,22 +1195,22 @@ function push_selfdraw_hand(template) {
 
     if (Session.get("east_riichi") == true) {
         if (winnerWind != Constants.EAST) {
-            Session.set("eastPlayerRiichiEV", Number(Session.get("eastPlayerRiichiEV")) + seatDeltas["east"] - 1000);
+            Session.set("eastPlayerRiichiEV", Number(Session.get("eastPlayerRiichiEV")) + seatDeltas["east"]);
         }
     }
     if (Session.get("south_riichi") == true) {
         if (winnerWind != Constants.SOUTH) {
-            Session.set("southPlayerRiichiEV", Number(Session.get("southPlayerRiichiEV")) + seatDeltas["south"] - 1000);
+            Session.set("southPlayerRiichiEV", Number(Session.get("southPlayerRiichiEV")) + seatDeltas["south"]);
         }
     }
     if (Session.get("west_riichi") == true) {
         if (winnerWind != Constants.WEST) {
-            Session.set("westPlayerRiichiEV", Number(Session.get("westPlayerRiichiEV")) + seatDeltas["west"] - 1000);
+            Session.set("westPlayerRiichiEV", Number(Session.get("westPlayerRiichiEV")) + seatDeltas["west"]);
         }
     }
     if (Session.get("north_riichi") == true) {
         if (winnerWind != Constants.NORTH) {
-            Session.set("northPlayerRiichiEV", Number(Session.get("northPlayerRiichiEV")) + seatDeltas["north"] - 1000);
+            Session.set("northPlayerRiichiEV", Number(Session.get("northPlayerRiichiEV")) + seatDeltas["north"]);
         }
     }
 
