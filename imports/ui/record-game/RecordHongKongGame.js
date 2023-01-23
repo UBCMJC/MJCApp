@@ -547,7 +547,7 @@ function push_selfdraw_hand(template) {
 
     if          (winnerWind == Constants.EAST) {
         Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
-        Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) + eastDelta);
+        Session.set("eastPlayerPointsWon", Number(Session.get("eastPlayerPointsWon")) + points);
     }
     else if (winnerWind == Constants.SOUTH) {
         Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) + 1);
