@@ -1057,9 +1057,10 @@ function push_dealin_hand(template) {
         Session.set("southPlayerWins", Number(Session.get("southPlayerWins")) + 1);
         Session.set("southPlayerPointsWon", Number(Session.get("southPlayerPointsWon")) + seatDeltas["south"]);
         Session.set("southPlayerDoraSum", Number(Session.get("southPlayerDoraSum")) + dora);
-        if (Session.get("south_riichi") == true)
+        if (Session.get("south_riichi") == true) {
             Session.set("southPlayerRiichisWon", Number(Session.get("southPlayerRiichisWon")) + 1);
             Session.set("southPlayerRiichiEV", Number(Session.get("southPlayerRiichiEV")) + seatDeltas["south"]);
+        }
     }
     else if (winnerWind == Constants.WEST) {
         Session.set("westPlayerWins", Number(Session.get("westPlayerWins")) + 1);
@@ -1600,6 +1601,10 @@ function pushHand(template, handType, eastDelta, southDelta, westDelta, northDel
     Session.set("south_score", Number(Session.get("south_score")) + southDelta);
     Session.set("west_score", Number(Session.get("west_score")) + westDelta);
     Session.set("north_score", Number(Session.get("north_score")) + northDelta);
+    console.log(Session.get("eastPlayerRiichiEV"));
+    console.log(Session.get("southPlayerRiichiEV"));
+    console.log(Session.get("westPlayerRiichiEV"));
+    console.log(Session.get("northPlayerRiichiEV"));
 };
 
 function setAllGUIRiichisFalse() {

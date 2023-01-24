@@ -84,7 +84,7 @@ function standardizePlayerStatistics(format, player) {
     formatPlayer["gamesPlayed"] = gamesPlayed;
     formatPlayer["handWinRate"] = (wonHands / totalHands * 100).toFixed(2);
     formatPlayer["dealinRate"] = (dealinHands / totalHands * 100).toFixed(2);
-    formatPlayer["averageHandSize"] = ((wonHands > 0) ? totalPoints / wonHands : 0).toFixed(2);
+    formatPlayer["averageHandScore"] = ((wonHands > 0) ? totalPoints / wonHands : 0).toFixed(2);
     formatPlayer["averagePosition"] = (weightedPositionSum / gamesPlayed).toFixed(2);
     formatPlayer["flyRate"] = (player[format + "BankruptTotal"] / gamesPlayed * 100).toFixed(2);
     formatPlayer["chomboTotal"] = player[format + "ChomboTotal"];
