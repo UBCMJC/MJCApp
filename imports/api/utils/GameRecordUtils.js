@@ -232,10 +232,10 @@ export default {
 
     rollbackHandDealinStat(lastHand) {
         // If we hit a self draw, ensure nothing happens
-        if (lastHand.eastDelta == 0 || lastHand.southDelta == 0 || lastHand.westDelta == 0 || lastHand.northDelta == 0)
+        if (lastHand.handType == Constants.SELF_DRAW)
             return -1;
 
-        if              (Number(lastHand.eastDelta) < 0)
+        if (Number(lastHand.eastDelta) < 0)
             Session.set("eastPlayerLosses", Number(Session.get("eastPlayerLosses")) - 1);
         else if (Number(lastHand.southDelta) < 0)
             Session.set("southPlayerLosses", Number(Session.get("southPlayerLosses")) - 1);

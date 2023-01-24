@@ -566,32 +566,41 @@ Template.RecordJapaneseGame.events({
                     // loss stat -> may occur when pao selfdraw
                     GameRecordUtils.rollbackHandDealinStat(del_hand);
 
-                    Session.set("eastPlayerDoraSum", Number(Session.get("eastPlayerDoraSum")) - del_hand.dora);
-                    Session.set("southPlayerDoraSum", Number(Session.get("southPlayerDoraSum")) - del_hand.dora);
-                    Session.set("westPlayerDoraSum", Number(Session.get("westPlayerDoraSum")) - del_hand.dora);
-                    Session.set("northPlayerDoraSum", Number(Session.get("northPlayerDoraSum")) - del_hand.dora);
+                    if (Number(del_hand.eastDelta) > 0)
+                        Session.set("eastPlayerDoraSum", Number(Session.get("eastPlayerDoraSum")) - del_hand.dora);
+                    else if (Number(del_hand.southDelta) > 0)
+                        Session.set("southPlayerDoraSum", Number(Session.get("southPlayerDoraSum")) - del_hand.dora);
+                    else if (Number(del_hand.westDelta) > 0)
+                        Session.set("westPlayerDoraSum", Number(Session.get("westPlayerDoraSum")) - del_hand.dora);
+                    else if (Number(del_hand.northDelta) > 0)
+                        Session.set("northPlayerDoraSum", Number(Session.get("northPlayerDoraSum")) - del_hand.dora);
 
                     if (del_hand.handType == Constants.DEAL_IN) {
-                        if (del_hand.eastDelta < 0) {
+                        let eastDeltaTemp = Number(del_hand.eastDelta);
+                        let southDeltaTemp = Number(del_hand.southDelta);
+                        let westDeltaTemp = Number(del_hand.westDelta);
+                        let northDeltaTemp = Number(del_hand.northDelta);
+                        if (riichiHistory.east == true && ((Number(del_hand.eastDelta) + 1000) !== 0)) {
+                            Session.set("eastPlayerDealInAfterRiichiTotal", Number(Session.get("eastPlayerDealInAfterRiichiTotal")) - 1);
+                            eastDeltaTemp += 1000;
+                        } else if (riichiHistory.south == true && ((Number(del_hand.southDelta) + 1000) !== 0)) {
+                            Session.set("southPlayerDealInAfterRiichiTotal", Number(Session.get("southPlayerDealInAfterRiichiTotal")) - 1);
+                            southDeltaTemp += 1000;
+                        } else if (riichiHistory.west == true && ((Number(del_hand.westDelta) + 1000) !== 0)) {
+                            Session.set("westPlayerDealInAfterRiichiTotal", Number(Session.get("westPlayerDealInAfterRiichiTotal")) - 1);
+                            westDeltaTemp += 1000;
+                        } else if (riichiHistory.north == true && ((Number(del_hand.northDelta) + 1000) !== 0)) {
+                            Session.set("northPlayerDealInAfterRiichiTotal", Number(Session.get("northPlayerDealInAfterRiichiTotal")) - 1);
+                            northDeltaTemp += 1000;
+                        }
+                        if (eastDeltaTemp < 0) {
                             Session.set("eastPlayerDealInTotal", Number(Session.get("eastPlayerDealInTotal")) - del_hand.eastDelta);
-                            if (riichiHistory.east == true) {
-                                Session.set("eastPlayerDealInAfterRiichiTotal", Number(Session.get("eastPlayerDealInAfterRiichiTotal")) - 1);
-                            }
-                        } else if (del_hand.southDelta < 0) {
+                        } else if (southDeltaTemp < 0) {
                             Session.set("southPlayerDealInTotal", Number(Session.get("southPlayerDealInTotal")) - del_hand.southDelta);
-                            if (riichiHistory.south == true) {
-                                Session.set("southPlayerDealInAfterRiichiTotal", Number(Session.get("southPlayerDealInAfterRiichiTotal")) - 1);
-                            }
-                        } else if (del_hand.westDelta < 0) {
+                        } else if (westDeltaTemp < 0) {
                             Session.set("westPlayerDealInTotal", Number(Session.get("westPlayerDealInTotal")) - del_hand.westDelta);
-                            if (riichiHistory.west == true) {
-                                Session.set("westPlayerDealInAfterRiichiTotal", Number(Session.get("westPlayerDealInAfterRiichiTotal")) - 1);
-                            }
-                        } else if (del_hand.northDelta < 0) {
+                        } else if (northDeltaTemp < 0) {
                             Session.set("northPlayerDealInTotal", Number(Session.get("northPlayerDealInTotal")) - del_hand.northDelta);
-                            if (riichiHistory.north == true) {
-                                Session.set("northPlayerDealInAfterRiichiTotal", Number(Session.get("northPlayerDealInAfterRiichiTotal")) - 1);
-                            }
                         }
                     }
 
@@ -727,15 +736,13 @@ Template.RecordJapaneseGame.events({
 
 // Save the currently recorded game to database and update player statistics
 function save_game_to_database(hands_array) {
-    var position;
 
-    var east_player = Session.get("current_east");
-    var south_player= Session.get("current_south");
-    var west_player = Session.get("current_west");
-    var north_player= Session.get("current_north");
+    const east_player = Session.get("current_east");
+    const south_player= Session.get("current_south");
+    const west_player = Session.get("current_west");
+    const north_player= Session.get("current_north");
 
-    // Initialise game to be saved
-    var game = {
+    const tempGame = {
         timestamp: Date.now(),
         east_player: east_player,
         south_player: south_player,
@@ -745,24 +752,47 @@ function save_game_to_database(hands_array) {
         south_score: (Number(Session.get("south_score"))),
         west_score: (Number(Session.get("west_score"))),
         north_score: (Number(Session.get("north_score"))),
-        all_hands: hands_array,
+        all_hands_after_game: hands_array,
     };
 
     // Initialise ELO calculator to update player ELO
-    var jpn_elo_calculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
+    const jpn_elo_calculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
                                                Constants.ELO_CALCULATOR_EXP,
                                                Constants.JPN_SCORE_ADJUSTMENT,
-                                               game,
+                                               tempGame,
                                                Constants.GAME_TYPE.JAPANESE);
-    var east_elo_delta = jpn_elo_calculator.eloChange(east_player);
-    var south_elo_delta = jpn_elo_calculator.eloChange(south_player);
-    var west_elo_delta = jpn_elo_calculator.eloChange(west_player);
-    var north_elo_delta = jpn_elo_calculator.eloChange(north_player);
+    const east_elo_delta = jpn_elo_calculator.eloChange(east_player);
+    const south_elo_delta = jpn_elo_calculator.eloChange(south_player);
+    const west_elo_delta = jpn_elo_calculator.eloChange(west_player);
+    const north_elo_delta = jpn_elo_calculator.eloChange(north_player);
 
-    var east_id = Players.findOne({japaneseLeagueName: east_player}, {})._id;
-    var south_id = Players.findOne({japaneseLeagueName: south_player}, {})._id;
-    var west_id = Players.findOne({japaneseLeagueName: west_player}, {})._id;
-    var north_id = Players.findOne({japaneseLeagueName: north_player}, {})._id;
+    const east_id = Players.findOne({japaneseLeagueName: east_player}, {})._id;
+    const south_id = Players.findOne({japaneseLeagueName: south_player}, {})._id;
+    const west_id = Players.findOne({japaneseLeagueName: west_player}, {})._id;
+    const north_id = Players.findOne({japaneseLeagueName: north_player}, {})._id;
+
+    const east_elo = Players.findOne({japaneseLeagueName: east_player}, {}).japaneseElo;
+    const south_elo = Players.findOne({japaneseLeagueName: south_player}, {}).japaneseElo;
+    const west_elo = Players.findOne({japaneseLeagueName: west_player}, {}).japaneseElo;
+    const north_elo = Players.findOne({japaneseLeagueName: north_player}, {}).japaneseElo;
+
+    // Initialise game to be saved
+    const game = {
+        timestamp: Date.now(),
+        east_player: east_player,
+        south_player: south_player,
+        west_player: west_player,
+        north_player: north_player,
+        east_score: (Number(Session.get("east_score"))),
+        south_score: (Number(Session.get("south_score"))),
+        west_score: (Number(Session.get("west_score"))),
+        north_score: (Number(Session.get("north_score"))),
+        east_elo_after_game: east_elo_delta + east_elo,
+        south_elo_after_game: south_elo_delta + south_elo,
+        west_elo_after_game: west_elo_delta + west_elo,
+        north_elo_after_game: north_elo_delta + north_elo,
+        all_hands_after_game: hands_array,
+    };
 
     if (east_elo_delta != NaN && south_elo_delta != NaN && west_elo_delta != NaN && north_elo_delta != NaN) {
         // Save ELO
@@ -1601,10 +1631,6 @@ function pushHand(template, handType, eastDelta, southDelta, westDelta, northDel
     Session.set("south_score", Number(Session.get("south_score")) + southDelta);
     Session.set("west_score", Number(Session.get("west_score")) + westDelta);
     Session.set("north_score", Number(Session.get("north_score")) + northDelta);
-    console.log(Session.get("eastPlayerRiichiEV"));
-    console.log(Session.get("southPlayerRiichiEV"));
-    console.log(Session.get("westPlayerRiichiEV"));
-    console.log(Session.get("northPlayerRiichiEV"));
 };
 
 function setAllGUIRiichisFalse() {

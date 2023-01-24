@@ -156,7 +156,9 @@ export default class EloCalculator {
             fieldElo += this.getPlayerElo(this.game.west_player);
         if (this.game.north_player != player)
             fieldElo += this.getPlayerElo(this.game.north_player);
-
+        if (this.gameType == Constants.GAME_TYPE.UPPER_JAPANESE) {
+            return this.getPlayerElo(player);
+        }
         return fieldElo / 3;
     }
 
