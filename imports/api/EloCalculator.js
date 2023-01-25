@@ -23,7 +23,7 @@ export default class EloCalculator {
         else //if (player == this.game.north_player)
             index = 3;
 
-        const expectedScores = this.expectedScores();
+        let expectedScores = this.expectedScores();
         const adjustedScores = this.adjustedScores();
 
         const playerElo = this.getPlayerElo(player);
@@ -64,6 +64,9 @@ export default class EloCalculator {
 	// TODO: Add this back later
         // const k = 100 - Math.min(gamesPlayed, 10) - Math.min(Math.max(gamesPlayed - 10, 0), 10) * 2;
 	    const k = 70;
+        if (this.gameType == Constants.GAME_TYPE.UPPER_JAPANESE) {
+            expectedScores = [1/4,1/4,1/4,1/4];
+        }
         return (k * (adjustedScores[index] - expectedScores[index]));
     }
 
@@ -156,9 +159,6 @@ export default class EloCalculator {
             fieldElo += this.getPlayerElo(this.game.west_player);
         if (this.game.north_player != player)
             fieldElo += this.getPlayerElo(this.game.north_player);
-        if (this.gameType == Constants.GAME_TYPE.UPPER_JAPANESE) {
-            return this.getPlayerElo(player);
-        }
         return fieldElo / 3;
     }
 

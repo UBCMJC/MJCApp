@@ -203,10 +203,10 @@ Template.RecordJapaneseGame.helpers({
                                                  Constants.GAME_TYPE.JAPANESE);
 
         switch (direction) {
-        case Constants.EAST:  return jpnEloCalculator.eloChange(eastPlayer).toFixed(2);
-        case Constants.SOUTH: return jpnEloCalculator.eloChange(southPlayer).toFixed(2);
-        case Constants.WEST:  return jpnEloCalculator.eloChange(westPlayer).toFixed(2);
-        case Constants.NORTH: return jpnEloCalculator.eloChange(northPlayer).toFixed(2);
+            case Constants.EAST:  return jpnEloCalculator.eloChange(eastPlayer).toFixed(2);
+            case Constants.SOUTH: return jpnEloCalculator.eloChange(southPlayer).toFixed(2);
+            case Constants.WEST:  return jpnEloCalculator.eloChange(westPlayer).toFixed(2);
+            case Constants.NORTH: return jpnEloCalculator.eloChange(northPlayer).toFixed(2);
         };
     },
     // Show a player's ELO
@@ -329,13 +329,21 @@ Template.RecordJapaneseGame.events({
     },
     //Checking if Upper Ranked is checked
     'change input'(event) {
-        Session.set("upperJapaneseGame", event.target.checked);
         if (event.target.checked) {
             document.getElementById("east_player_dropdown").selectedIndex = 0;
             document.getElementById("south_player_dropdown").selectedIndex = 0;
             document.getElementById("west_player_dropdown").selectedIndex = 0;
             document.getElementById("north_player_dropdown").selectedIndex = 0;
         }
+
+        if (!event.target.checked) {
+            let r = confirm("Are you sure this is not an upper League game?");
+
+            if (r != true) {
+                return;
+            }
+        }
+        Session.set("upperJapaneseGame", event.target.checked);
     },
     //Selecting who the winner is for a dealin or tsumo
     'click .winner'(event) {
@@ -905,7 +913,7 @@ function save_game_to_database(hands_array) {
             var upper_jpn_elo_calculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
                 Constants.ELO_CALCULATOR_EXP,
                 Constants.JPN_SCORE_ADJUSTMENT,
-                game,
+                tempGame,
                 Constants.GAME_TYPE.UPPER_JAPANESE);
             var upper_east_elo_delta = upper_jpn_elo_calculator.eloChange(east_player);
             var upper_south_elo_delta = upper_jpn_elo_calculator.eloChange(south_player);
@@ -916,6 +924,29 @@ function save_game_to_database(hands_array) {
             var upper_south_id = Players.findOne({japaneseLeagueName: south_player}, {})._id;
             var upper_west_id = Players.findOne({japaneseLeagueName: west_player}, {})._id;
             var upper_north_id = Players.findOne({japaneseLeagueName: north_player}, {})._id;
+
+            const upper_east_elo = Players.findOne({japaneseLeagueName: east_player}, {}).upperJapaneseElo;
+            const upper_south_elo = Players.findOne({japaneseLeagueName: south_player}, {}).upperJapaneseElo;
+            const upper_west_elo = Players.findOne({japaneseLeagueName: west_player}, {}).upperJapaneseElo;
+            const upper_north_elo = Players.findOne({japaneseLeagueName: north_player}, {}).upperJapaneseElo;
+
+            // Initialise game to be saved
+            const gameUpper = {
+                timestamp: Date.now(),
+                east_player: east_player,
+                south_player: south_player,
+                west_player: west_player,
+                north_player: north_player,
+                east_score: (Number(Session.get("east_score"))),
+                south_score: (Number(Session.get("south_score"))),
+                west_score: (Number(Session.get("west_score"))),
+                north_score: (Number(Session.get("north_score"))),
+                upper_east_elo_after_game: upper_east_elo_delta + upper_east_elo,
+                upper_south_elo_after_game: upper_south_elo_delta + upper_south_elo,
+                upper_west_elo_after_game: upper_west_elo_delta + upper_west_elo,
+                upper_north_elo_after_game: upper_north_elo_delta + upper_north_elo,
+                all_hands_after_game: hands_array,
+            };
 
             if (upper_east_elo_delta != NaN && upper_south_elo_delta != NaN && upper_west_elo_delta != NaN && upper_north_elo_delta != NaN) {
                 // Save ELO
@@ -1024,7 +1055,7 @@ function save_game_to_database(hands_array) {
                 Players.update({_id: idMappings[positions[2].wind]}, {$inc: {upperJapaneseThirdPlaceSum: 1}});
                 Players.update({_id: idMappings[positions[3].wind]}, {$inc: {upperJapaneseFourthPlaceSum: 1}});
             }
-            UpperJapaneseHands.insert(game);
+            UpperJapaneseHands.insert(gameUpper);
         }
     }
 };
@@ -1631,6 +1662,7 @@ function pushHand(template, handType, eastDelta, southDelta, westDelta, northDel
     Session.set("south_score", Number(Session.get("south_score")) + southDelta);
     Session.set("west_score", Number(Session.get("west_score")) + westDelta);
     Session.set("north_score", Number(Session.get("north_score")) + northDelta);
+
 };
 
 function setAllGUIRiichisFalse() {
