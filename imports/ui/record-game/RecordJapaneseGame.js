@@ -425,6 +425,11 @@ Template.RecordJapaneseGame.events({
                     if (Session.get("round_winner") != Constants.NO_PERSON &&
                         Session.get("round_loser") != Constants.NO_PERSON &&
                         Session.get("round_winner") != Session.get("round_loser")) {
+
+                        if (!Session.get("input_dora")) {
+                            window.alert("Please submit dora count!");
+                            return;
+                        }
                         // Ensure a valid point/fu combination
                         if (GameRecordUtils.noIllegalJapaneseHands()) {
                             push_dealin_hand(template);
@@ -442,6 +447,10 @@ Template.RecordJapaneseGame.events({
                 case Constants.JPN_SELF_DRAW:
                     // Ensure correct input of who won
                     if (Session.get("round_winner") != Constants.NO_PERSON) {
+                        if (!Session.get("input_dora")) {
+                            window.alert("Please submit dora count!");
+                            return;
+                        }
                         // Ensure a valid point/fu combination
                         if (GameRecordUtils.noIllegalSelfdrawJapaneseHands()) {
                             push_selfdraw_hand(template);
@@ -503,7 +512,6 @@ Template.RecordJapaneseGame.events({
                     break;
                     // No other hands should be possible!
                 default:
-                    console.log(handType);
                     break;
                 };
             }
@@ -1700,6 +1708,7 @@ function resetRoundStats() {
     $( "select.points" ).val(undefined);
     $( "select.fu" ).val(undefined);
     $( "select.dora" ).val(undefined);
+    Session.set("input_dora", false);
 };
 
 Template.jpn_points.events({
@@ -1717,5 +1726,6 @@ Template.jpn_fu.events({
 Template.jpn_dora.events({
     'change select[name="dora"]'(event) {
         Session.set("current_dora", event.target.value);
+        Session.set("input_dora",true);
     }
 });
