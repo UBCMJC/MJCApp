@@ -112,3 +112,20 @@ tr:nth-of-type(even){
 .game_input_form .cool.disabled {
     pointer-events: none !important;
 }
+
+:root {
+    --select-border: #777;
+    --select-focus: blue;
+    --select-arrow: var(--select-border);
+}
+
+select {
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 12px;
+}
+
+p.wind {
+    margin-bottom: 0;
+    margin-top: 4px;
+}

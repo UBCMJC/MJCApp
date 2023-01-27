@@ -8,7 +8,7 @@
     </div>
     <div class="player-block">
       <div class="player-entry col-lg-3 col-xs-6">
-        <p>East</p>
+        <p class="wind">East</p>
         <select name="east_player" id="east_player_dropdown">
           <option disabled selected value> -- Select East Player (東) -- </option>
           {{#each players}}
@@ -17,7 +17,7 @@
         </select>
       </div>
       <div class="player-entry col-lg-3 col-xs-6">
-        <p>South</p>
+        <p class="wind">South</p>
         <select name="south_player" id="south_player_dropdown">
           <option disabled selected value> -- Select South Player (南) -- </option>
           {{#each players}}
@@ -26,7 +26,7 @@
         </select>
       </div>
       <div class="player-entry col-lg-3 col-xs-6">
-        <p>West</p>
+        <p class="wind">West</p>
         <select name="west_player" id="west_player_dropdown">
           <option disabled selected value> -- Select West Player (西) -- </option>
           {{#each players}}
@@ -35,7 +35,7 @@
         </select>
       </div>
       <div class="player-entry col-lg-3 col-xs-6">
-        <p>North</p>
+        <p class="wind">North</p>
         <select name="north_player" id="north_player_dropdown">
           <option disabled selected value> -- Select North Player (北) -- </option>
           {{#each players}}
@@ -319,13 +319,15 @@
 </template>
 
 <template name="jpn_points">
-  <span class="player-select-header"><b>Points: </b></span>
-  <select name="points" class="points">
-    <option disabled selected value> -- Select points (役) -- </option>
-    {{#each possiblePoints}}
-    {{> jpn_point_select}}
-    {{/each}}
-  </select>
+  <div>
+    <span class="player-select-header"><b>Points: </b></span>
+    <select name="points" class="points">
+      <option disabled selected value> -- Select points (役) -- </option>
+      {{#each possiblePoints}}
+      {{> jpn_point_select}}
+      {{/each}}
+    </select>
+  </div>
   <br>
 </template>
 
@@ -334,13 +336,15 @@
 </template>
 
 <template name="jpn_fu">
-  <span class="player-select-header"><b>Fu: </b></span>
-  <select name="fu" class="fu">
-    <option disabled selected value> -- Select Fu (符) -- </option>
-    {{#each possibleFu}}
-    {{> jpn_fu_select}}
-    {{/each}}
-  </select>
+  <div>
+    <span class="player-select-header"><b>Fu: </b></span>
+    <select name="fu" class="fu">
+      <option disabled selected value> -- Select Fu (符) -- </option>
+      {{#each possibleFu}}
+      {{> jpn_fu_select}}
+      {{/each}}
+    </select>
+  </div>
   <br>
 </template>
 
@@ -349,13 +353,16 @@
 </template>
 
 <template name="jpn_dora">
-  <span class="player-select-header"><b>Dora: </b></span>
-  <select name="dora" class="dora">
-    <option disabled selected value> -- Select Dora (ドラ) -- </option>
-    {{#each possibleDora}}
-    {{> jpn_dora_select}}
-    {{/each}}
-  </select>
+  <div>
+    <span class="player-select-header"><b>Dora: </b></span>
+    <select name="dora" class="dora">
+      <option disabled selected value> -- Select Dora (ドラ) -- </option>
+      {{#each possibleDora}}
+      {{> jpn_dora_select}}
+      {{/each}}
+    </select>
+  </div>
+  <br>
 </template>
 
 <template name="jpn_dora_select">
