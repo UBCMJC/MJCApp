@@ -286,9 +286,9 @@ Template.RecordHongKongGame.events({
     //Remove the last submitted hand
     'click .delete_hand_button'(event, template) {
         if ( !$( event.target ).hasClass( "disabled" )) {
-            var r = confirm("Are you sure you want to delete the last hand?");
+            const r = confirm("Are you sure you want to delete the last hand?");
             if (r == true) {
-                var del_hand = Template.instance().hands.pop();
+                const del_hand = Template.instance().hands.pop();
 
                 Session.set("east_score", Number(Session.get("east_score")) - Number(del_hand.eastDelta));
                 Session.set("south_score", Number(Session.get("south_score")) - Number(del_hand.southDelta));
@@ -323,7 +323,7 @@ Template.RecordHongKongGame.events({
     },
     //Submit a game to the database
     'click .submit_game_button'(event, template) {
-        var r = confirm("Are you sure you want to submit this game?");
+        const r = confirm("Are you sure you want to submit this game?");
         if (r == true) {
             save_game_to_database(template.hands.get());
 
@@ -364,7 +364,7 @@ Template.RecordHongKongGame.events({
     },
     //Toggle between different round types
     'click .nav-pills li'( event, template ) {
-        var hand_type = $( event.target ).closest( "li" );
+        let hand_type = $( event.target ).closest( "li" );
 
         hand_type.addClass( "active" );
         $( ".nav-pills li" ).not( hand_type ).removeClass( "active" );
@@ -375,13 +375,13 @@ Template.RecordHongKongGame.events({
 
 function save_game_to_database(hands_array) {
 
-    var east_player = Session.get("current_east");
-    var south_player= Session.get("current_south");
-    var west_player = Session.get("current_west");
-    var north_player= Session.get("current_north");
+    const east_player = Session.get("current_east");
+    const south_player= Session.get("current_south");
+    const west_player = Session.get("current_west");
+    const north_player= Session.get("current_north");
 
-    var game = {
-        timestamp: Date.now(),
+    const game = {
+        timestamp: new Date(),
         east_player: east_player,
         south_player: south_player,
         west_player: west_player,
@@ -393,21 +393,20 @@ function save_game_to_database(hands_array) {
         all_hands: hands_array,
     };
 
-
-    var hk_elo_calculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
+    const hk_elo_calculator = new EloCalculator(Constants.ELO_CALCULATOR_N,
                                               Constants.ELO_CALCULATOR_EXP,
                                               Constants.HKG_SCORE_ADJUSTMENT,
                                               game,
                                               Constants.GAME_TYPE.HONG_KONG);
-    var east_elo_delta = hk_elo_calculator.eloChange(east_player);
-    var south_elo_delta = hk_elo_calculator.eloChange(south_player);
-    var west_elo_delta = hk_elo_calculator.eloChange(west_player);
-    var north_elo_delta = hk_elo_calculator.eloChange(north_player);
+    const east_elo_delta = hk_elo_calculator.eloChange(east_player);
+    const south_elo_delta = hk_elo_calculator.eloChange(south_player);
+    const west_elo_delta = hk_elo_calculator.eloChange(west_player);
+    const north_elo_delta = hk_elo_calculator.eloChange(north_player);
 
-    var east_id = Players.findOne({hongKongLeagueName: east_player}, {})._id;
-    var south_id = Players.findOne({hongKongLeagueName: south_player}, {})._id;
-    var west_id = Players.findOne({hongKongLeagueName: west_player}, {})._id;
-    var north_id = Players.findOne({hongKongLeagueName: north_player}, {})._id;
+    let east_id = Players.findOne({hongKongLeagueName: east_player}, {})._id;
+    let south_id = Players.findOne({hongKongLeagueName: south_player}, {})._id;
+    let west_id = Players.findOne({hongKongLeagueName: west_player}, {})._id;
+    let north_id = Players.findOne({hongKongLeagueName: north_player}, {})._id;
 
     if (east_elo_delta != NaN && south_elo_delta != NaN && west_elo_delta != NaN && north_elo_delta != NaN) {
         // Save ELO
@@ -477,14 +476,14 @@ function save_game_to_database(hands_array) {
 };
 
 function push_dealin_hand(template) {
-    var points = Number(Session.get("current_points"));
-    var winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
-    var loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
+    const points = Number(Session.get("current_points"));
+    const winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
+    const loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
 
-    var eastDelta = dealin_delta(points, Constants.EAST, winnerWind, loserWind);
-    var southDelta = dealin_delta(points, Constants.SOUTH, winnerWind, loserWind);
-    var westDelta = dealin_delta(points, Constants.WEST, winnerWind, loserWind);
-    var northDelta = dealin_delta(points, Constants.NORTH, winnerWind, loserWind);
+    const eastDelta = dealin_delta(points, Constants.EAST, winnerWind, loserWind);
+    const southDelta = dealin_delta(points, Constants.SOUTH, winnerWind, loserWind);
+    const westDelta = dealin_delta(points, Constants.WEST, winnerWind, loserWind);
+    const northDelta = dealin_delta(points, Constants.NORTH, winnerWind, loserWind);
 
     if          (winnerWind == Constants.EAST) {
         Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
@@ -523,13 +522,13 @@ function push_dealin_hand(template) {
 };
 
 function push_selfdraw_hand(template) {
-    var points = Number(Session.get("current_points"));
-    var winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
+    const points = Number(Session.get("current_points"));
+    const winnerWind = GameRecordUtils.playerToDirection(Session.get("round_winner"));
 
-    var eastDelta = selfdraw_delta(points, Constants.EAST, winnerWind);
-    var southDelta = selfdraw_delta(points, Constants.SOUTH, winnerWind);
-    var westDelta = selfdraw_delta(points, Constants.WEST, winnerWind);
-    var northDelta = selfdraw_delta(points, Constants.NORTH, winnerWind);
+    const eastDelta = selfdraw_delta(points, Constants.EAST, winnerWind);
+    const southDelta = selfdraw_delta(points, Constants.SOUTH, winnerWind);
+    const westDelta = selfdraw_delta(points, Constants.WEST, winnerWind);
+    const northDelta = selfdraw_delta(points, Constants.NORTH, winnerWind);
 
     if          (winnerWind == Constants.EAST) {
         Session.set("eastPlayerWins", Number(Session.get("eastPlayerWins")) + 1);
@@ -612,12 +611,12 @@ function push_restart_hand(template) {
 };
 
 function push_mistake_hand(template) {
-    var loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
+    const loserWind = GameRecordUtils.playerToDirection(Session.get("round_loser"));
 
-    var eastDelta = mistake_delta(Constants.EAST, loserWind);
-    var southDelta = mistake_delta(Constants.SOUTH, loserWind);
-    var westDelta = mistake_delta(Constants.WEST, loserWind);
-    var northDelta = mistake_delta(Constants.NORTH, loserWind);
+    const eastDelta = mistake_delta(Constants.EAST, loserWind);
+    const southDelta = mistake_delta(Constants.SOUTH, loserWind);
+    const westDelta = mistake_delta(Constants.WEST, loserWind);
+    const northDelta = mistake_delta(Constants.NORTH, loserWind);
 
     if          (loserWind == Constants.EAST)  Session.set("eastMistakeTotal",  Number(Session.get("eastMistakeTotal"))  + 1);
     else if (loserWind == Constants.SOUTH) Session.set("southMistakeTotal", Number(Session.get("southMistakeTotal")) + 1);
@@ -696,7 +695,7 @@ function pao_delta(points, playerWind, winnerWind, paoWind) {
     if (playerWind != winnerWind && playerWind != paoWind) {
         return 0;
     }
-    
+
     switch (points) {
     case 3: retval = -24; break;
     case 4: retval = -48; break;
